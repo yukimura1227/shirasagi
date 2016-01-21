@@ -133,7 +133,7 @@ class Uploader::File
     end
 
     def validate_exists
-      errors.add :filename, :taken if Fs.exists? path
+      errors.add :name, :taken if Fs.exists? path
     end
 
     def path_chenged?

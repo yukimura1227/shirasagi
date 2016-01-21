@@ -51,6 +51,7 @@ gem 'clam_scan'
 #gem 'escape_utils'
 gem 'fast_blank'
 gem 'oj'
+gem "active_model-errors_details"
 
 # OAuth
 gem 'omniauth'
