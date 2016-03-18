@@ -8,14 +8,18 @@ describe "webapi", dbscope: :example, type: :request do
   let!(:site) { cms_site }
   let!(:user) { cms_user }
   let!(:node) { create(:article_node_page) }
+  let!(:another_node) { create(:article_node_page) }
   let!(:page) { create(:article_page, node: node) }
 
   ## paths
   let!(:login_path) { sns_login_path(format: :json) }
   let!(:logout_path) { sns_logout_path(format: :json) }
   let!(:page_path) { article_page_path(site: site.id, cid: node.id, id: page.id, format: :json) }
+  let!(:wrong_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page.id, format: :json) }
   let!(:update_page_path) { article_page_path(site: site.id, cid: node.id, id: page.id, format: :json) }
+  let!(:wrong_update_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page.id, format: :json) }
   let!(:destroy_page_path) { article_page_path(site: site.id, cid: node.id, id: page.id, format: :json) }
+  let!(:wrong_destroy_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page.id, format: :json) }
 
   ## request params
   let!(:correct_login_params) do
@@ -62,6 +66,11 @@ describe "webapi", dbscope: :example, type: :request do
 
         updated = page.updated.strftime(format) rescue nil
         expect(json["updated"]).to eq updated
+      end
+
+      it "404" do
+        get wrong_page_path
+        expect(response.status).to eq 404
       end
     end
 
@@ -125,6 +134,22 @@ describe "webapi", dbscope: :example, type: :request do
         put update_page_path, params
         expect(response.status).to eq 422
       end
+
+      it "404" do
+        params = {
+          item: {
+            name: "更新タイトル",
+            body_parts: %w( <div>part0</div> <div>part1</div> <div>part2</div> ),
+            layout_id: 1,
+            body_layout_id: 1,
+            release_date: "2015/11/13 11:00:00",
+            close_date: "2015/11/13 12:00:00"
+          }
+        }
+
+        put wrong_update_page_path, params
+        expect(response.status).to eq 404
+      end
     end
 
     describe "DELETE /.s{site}/article{cid}/pages/{id}.json" do
@@ -133,6 +158,11 @@ describe "webapi", dbscope: :example, type: :request do
         expect(response.status).to eq 204
 
         expect(Cms::Page.where(id: page.id).first).to eq nil
+      end
+
+      it "404" do
+        delete wrong_destroy_page_path
+        expect(response.status).to eq 404
       end
     end
   end
