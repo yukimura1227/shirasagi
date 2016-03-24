@@ -1,16 +1,18 @@
 ja:
   gws/schedule:
-    plan: 予定リスト
-    user_plan: 個人の予定
-    group_plan: グループの予定
-    facility_plan: 設備の予定
     category: スケジュール種別
+    holiday: 休日管理
     reminder: リマインダー
+    tabs:
+      personal: 個人
+      personal_list: 予定リスト
+      group: 全体
+      facility: 設備
 
     calendar:
       titleFormat:
         month: YYYY年 M月
-        week: YYYY年 M月 D日
+        week: (YYYY年 M月 D日)
         day: YYYY年 M月 D日
     links:
       add_plan: 予定を登録する
@@ -44,28 +46,37 @@ ja:
       gws/schedule/repeat: 繰り返し
 
   gws_role:
-    read_other_gws_schedule_plans: スケジュールの閲覧（全て）
-    read_private_gws_schedule_plans: スケジュールの閲覧（自分）
-    edit_other_gws_schedule_plans: スケジュールの編集（全て）
-    edit_private_gws_schedule_plans: スケジュールの編集（自分）
-    delete_other_gws_schedule_plans: スケジュールの削除（全て）
-    delete_private_gws_schedule_plans: スケジュールの削除（自分）
+    edit_gws_schedule_holidays: 休日の管理
+    read_other_gws_schedule_plans: 予定の閲覧（全て）
+    read_private_gws_schedule_plans: 予定の閲覧（所有）
+    edit_other_gws_schedule_plans: 予定の編集（全て）
+    edit_private_gws_schedule_plans: 予定の編集（所有）
+    delete_other_gws_schedule_plans: 予定の削除（全て）
+    delete_private_gws_schedule_plans: 予定の削除（所有）
+    read_other_gws_schedule_categories: 種別の閲覧（全て）
+    read_private_gws_schedule_categories: 種別の閲覧（所有）
+    edit_other_gws_schedule_categories: 種別の編集（全て）
+    edit_private_gws_schedule_categories: 種別の編集（所有）
+    delete_other_gws_schedule_categories: 種別の削除（全て）
+    delete_private_gws_schedule_categories: 種別の削除（所有）
 
   mongoid:
     models:
       gws/schedule/plan: スケジュール
       gws/schedule/category: スケジュール種類
+      gws/schedule/holiday: 休日
     attributes:
-      gws/schedule/plan:
-        repeat_plan_id: 繰り返し
+      gws/schedule/planable:
         name: タイトル
         start_at: 開始日時
         end_at: 終了日時
         start_on: 開始日
         end_on: 終了日
         allday: 終日
-        category_id: スケジュール種別
         term: 日時
+      gws/schedule/plan:
+        repeat_plan_id: 繰り返し
+        category_id: スケジュール種別
       gws/schedule/repeat_plan: &repeat_plan
         repeat_type: 繰り返し設定
         interval: 繰り返し間隔
@@ -78,7 +89,6 @@ ja:
         color: 表示色
         bg_color: 背景色
         text_color: 文字色
-
       gws/addon/schedule/repeat:
         <<: *repeat_plan
         repeat_start: 繰り返し - 開始日

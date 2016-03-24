@@ -17,8 +17,7 @@ module Cms::Model::Member
 
   included do
     store_in collection: "cms_members"
-
-    set_permission_name :cms_users, :edit
+    set_permission_name "cms_members", :edit
 
     seqid :id
     field :name, type: String
@@ -42,13 +41,12 @@ module Cms::Model::Member
     before_save :set_site_email, if: ->{ email.present? }
   end
 
+  def encrypt_password
+    self.password = SS::Crypt.crypt(in_password)
+  end
+
   private
     def set_site_email
       self.site_email = "#{site_id}_#{email}"
-    end
-
-  public
-    def encrypt_password
-      self.password = SS::Crypt.crypt(in_password)
     end
 end

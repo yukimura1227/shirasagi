@@ -11,14 +11,13 @@ class Job::Service
   DEFAULT_LOG_LEVEL = Logger::INFO
 
   class << self
-    public
-      def run(config = nil)
-        config ||= SS.config.job.default
-        with_lock(config) do |service|
-          service.config = config
-          service.run
-        end
+    def run(config = nil)
+      config ||= SS.config.job.default
+      with_lock(config) do |service|
+        service.config = config
+        service.run
       end
+    end
 
     private
       def with_lock(config)
@@ -40,7 +39,7 @@ class Job::Service
 
         # increment atomically
         criteria = Job::Service.where(id: service_id)
-        service = criteria.find_and_modify({ '$inc' => { current_count: 1 } }, new: true)
+        service = criteria.find_one_and_update({ '$inc' => { current_count: 1 } }, return_document: :after)
         if service.current_count > limits
           # already started a service
           Rails.logger.debug("already started a service")
@@ -63,7 +62,7 @@ class Job::Service
         # decrement atomically
         criteria = Job::Service.where(id: service_id)
         criteria = criteria.gt(current_count: 0)
-        service = criteria.find_and_modify({ '$inc' => { current_count: -1, total_count: 1 }}, new: true)
+        service = criteria.find_one_and_update({ '$inc' => { current_count: -1, total_count: 1 }}, return_document: :after)
         if service && service.current_count == 0
           service.state = "stop"
           service.closed = Time.zone.now
@@ -73,15 +72,14 @@ class Job::Service
       end
   end
 
-  public
-    def run
-      open_logger
-      begin
-        execute_loop
-      ensure
-        close_logger
-      end
+  def run
+    open_logger
+    begin
+      execute_loop
+    ensure
+      close_logger
     end
+  end
 
   private
     def execute_loop
@@ -94,7 +92,7 @@ class Job::Service
 
           time = Benchmark.realtime do
             job = create_job(task)
-            job.call *(task.args)
+            job.call *task.args
           end
 
           job_log.state = Job::Log::STATE_COMPLETED

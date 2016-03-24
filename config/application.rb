@@ -9,13 +9,17 @@ require "sprockets/railtie"
 Bundler.require(*Rails.groups)
 
 module SS
-  mattr_reader(:version) { "1.0.1" }
+  mattr_reader(:version) { "1.1.0" }
 
   class Application < Rails::Application
     config.autoload_paths << "#{config.root}/lib"
     config.autoload_paths << "#{config.root}/app/validators"
 
+    config.assets.paths << "#{config.root}/public/assets/css"
     config.assets.paths << "#{config.root}/public/assets/js"
+    config.assets.precompile << proc do |path, fn|
+      fn =~ /app\/assets/ && %w(.js .css).include?(::File.extname(path)) && path !~ /\/lib\// && path !~ /\/_/
+    end
 
     I18n.enforce_available_locales = true
     config.time_zone = 'Tokyo'
@@ -31,6 +35,8 @@ module SS
     Dir["#{config.root}/config/routes/*/routes_end.rb"].sort.each do |file|
       config.paths["config/routes.rb"] << file
     end
+
+    config.middleware.use "Mongoid::QueryCache::Middleware"
   end
 
   def self.config

@@ -31,21 +31,19 @@ module Board::Model::Post
     after_save :update_topic_descendants_updated, if: -> { topic_id.present? }
 
     scope :topic, ->{ exists parent_id: false }
-    scope :comment, ->{ exists parent_id: true }
   end
 
-  public
-    def root_post
-      parent.nil? ? self : parent.root_post
-    end
+  def root_post
+    parent.nil? ? self : parent.root_post
+  end
 
-    def comment?
-      parent_id.present?
-    end
+  def comment?
+    parent_id.present?
+  end
 
-    def permit_comment?
-      permit_comment == 'allow'
-    end
+  def permit_comment?
+    permit_comment == 'allow'
+  end
 
   private
     def set_topic_id

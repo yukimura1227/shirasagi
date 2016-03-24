@@ -75,6 +75,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.before(:all) do
     FactoryGirl.reload
+    Capybara.app_host = nil
   end
 
   config.filter_run_excluding(mecab: true) unless can_test_mecab_spec?
@@ -99,7 +100,7 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     # `rake db:drop`
-    ::Mongoid::Sessions.default.drop
+    ::Mongoid::Clients.default.database.drop
     # `rake db:create_indexes`
     ::Rails.application.eager_load!
     ::Mongoid::Tasks::Database.create_indexes

@@ -40,9 +40,9 @@ class Ezine::MembersController < ApplicationController
           row = []
           row << item.email
           row << item.email_type
-          row << item.created.strftime("%Y-%m-%d %H:%m")
+          row << item.created.strftime("%Y-%m-%d %H:%M")
           @columns.each do |column|
-            row << item.in_data["#{column.id}"]
+            row << item.in_data[column.id.to_s]
           end
           data << row
         end

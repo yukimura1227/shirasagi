@@ -257,15 +257,15 @@ end
 
 puts "# articles"
 
-save_page route: "article/page", name: "お知らせ情報が入ります。", filename: "news/314.html",
+save_page route: "article/page", name: "お知らせ情報が入ります。", filename: "news/page1.html",
   layout_id: layouts["news"].id, category_ids: [categories["oshirase"].id]
-save_page route: "article/page", name: "お知らせ情報が入ります。お知らせ情報が入ります。", filename: "news/315.html",
+save_page route: "article/page", name: "お知らせ情報が入ります。お知らせ情報が入ります。", filename: "news/page2.html",
   layout_id: layouts["news"].id, category_ids: [categories["oshirase"].id]
-save_page route: "article/page", name: "お知らせ情報が入ります。お知らせ情報が入ります。", filename: "news/316.html",
+save_page route: "article/page", name: "お知らせ情報が入ります。お知らせ情報が入ります。", filename: "news/page3.html",
   layout_id: layouts["news"].id, category_ids: [categories["oshirase"].id]
-save_page route: "article/page", name: "新卒採用", filename: "news/334.html",
+save_page route: "article/page", name: "新卒採用", filename: "news/page4.html",
   layout_id: layouts["recruit"].id, category_ids: [categories["oshirase"].id, categories["recruit"].id]
-save_page route: "article/page", name: "中途採用", filename: "news/335.html",
+save_page route: "article/page", name: "中途採用", filename: "news/page5.html",
   layout_id: layouts["recruit"].id, category_ids: [categories["oshirase"].id, categories["recruit"].id]
 
 puts "# pages"
@@ -312,3 +312,25 @@ save_page route: "cms/page", name: "人材紹介サービス", filename: "produc
   order: 10, layout_id: layouts["product"].id
 save_page route: "cms/page", name: "販売促進支援", filename: "product/solution/sales.html",
   order: 20, layout_id: layouts["product"].id
+
+## -------------------------------------
+puts "# max file size"
+
+def save_max_file_size(data)
+  # 100 MiB
+  data = {size: 100 * 1_024 * 1_024}.merge(data)
+
+  puts data[:name]
+  cond = { name: data[:name] }
+
+  item = SS::MaxFileSize.find_or_create_by cond
+  puts item.errors.full_messages unless item.update data
+  item
+end
+
+save_max_file_size name: '画像ファイル', extensions: %w(gif png jpg jpeg bmp), order: 1, state: 'enabled'
+save_max_file_size name: '音声ファイル', extensions: %w(wav wma mp3 ogg), order: 2, state: 'enabled'
+save_max_file_size name: '動画ファイル', extensions: %w(wmv avi mpeg mpg flv mp4), order: 3, state: 'enabled'
+save_max_file_size name: 'Microsoft Office', extensions: %w(doc docx ppt pptx xls xlsx), order: 4, state: 'enabled'
+save_max_file_size name: 'PDF', extensions: %w(pdf), order: 5, state: 'enabled'
+save_max_file_size name: 'その他', extensions: %w(*), order: 9999, state: 'enabled'

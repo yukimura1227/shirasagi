@@ -2,8 +2,8 @@ FactoryGirl.define do
   trait :cms_part do
     site_id { cms_site.id }
     user_id { cms_user.id }
-    name "#{unique_id}"
-    filename { "#{name}.part.html" }
+    name { unique_id.to_s }
+    filename { "#{unique_id}.part.html" }
     route "cms/free"
   end
 
@@ -33,5 +33,9 @@ FactoryGirl.define do
 
   factory :cms_part_crumb, class: Cms::Part::Crumb, traits: [:cms_part] do
     route "cms/crumb"
+  end
+
+  factory :cms_part_sns_share, class: Cms::Part::Crumb, traits: [:cms_part] do
+    route "cms/sns_share"
   end
 end

@@ -4,7 +4,7 @@ module Cms::PublicFilter::Node
 
   private
     def find_node(path)
-      node = Cms::Node.site(@cur_site).in_path(path).sort(depth: -1).first
+      node = Cms::Node.site(@cur_site).in_path(path).sort(depth: -1).to_a.first
       return unless node
       @preview || node.public? ? node.becomes_with_route : nil
     end
@@ -26,7 +26,7 @@ module Cms::PublicFilter::Node
   public
     def generate_node(node, opts = {})
       path = opts[:url] || "#{node.filename}/index.html"
-      return if Cms::Page.site(node.site).public.filename(path).first
+      return if Cms::Page.site(node.site).and_public.filename(path).first
 
       @cur_path   = opts[:url] || node.url
       @cur_site   = node.site

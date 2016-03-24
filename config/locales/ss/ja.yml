@@ -53,6 +53,8 @@ ja:
       clone: 複製してよろしいですか？
       redirect: 下記のページにアクセスしようとしています。
     links:
+      cms: サイト管理
+      gws: グループ
       new: 新規作成
       show: 詳細を見る
       edit: 編集する
@@ -98,6 +100,10 @@ ja:
         768x1024: 768x1024(XGA縦)
         1280x720: 1280x720(HD横)
         720x1280: 720x1280(HD縦)
+      trans_sid:
+        none: 無効
+        mobile: モバイルのみ
+        always: いつも
     state:
       public: 公開中
       closed: 非公開
@@ -123,16 +129,19 @@ ja:
     addons:
       ss/body: 本文
       ss/markdown: 内容
+      ss/mobile_setting: モバイル設定
 
   mongoid:
     models:
       ss/site: サイト
       ss/user: ユーザー
       ss/group: グループ
+      ss/file: ファイル
       ss/temp_file: 一時ファイル
       ss/user_file: ユーザーファイル
       ss/group_file: グループファイル
       ss/task: タスク
+      ss/max_file_size: 最大ファイルサイズ
     attributes:
       ss/document:
         created: 作成日時
@@ -146,10 +155,11 @@ ja:
         layout_id: レイアウト
         shortcut: ショートカット
         view_state: 状態
-      ss/site:
+      ss/model/site:
         name: サイト名
         host: ホスト名
         domains: ドメイン
+        https: HTTPS
         group_ids: グループ
       ss/model/user:
         name: 氏名
@@ -177,7 +187,12 @@ ja:
         current_count: 処理件数
         log: ログ
       ss/model/file:
+        model: モデル
+        state: 状態
         name: ファイル名（表示用）
+        filename: ファイル名
+        size: ファイルサイズ
+        content_type: Content Type
       ss/model/role:
         name: ロール名
         permission_level: 権限レベル
@@ -187,6 +202,17 @@ ja:
       ss/addon/markdown:
         text: 内容
         html: 内容
+      ss/addon/mobile_setting:
+        mobile_state: 状態
+        mobile_location: ロケーション
+        mobile_css: CSS
+        trans_sid: Trans SID
+      ss/max_file_size:
+        name: 名前
+        extensions: 拡張子
+        size: 制限サイズ
+        order: 並び順
+        state: 状態
 
   tooltip:
     ss/model/user:

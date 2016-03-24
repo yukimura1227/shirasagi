@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", "4.2.4"
+gem "rails", "4.2.5.2"
 gem 'sass-rails', '~> 5.0'
 gem "uglifier", ">= 1.3.0"
 gem 'coffee-rails', '~> 4.1.0'
@@ -16,17 +16,16 @@ gem "unicorn-worker-killer"
 # gem 'capistrano-rails', group: :development
 # gem "debugger", group: [:development, :test]
 
-gem "mongoid", "~> 4.0.0"
+gem "mongoid", "~> 5.1.0"
 gem "mongoid-rspec"
-gem "mongo_mapper"
-gem "bson_ext"
-#gem "cells"
+#gem "mongo_mapper"
+#gem "bson_ext"
 gem "dynamic_form"
 gem "zipruby"
 gem "jquery-turbolinks"
 gem "jquery-cookie-rails"
 gem 'jquery-form-rails'
-gem "redcarpet"
+gem "kramdown"
 gem "compass-rails"
 gem "kaminari"
 gem "non-stupid-digest-assets"
@@ -49,6 +48,9 @@ gem 'fullcalendar.io-rails'
 gem 'bxslider-rails'
 gem 'marked-rails'
 gem 'clam_scan'
+#gem 'escape_utils'
+gem 'fast_blank'
+gem 'oj'
 gem "active_model-errors_details"
 
 # OAuth
@@ -83,7 +85,7 @@ group :development, :test do
   gem 'pry-stack_explorer'
   # The latest version is 1.5.0 now, but getting the same error again.
   # ref. https://github.com/DatabaseCleaner/database_cleaner/issues/390
-  gem 'database_cleaner', '1.4.1'
+  gem 'database_cleaner'
   gem 'dotenv-rails'
 end
 

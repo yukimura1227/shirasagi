@@ -11,7 +11,14 @@ module Gws::Schedule::PlanHelper
   def calendar_format(plans, opts = {})
     events  = plans.map(&:calendar_format)
     events += calendar_holidays opts[:holiday][0], opts[:holiday][1] if opts[:holiday]
+    events += group_holidays opts[:holiday][0], opts[:holiday][1] if opts[:holiday]
     events
+  end
+
+  def group_holidays(start_at, end_at)
+    Gws::Schedule::Holiday.site(@cur_site).and_public.
+      search(start_at: start_at, end_at: end_at).
+      map(&:calendar_format)
   end
 
   def calendar_holidays(start_at, end_at)

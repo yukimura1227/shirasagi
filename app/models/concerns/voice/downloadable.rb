@@ -69,7 +69,7 @@ module Voice::Downloadable
 
       begin
         yield
-      rescue TimeoutError, StandardError => e
+      rescue Timeout::Error, StandardError => e
         Rails.logger.warn("#{e.class} (#{e.message}):\n  #{e.backtrace.join('\n  ')}")
         num_attempts += 1
         raise if num_attempts >= max_attempts
@@ -137,7 +137,7 @@ module Voice::Downloadable
         host = url.host
         port = url.port
 
-        SS::Site.find_by_domain("#{host}:#{port}") || SS::Site.find_by_domain("#{host}")
+        SS::Site.find_by_domain("#{host}:#{port}") || SS::Site.find_by_domain(host.to_s)
       end
   end
 end

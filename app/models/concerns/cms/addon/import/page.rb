@@ -13,6 +13,23 @@ module Cms::Addon::Import
       validates :in_file, presence: true, on: :import
     end
 
+    def import
+      @imported = 0
+      return false if in_file.blank?
+
+      if ::File.extname(in_file.original_filename) =~ /^\.zip$/i
+        import_from_zip(root_files: root_files.present?)
+      else
+        import_from_file
+      end
+    end
+
+    def save_with_import
+      @imported = 0
+      return false unless save(context: :import)
+      return import
+    end
+
     private
       def save_import_page(file, import_filename)
         import_html = file.read.force_encoding("utf-8")
@@ -81,8 +98,8 @@ module Cms::Addon::Import
               @imported += 1 if save_import_node(f, import_filename)
             elsif ::File.extname(import_filename) =~ /^\.(html|htm)$/i
               @imported += 1 if save_import_page(f, import_filename)
-            else
-              @imported += 1 if upload_import_file(f, import_filename)
+            elsif upload_import_file(f, import_filename)
+              @imported += 1
             end
           end
         end
@@ -95,8 +112,8 @@ module Cms::Addon::Import
 
         if ::File.extname(import_filename) =~ /^\.(html|htm)$/i
           @imported += 1 if save_import_page(in_file, import_filename)
-        else
-          @imported += 1 if upload_import_file(in_file, import_filename)
+        elsif upload_import_file(in_file, import_filename)
+          @imported += 1
         end
 
         return errors.empty?
@@ -108,24 +125,6 @@ module Cms::Addon::Import
           path = $2
           "#{attr}=\"\/#{self.filename}/#{path}\""
         end
-      end
-
-    public
-      def import
-        @imported = 0
-        return false if in_file.blank?
-
-        if ::File.extname(in_file.original_filename) =~ /^\.zip$/i
-          import_from_zip(root_files: root_files.present?)
-        else
-          import_from_file
-        end
-      end
-
-      def save_with_import
-        @imported = 0
-        return false unless save(context: :import)
-        return import
       end
   end
 end

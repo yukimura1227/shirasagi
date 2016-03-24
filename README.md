@@ -24,7 +24,7 @@ Platform
 --------
 
 - CentOS, Ubuntu
-- Ruby 2.2
+- Ruby 2.3
 - Ruby on Rails 4
 - MongoDB 3
 - Unicorn
@@ -44,19 +44,19 @@ $ su -
 ## MongoDB のインストール
 
 ```
-# vi /etc/yum.repos.d/CentOS-Base.repo
+# vi /etc/yum.repos.d/mongodb-org-3.2.repo
 ```
 
 ```
-[mongodb-org-3.0]
+[mongodb-org-3.2]
 name=MongoDB Repository
-baseurl=http://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.0/x86_64/
+baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/3.2/x86_64/
 gpgcheck=0
 enabled=0
 ```
 
 ```
-# yum install -y --enablerepo=mongodb-org-3.0 mongodb-org
+# yum install -y --enablerepo=mongodb-org-3.2 mongodb-org
 # systemctl start mongod
 # systemctl enable mongod
 ```
@@ -67,8 +67,8 @@ enabled=0
 # gpg2 --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 # \curl -sSL https://get.rvm.io | sudo bash -s stable
 # source /etc/profile
-# rvm install 2.2.3
-# rvm use 2.2.3 --default
+# rvm install 2.3.0
+# rvm use 2.3.0 --default
 # gem install bundler
 ```
 
@@ -85,7 +85,7 @@ $ git clone -b stable --depth 1 https://github.com/shirasagi/shirasagi /var/www/
 ```
 $ cd /var/www/shirasagi
 $ cp -n config/samples/*.{yml,rb} config/
-$ bundle install
+$ bundle install --without development test
 ```
 
 Web サーバの起動

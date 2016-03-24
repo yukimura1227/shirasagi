@@ -2,6 +2,7 @@ class Gws::Link
   include SS::Document
   include Gws::Reference::User
   include Gws::Reference::Site
+  include Gws::Content::Targetable
   include SS::Addon::Body
   #include SS::Addon::Markdown
   include Cms::Addon::Release
@@ -20,6 +21,12 @@ class Gws::Link
 
   after_validation :set_released, if: -> { state == "public" }
 
+  default_scope -> {
+    order_by released: -1
+  }
+  scope :and_public, -> {
+    where state: "public"
+  }
   scope :search, ->(params) {
     criteria = where({})
     return criteria if params.blank?
@@ -28,23 +35,15 @@ class Gws::Link
     criteria
   }
 
-  public
-    def state_options
-      [
-        [I18n.t('views.options.state.public'), 'public'],
-        [I18n.t('views.options.state.closed'), 'closed'],
-      ]
-    end
+  def state_options
+    [
+      [I18n.t('views.options.state.public'), 'public'],
+      [I18n.t('views.options.state.closed'), 'closed'],
+    ]
+  end
 
   private
     def set_released
       self.released ||= Time.zone.now
     end
-
-  class << self
-    public
-      def public
-        where state: "public"
-      end
-  end
 end

@@ -61,12 +61,7 @@ module Cms::PublicFilter::Layout
         m
       end
 
-      # TODO: deprecated </ />
-      html = body.gsub(/(<\/|\{\{) part ".+?" (\/>|\}\})/) do |m|
-        path = m.sub(/(?:<\/|\{\{) part "(.+)?" (?:\/>|\}\})/, '\\1') + ".part.html"
-        path = path[0] == "/" ? path.sub(/^\//, "") : @cur_layout.dirname(path)
-        render_layout_part(path)
-      end
+      html = render_layout_parts(body)
 
       if notice
         notice_html   = %(<div id="ss-notice"><div class="wrap">#{notice}</div></div>)
@@ -79,12 +74,28 @@ module Cms::PublicFilter::Layout
       html
     end
 
-    def render_layout_part(path)
-      part = Cms::Part.site(@cur_site).public
-      part = part.where(mobile_view: "show") if filters.include?(:mobile)
-      part = part.filename(path).first
-      return unless part
+    def render_layout_parts(body)
+      # TODO: deprecated </ />
+      parts = {}
+      body = body.gsub(/(<\/|\{\{) part ".+?" (\/>|\}\})/) do |m|
+        path = m.sub(/(?:<\/|\{\{) part "(.+)?" (?:\/>|\}\})/, '\\1') + ".part.html"
+        path = path[0] == "/" ? path.sub(/^\//, "") : @cur_layout.dirname(path)
+        parts[path] = nil
+        "{{ part \"#{path}\" }}"
+      end
 
+      criteria = Cms::Part.site(@cur_site).and_public.any_in(filename: parts.keys)
+      criteria = criteria.where(mobile_view: "show") if filters.include?(:mobile)
+      criteria.each { |part| parts[part.filename] = part }
+
+      return body.gsub(/\{\{ part ".+?" \}\}/) do |m|
+        path = m.sub(/(?:\{\{) part "(.+)?" (?:\}\})/, '\\1')
+        part = parts[path]
+        part ? render_layout_part(part) : ''
+      end
+    end
+
+    def render_layout_part(part)
       if part.ajax_view == "enabled" && !filters.include?(:mobile) && !@preview
         part.ajax_html
       else

@@ -10,6 +10,7 @@ ja:
     test: テスト
     db_tool: DBツール
     role: 権限/ロール
+    max_file_size: 最大ファイルサイズ
     roles:
       admin: 管理者
     apis:
@@ -24,8 +25,10 @@ ja:
       sys/role: ロール
 
   sys_role:
-    edit_sys_sites: サイトの編集
-    edit_sys_users: ユーザーの編集
+    edit_sys_sites: サイトの管理
+    edit_sys_groups: グループの管理
+    edit_sys_users: ユーザーの管理
+    edit_sys_roles: 権限/ロールの管理
 
   mongoid:
     models:
@@ -33,11 +36,6 @@ ja:
       sys/user: ユーザー
       sys/role: ロール
     attributes:
-      sys/site:
-        name: サイト名
-        host: ホスト名
-        domains: ドメイン
-        group_ids: グループ
       sys/addon/role:
         sys_role_ids: ロール
 

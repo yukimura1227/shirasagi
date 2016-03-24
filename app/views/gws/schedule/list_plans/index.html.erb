@@ -1,7 +1,7 @@
 <% @index_meta = proc do |item| %>
   <span class="datetime"><%= term(item) %></span>
 
-  <% if item.facilities.size > 0 %>
+  <% if item.facilities.present? %>
   <span class="user"><%= item.facilities.map(&:name).join(', ') %></span>
   <% end %>
 
@@ -9,5 +9,7 @@
   <span class="gws-schedule-category-sample" style="<%= "background: #{c.color}; color: #{c.text_color}" %>"><%= c.name %></span>
   <% end %>
 <% end %>
+
+<%= render "gws/schedule/main/tabs" %>
 
 <%= render file: "gws/crud/index" %>

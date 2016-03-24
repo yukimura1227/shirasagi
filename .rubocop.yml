@@ -1,20 +1,15 @@
 inherit_from: .rubocop_todo.yml
+
 AllCops:
-  RunRailsCops: true
   Exclude:
     - Guardfile
+    - Vagrantfile
+    - ",memo/*"
     - bin/*
     - vendor/bundle/**/*
 
-# Rails default check path
-Rails/DefaultScope:
-  Include:
-    - app/controllers/
-    - app/models/
-    - app/helpers/
-    - app/validators/
-    - app/cells/
-    - lib/
+Rails:
+  Enabled: true
 
 # Cop supports --auto-correct.
 Rails/Output:
