@@ -9,17 +9,17 @@ describe "webapi", dbscope: :example, type: :request do
   let!(:user) { cms_user }
   let!(:node) { create(:article_node_page) }
   let!(:another_node) { create(:article_node_page) }
-  let!(:page) { create(:article_page, node: node) }
+  let!(:page_item) { create(:article_page, cur_node: node) }
 
   ## paths
   let!(:login_path) { sns_login_path(format: :json) }
   let!(:logout_path) { sns_logout_path(format: :json) }
-  let!(:page_path) { article_page_path(site: site.id, cid: node.id, id: page.id, format: :json) }
-  let!(:wrong_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page.id, format: :json) }
-  let!(:update_page_path) { article_page_path(site: site.id, cid: node.id, id: page.id, format: :json) }
-  let!(:wrong_update_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page.id, format: :json) }
-  let!(:destroy_page_path) { article_page_path(site: site.id, cid: node.id, id: page.id, format: :json) }
-  let!(:wrong_destroy_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page.id, format: :json) }
+  let!(:page_path) { article_page_path(site: site.id, cid: node.id, id: page_item.id, format: :json) }
+  let!(:wrong_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page_item.id, format: :json) }
+  let!(:update_page_path) { article_page_path(site: site.id, cid: node.id, id: page_item.id, format: :json) }
+  let!(:wrong_update_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page_item.id, format: :json) }
+  let!(:destroy_page_path) { article_page_path(site: site.id, cid: node.id, id: page_item.id, format: :json) }
+  let!(:wrong_destroy_page_path) { article_page_path(site: site.id, cid: another_node.id, id: page_item.id, format: :json) }
 
   ## request params
   let!(:correct_login_params) do
@@ -45,26 +45,26 @@ describe "webapi", dbscope: :example, type: :request do
         get page_path
         expect(response.status).to eq 200
         json = JSON.parse(response.body)
-        expect(json["_id"]).to eq page.id
-        expect(json["name"]).to eq page.name
-        expect(json["filename"]).to eq page.filename
-        expect(json["depth"]).to eq page.depth
-        expect(json["layout_id"]).to eq page.layout_id
-        expect(json["body_layout_id"]).to eq page.body_layout_id
-        expect(json["body_parts"]).to eq page.body_parts
-        expect(json["order"]).to eq page.order
-        expect(json["state"]).to eq page.state
+        expect(json["_id"]).to eq page_item.id
+        expect(json["name"]).to eq page_item.name
+        expect(json["filename"]).to eq page_item.filename
+        expect(json["depth"]).to eq page_item.depth
+        expect(json["layout_id"]).to eq page_item.layout_id
+        expect(json["body_layout_id"]).to eq page_item.body_layout_id
+        expect(json["body_parts"]).to eq page_item.body_parts
+        expect(json["order"]).to eq page_item.order
+        expect(json["state"]).to eq page_item.state
 
-        release_date = page.release_date.strftime(format) rescue nil
+        release_date = page_item.release_date.strftime(format) rescue nil
         expect(json["release_date"]).to eq release_date
 
-        close_date = page.close_date.strftime(format) rescue nil
+        close_date = page_item.close_date.strftime(format) rescue nil
         expect(json["close_date"]).to eq close_date
 
-        created = page.created.strftime(format) rescue nil
+        created = page_item.created.strftime(format) rescue nil
         expect(json["created"]).to eq created
 
-        updated = page.updated.strftime(format) rescue nil
+        updated = page_item.updated.strftime(format) rescue nil
         expect(json["updated"]).to eq updated
       end
 
@@ -90,7 +90,7 @@ describe "webapi", dbscope: :example, type: :request do
 
         put update_page_path, params
         expect(response.status).to eq 204
-        updated_page = Cms::Page.find(page.id)
+        updated_page = Cms::Page.find(page_item.id)
 
         expect(updated_page.name).to eq params[:item][:name]
         expect(updated_page.body_parts).to eq params[:item][:body_parts]
@@ -108,13 +108,13 @@ describe "webapi", dbscope: :example, type: :request do
         params = { item: { state: "closed" } }
         put update_page_path, params
         expect(response.status).to eq 204
-        updated_page = Cms::Page.find(page.id)
+        updated_page = Cms::Page.find(page_item.id)
         expect(updated_page.state).to eq params[:item][:state]
 
         params = { item: { state: "public" } }
         put update_page_path, params
         expect(response.status).to eq 204
-        updated_page = Cms::Page.find(page.id)
+        updated_page = Cms::Page.find(page_item.id)
         expect(updated_page.state).to eq params[:item][:state]
       end
 
@@ -157,7 +157,7 @@ describe "webapi", dbscope: :example, type: :request do
         delete destroy_page_path
         expect(response.status).to eq 204
 
-        expect(Cms::Page.where(id: page.id).first).to eq nil
+        expect(Cms::Page.where(id: page_item.id).first).to eq nil
       end
 
       it "404" do
