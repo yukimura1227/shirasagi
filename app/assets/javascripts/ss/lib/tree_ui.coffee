@@ -7,13 +7,14 @@ class @SS_TreeUI
     $(tree).find("tbody tr").each ->
       root.push(parseInt($(this).attr("data-depth")))
     root = Math.min.apply(null, root)
-    return unless Number.isInteger(root) && root > 0
+    root = parseInt(root)
+    return if isNaN(root) || root < 0
 
     $(tree).find("tbody tr").each ->
       td = $(this).find(".expandable")
       depth = parseInt($(this).attr("data-depth"))
 
-      td.prepend('<img src="' + SS_TreeUI.closeImagePath + '" alt="toggle" class="toggle">')
+      td.prepend('<img src="' + SS_TreeUI.closeImagePath + '" alt="toggle" class="toggle closed">')
       $(this).hide() if (depth != root)
       for i in [root...depth]
         td.prepend('<span class="padding">')
@@ -45,6 +46,8 @@ class @SS_TreeUI
       e.stopPropagation()
       return false
 
+    $(tree).find("tr[data-depth='#{root}'] img").click();
+
   @toggleImage = (img) ->
     if img.attr("src") == SS_TreeUI.openImagePath
       SS_TreeUI.closeImage(img)
@@ -53,6 +56,10 @@ class @SS_TreeUI
 
   @openImage = (img) ->
     img.attr("src", SS_TreeUI.openImagePath)
+    img.addClass("opened")
+    img.removeClass("closed")
 
   @closeImage = (img) ->
     img.attr("src", SS_TreeUI.closeImagePath)
+    img.removeClass("opened")
+    img.addClass("closed")

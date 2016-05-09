@@ -10,6 +10,9 @@ ja:
     import_page: 取り込みページ
     import: ページ取り込み
     import_node: フォルダー取り込み
+    all_contents: 全コンテンツ一覧出力
+    all_content:
+      description: サイト内の全コンテンツを出力します。
     import_page: 取り込みページ
     group: グループ
     layout: レイアウト
@@ -68,10 +71,6 @@ ja:
         replacement: 置換文字
         option: オプション
         confirm_message: 全置換を行ってもよろしいですか？
-      groups:
-        index: グループを選択する
-        search: グループを検索
-        select: グループを設定する
       pages:
         index: 関連記事を選択する
         search: 関連記事を検索
@@ -104,7 +103,7 @@ ja:
         high: 重要なお知らせ
       notice_target:
         all: 全ユーザー
-        same_group: 同一グループ内
+        same_group: 管理グループ
       state:
         enabled: 使用する
         disabled: 使用しない
@@ -241,6 +240,7 @@ ja:
       cms/content:
         released: 公開日時
         name: タイトル
+        index_name: 一覧用タイトル
         depth: フォルダ階層
         order: 並び順
         md5: ハッシュ値
@@ -366,6 +366,7 @@ ja:
       link_check_failure: 失敗
       link_check_failed_to_connect: リンクチェックに失敗しました。次のURLに接続できません。
       not_a_child_group: はサイトに所属するグループを設定してください。
+      not_found_parent_group: 親グループが存在しません。
       invalid_order_of_h: 見出しの順番が不正です。
       invalid_multibyte_character: 英数字は半角文字を入力してください。
       invalid_dependent_character: 機種依存文字が含まれています。
@@ -708,6 +709,7 @@ ja:
           #{time.short}　リンク先のページの公開日時が「15/04/01 12:34」の形式で表示されます。
           #{url}　リンク先ページのURLが表示されます。
           #{name}　リンク先ページのタイトルが表示されます。
+          #{index_name}　リンク先ページの一覧用タイトルが表示されます。未設定の場合はタイトルが表示されます。
           #{summary}　リンク先ページのSummaryが表示されます。
           #{current}　現在訪問しているページとURLが同一の場合、classにcurrentが付与されます。
           #{new}　リンク先のページ公開日時がNEWマーク期間の範囲内の場合、classにnewが付与されます。
@@ -758,7 +760,7 @@ ja:
       in_file:
         - CSVファイルを指定しユーザーのインポートを行います。
         - idが記述されていない行は新規作成になります。
-        - emailまたはuidが記述されていない行は削除となります。
+        - emailとuidが記述されていない行は削除となります。
 
     cms/addon/parent_crumb:
       parent_crumb_urls:
@@ -806,5 +808,23 @@ ja:
         - 「重要なお知らせ」の場合、チェックをつけます。
         - 「重要なお知らせ」にチェックをつけた場合、コンテンツ内の先頭に目立つ色で表示されます。
       notice_target:
-        - 「全ユーザー」に表示するか、「同一グループ内」に表示するかを選択します。
-        - 「同一グループ内」を選択した場合、「管理グループ」欄に設定したグループに表示されます。
+        - 「全ユーザー」に表示するか、「管理グループ」に表示するかを選択します。
+        - 「管理グループ」を選択した場合、「管理グループ」欄に設定したグループに表示されます。
+
+  all_content:
+    url: URL
+    group_ids: 管理グループID
+    group_names: 管理グループ名
+    id: コンテンツID
+    file_size: 容量
+    name: タイトル
+    index_name: 一覧用タイトル
+    created: コンテンツの作成日時
+    released: 公開日時
+    updated: 最終更新日時
+    close_date: 公開終了日時
+    status: 状態
+    route: 登録種別 (ページ属性等)
+    category_ids: カテゴリ
+    use_map: 地図使用の有無
+    have_files: 添付ファイルの有無

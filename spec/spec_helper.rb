@@ -19,7 +19,6 @@ require 'rspec/rails'
 #require 'rspec/autorun'
 require 'capybara/rspec'
 require 'capybara/rails'
-require 'database_cleaner'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -98,21 +97,25 @@ RSpec.configure do |config|
     config.filter_run_excluding(js: true)
   end
 
+  # ref.
+  #   http://kakakakakku.hatenablog.com/entry/2015/05/14/124653
+  #   http://qiita.com/upinetree/items/4d4022c90ce32b68c38d
+  Capybara.configure do |config|
+    config.ignore_hidden_elements = false
+  end
+
   config.before(:suite) do
+    # load all models
+    ::Rails.application.eager_load!
     # `rake db:drop`
     ::Mongoid::Clients.default.database.drop
-    # `rake db:create_indexes`
-    ::Rails.application.eager_load!
-    ::Mongoid::Tasks::Database.create_indexes
-
-    #
-    DatabaseCleaner[:mongoid].strategy = :truncation
   end
 
   config.add_setting :default_dbscope, default: :context
   config.extend(SS::DatabaseCleanerSupport)
   config.include(SS::JsSupport, js: true)
   config.extend(SS::HttpServerSupport, http_server: true)
+  config.extend(SS::TmpDirSupport, tmpdir: true)
 end
 
 def unique_id

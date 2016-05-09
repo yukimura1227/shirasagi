@@ -2,18 +2,21 @@
 
 <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
   <%= form_for :s, url: { action: :index, level: @level }, html: { method: "GET", class: :search } do |f| %>
-    <dl class="see mod-cms-workflow-search-approvers">
-      <dt><%= t "cms.group" %></dt>
-      <dd><%= select_tag "s[group]", options_for_select(@group_options, @group_id) %></dd>
+    <dl class="see">
+      <% if browser.ie?(["<10"]) %>
+        <%= render partial: 'workflow/search_approvers/group_dropdown_normal' %>
+      <% else %>
+        <%= render partial: 'workflow/search_approvers/group_dropdown_tree' %>
+      <% end %>
       <dt><%= t "cms.user" %></dt>
-      <dd><%= f.text_field :name, value: params[:s].try(:[], :name) %>
+      <dd><%= f.text_field :keyword, value: params[:s].try(:[], :keyword) %>
       <%= f.submit t("workflow.search_approvers.search"), class: "btn" %></dd>
     </dl>
   <% end %>
 </div>
 
 <table class="index">
-  <thead>
+  <thead class="list-head">
     <tr>
       <th class="checkbox"><input type="checkbox" /></th>
       <th class="name"><%= @model.t :name %></th>
@@ -21,7 +24,7 @@
   </thead>
   <tbody class="items">
     <% @items.each do |item| %>
-      <tr data-id="<%= "#{@level},#{item.id}" %>">
+      <tr data-id="<%= "#{@level},#{item.id}" %>" class="list-item">
         <td class="checkbox">
           <input type="checkbox" name="ids[]" value="<%= item.id %>" />
         </td>

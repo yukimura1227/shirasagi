@@ -17,6 +17,9 @@ class Gws::Schedule::RepeatPlan
   # 曜日 / only weekly
   field :wdays, type: Array, default: []
 
+  validates :repeat_start, datetime: true
+  validates :repeat_end, datetime: true
+
   before_validation do
     self.repeat_end = repeat_start + 1.month if repeat_start.present? && repeat_end.blank?
     self.wdays.reject! { |c| c.blank? }
@@ -31,8 +34,8 @@ class Gws::Schedule::RepeatPlan
   validate :validate_plan_date, if: -> { repeat_start.present? && repeat_end.present? }
   validate :validate_plan_dates, if: -> { errors.empty? }
 
-  def extract_plans(plan)
-    save_plans plan, plan_dates
+  def extract_plans(plan, site, user)
+    save_plans plan, site, user, plan_dates
   end
 
   def plan_dates
@@ -105,9 +108,10 @@ class Gws::Schedule::RepeatPlan
       dates = []
       dates << repeat_start
 
-      dates.each do |date|
-        date += interval.month
-        dates << date if date <= repeat_end
+      1.upto(1_024) do |i|
+        date = (interval * i).months.since(repeat_start)
+        break if date > repeat_end
+        dates << date
       end
       dates
     end
@@ -123,7 +127,7 @@ class Gws::Schedule::RepeatPlan
 
       dates.each do |dt|
         check_month = dt + interval.month
-        check_date = get_date_by_ordinal_week(check_month.year, check_month.month, week, wday)
+        check_date = get_date_by_nearest_ordinal_week(check_month.year, check_month.month, week, wday)
         dates << check_date if check_date <= repeat_end
       end
       dates
@@ -152,22 +156,38 @@ class Gws::Schedule::RepeatPlan
     # @return [nil]             条件が不正な場合はnilが返る
     def get_date_by_ordinal_week(year, month, week, wday)
       repeat_start = Date.new(year, month, 1)
-      repeat_end = repeat_start + 1.month - 1.day
-      return_date = nil
+      repeat_end = repeat_start.end_of_month
 
-      repeat_start.upto(repeat_end).each do |dt|
-        if get_week_number_of_month(dt) == week && dt.wday == wday
-          return_date = Date.parse(dt.to_s)
-          break
-        end
+      diff_wday = wday - repeat_start.wday
+      diff_wday += 7 if diff_wday < 0
+
+      repeat_start += diff_wday
+      repeat_start += (week - 1) * 7
+
+      repeat_start <= repeat_end ? repeat_start : nil
+    end
+
+    # 条件に近い日付を返す
+    # @param  [Integer] year    年
+    # @param  [Integer] month   月
+    # @param  [Integer] week    第何週
+    # @param  [Integer] wday    曜日
+    # @return [Date]            条件に合致する日付
+    #                             条件が不正な場合は近い日が返る
+    #                             例えば 4 月に第 5 月曜日が存在しなかった場合、第 4 月曜日を返す。
+    def get_date_by_nearest_ordinal_week(year, month, week, wday)
+      while week > 0
+        ret = get_date_by_ordinal_week(year, month, week, wday)
+        break if ret.present?
+        week -= 1
       end
-      return_date
+      ret
     end
 
     # 繰り返し予定を登録
     # @param [Plan]  base_plan 繰り返しの基準となる予定ドキュメント
     # @param [Array] dates     繰り返し予定を登録する日付の配列
-    def save_plans(base_plan, dates)
+    def save_plans(base_plan, site, user, dates)
       time = [0, 0]
       diff = 0
 
@@ -180,10 +200,14 @@ class Gws::Schedule::RepeatPlan
       attr.delete('_id')
 
       #TODO: 最適化
-      base_plan.class.where(repeat_plan_id: id, :_id.ne => base_plan.id).delete
+      base_plan.class.where(repeat_plan_id: id, :_id.ne => base_plan.id).each do |p|
+        p.destroy_without_repeat_plan
+      end
 
       dates.each_with_index do |date, idx|
         plan = (idx == 0) ? base_plan.class.find(base_plan.id) : base_plan.class.new(attr)
+        plan.cur_site = site
+        plan.cur_user = user
 
         if plan.allday?
           plan.start_on = Time.zone.local date.year, date.month, date.day, time[0], time[1], 0

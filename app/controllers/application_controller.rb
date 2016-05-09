@@ -35,15 +35,17 @@ class ApplicationController < ActionController::Base
 
     def browser
       require "browser"
-      Browser.new(ua: request.user_agent, accept_language: request.accept_language)
+      Browser.new(request.user_agent, accept_language: request.accept_language)
     end
 
     # Accepts the request for Cross-Origin Resource Sharing.
     # @return boolean
     def accept_cors_request
-      headers["Access-Control-Allow-Origin"] = request.env["HTTP_ORIGIN"]
-      headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
-      headers["Access-Control-Allow-Headers"] = "Content-Type, Origin, Accept"
+      if request.env["HTTP_ORIGIN"].present?
+        headers["Access-Control-Allow-Origin"] = request.env["HTTP_ORIGIN"]
+        headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+        headers["Access-Control-Allow-Headers"] = "Content-Type, Origin, Accept"
+      end
 
       if request.request_method == "OPTIONS"
         headers["Access-Control-Max-Age"] = "86400"

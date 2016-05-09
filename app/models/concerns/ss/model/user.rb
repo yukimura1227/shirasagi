@@ -3,9 +3,11 @@ module SS::Model::User
   extend SS::Translation
   include SS::Document
   include SS::Fields::Normalizer
+  include SS::Reference::UserTitles
+  include SS::Reference::UserExpiration
   include Ldap::Addon::User
 
-  attr_accessor :cur_user, :in_password
+  attr_accessor :cur_site, :cur_user, :in_password, :self_edit
 
   TYPE_SNS = "sns".freeze
   TYPE_LDAP = "ldap".freeze
@@ -18,10 +20,16 @@ module SS::Model::User
     index({ email: 1 }, { sparse: true, unique: true })
     index({ uid: 1 }, { sparse: true, unique: true })
 
+    # Create indexes each site_ids.
+    # > db.ss_users.ensureIndex({ "title_orders.1": -1, uid: 1 });
+    #
+    # index({ "title_orders.#{site_id}" => -1, uid: 1  })
+
     cattr_reader(:group_class) { SS::Group }
 
     seqid :id
     field :name, type: String
+    field :kana, type: String
     field :uid, type: String
     field :email, type: String
     field :password, type: String
@@ -29,29 +37,49 @@ module SS::Model::User
     field :type, type: String
     field :login_roles, type: Array, default: [LOGIN_ROLE_DBPASSWD]
     field :last_loggedin, type: DateTime
+    field :account_start_date, type: DateTime
+    field :account_expiration_date, type: DateTime
+    field :remark, type: String
+
+    # 初期パスワード警告 / nil: 無効, 1: 有効
+    field :initial_password_warning, type: Integer
 
     embeds_ids :groups, class_name: "SS::Group"
 
-    permit_params :name, :uid, :email, :password, :tel, :type, :login_roles, group_ids: []
+    permit_params :name, :kana, :uid, :email, :password, :tel, :type, :login_roles, :remark, group_ids: []
     permit_params :in_password
+    permit_params :account_start_date, :account_expiration_date, :initial_password_warning
+
+    before_validation :encrypt_password, if: ->{ in_password.present? }
 
     validates :name, presence: true, length: { maximum: 40 }
+    validates :kana, length: { maximum: 40 }
     validates :uid, length: { maximum: 40 }
     validates :uid, uniqueness: true, if: ->{ uid.present? }
     validates :email, email: true, length: { maximum: 80 }
     validates :email, uniqueness: true, if: ->{ email.present? }
     validates :email, presence: true, if: ->{ uid.blank? }
     validates :password, presence: true, if: ->{ ldap_dn.blank? }
+    validates :last_loggedin, datetime: true
+    validates :account_start_date, datetime: true
+    validates :account_expiration_date, datetime: true
     validate :validate_type
     validate :validate_uid
+    validate :validate_account_expiration_date
+    validate :validate_initial_password, if: -> { self_edit }
 
-    before_validation :encrypt_password, if: ->{ in_password.present? }
+    after_save :save_group_history, if: -> { @db_changes['group_ids'] }
     before_destroy :validate_cur_user, if: ->{ cur_user.present? }
 
     default_scope -> {
       order_by uid: 1, email: 1
     }
     scope :uid_or_email, ->(id) { self.or({email: id}, {uid: id}) }
+    scope :and_enabled, ->(now = Time.zone.now) do
+      self.and(
+        self.or({ account_start_date: nil }, { :account_start_date.lte => now }).selector,
+        self.or({ account_expiration_date: nil }, { :account_expiration_date.gt => now }).selector)
+    end
   end
 
   module ClassMethods
@@ -88,7 +116,7 @@ module SS::Model::User
         criteria = criteria.search_text params[:name]
       end
       if params[:keyword].present?
-        criteria = criteria.keyword_in params[:keyword], :name, :email
+        criteria = criteria.keyword_in params[:keyword], :name, :kana, :uid, :email
       end
       criteria
     end
@@ -107,10 +135,24 @@ module SS::Model::User
     uid = self.uid
     uid ||= email.split("@")[0] if email.present?
     if uid.present?
-      "#{name}(#{uid})"
+      "#{name} (#{uid})"
     else
       name.to_s
     end
+  end
+
+  def enabled?
+    now = Time.zone.now
+    return false if account_start_date.present? && account_start_date > now
+    return false if account_expiration_date.present? && account_expiration_date <= now
+    true
+  end
+
+  def initial_password_warning_options
+    [
+      [I18n.t('views.options.state.disabled'), ''],
+      [I18n.t('views.options.state.enabled'), 1],
+    ]
   end
 
   private
@@ -136,5 +178,28 @@ module SS::Model::User
       else
         return true
       end
+    end
+
+    def validate_account_expiration_date
+      return if account_start_date.blank? || account_expiration_date.blank?
+      if account_start_date >= account_expiration_date
+        errors.add :account_expiration_date, :greater_than, count: t(:account_start_date)
+      end
+    end
+
+    def validate_initial_password
+      self.initial_password_warning = nil if password_changed?
+    end
+
+    def save_group_history
+      changes = @db_changes['group_ids']
+      item = SS::UserGroupHistory.new(
+        cur_site: @cur_site,
+        user_id: id,
+        group_ids: group_ids,
+        inc_group_ids: (changes[1].to_a - changes[0].to_a),
+        dec_group_ids: (changes[0].to_a - changes[1].to_a)
+      )
+      item.save
     end
 end

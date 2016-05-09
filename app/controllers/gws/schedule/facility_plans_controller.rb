@@ -7,7 +7,8 @@ class Gws::Schedule::FacilityPlansController < ApplicationController
 
   private
     def set_facility
-      @facility = Gws::Facility.site(@cur_site).find(params[:facility])
+      @facility = Gws::Facility::Item.site(@cur_site).find(params[:facility])
+      raise '403' unless @facility.readable?(@cur_user)
     end
 
     def pre_params
@@ -15,10 +16,11 @@ class Gws::Schedule::FacilityPlansController < ApplicationController
     end
 
   public
-    def index
+    def events
       @items = Gws::Schedule::Plan.site(@cur_site).
         facility(@facility).
-        #allow(:read, @cur_user, site: @cur_site).
         search(params[:s])
+
+      render json: @items.map { |m| m.calendar_facility_format(@cur_user, @cur_site) }.to_json
     end
 end

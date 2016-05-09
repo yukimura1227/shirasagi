@@ -1,5 +1,6 @@
 //= require jquery
 //= require jquery_ujs
+//= require jquery-ui/sortable
 //= require jquery.cookie
 //= require jquery.form
 //= require jquery.datetimepicker
@@ -12,6 +13,7 @@
 //= require ss/lib/mobile
 //= require ss/lib/search_ui
 //= require ss/lib/tooltips
+//= require ss/lib/dropdown
 //= require cms/lib/editor
 //= require cms/lib/form
 //= require cms/lib/edit_lock
@@ -57,6 +59,19 @@ $ ->
   $(document).click (e) ->
     $(".dropdown").removeClass('active')
     $(".dropdown-menu").removeClass('active')
+
+  # datetimepicker
+  if ($.support.opacity)
+    $(".js-date").datetimepicker
+      lang: "ja"
+      timepicker: false
+      format:'Y/m/d'
+      closeOnDateSelect: true
+      scrollInput: false
+    $(".js-datetime").datetimepicker
+      lang: "ja"
+      roundTime: 'ceil'
+      step: 30
 
   SS_ListUI.render("table.index")
   SS_Mobile.render()
@@ -106,7 +121,7 @@ class @SS
         alert(["== Error =="].concat(data.responseJSON).join("\n"));
     }
     elem.on "submit", (e) ->
-      $(this).ajaxSubmit $.extend(defaults, params)
+      $(this).ajaxSubmit $.extend(true, defaults, params)
       e.preventDefault();
 
   @ajax:(elem, params = {}) ->
@@ -121,7 +136,7 @@ class @SS
         error: (data, status) ->
           alert("== Error ==");
       }
-      $.ajax $.extend(defaults, params)
+      $.ajax $.extend(true, defaults, params)
       e.preventDefault();
       return false
 
@@ -141,7 +156,7 @@ class @SS
         error: (data, status) ->
           alert(["== Error =="].concat(data.responseJSON).join("\n"));
       }
-      $.ajax $.extend(defaults, params)
+      $.ajax $.extend(true, defaults, params)
       e.preventDefault();
       return false
 
@@ -151,3 +166,11 @@ class @SS
         return "<%= t('views.confirm.unload') %>"
     $("input[type=submit]").click ->
       $(window).off "beforeunload"
+
+  @randomPassword: (length = 8) ->
+    chars = 'abcdefghijkmnopqrstuvwxyz!@#$%&-+ABCDEFGHIJKLMNOP234567890'
+    pass = ''
+    for i in [0..length]
+      i = Math.floor(Math.random() * chars.length)
+      pass += chars.charAt(i)
+    return pass

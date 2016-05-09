@@ -1,15 +1,23 @@
 module Gws::Schedule::PlanHelper
   def term(item)
     if item.allday?
-      dates = [item.start_at.strftime('%Y/%m/%d'), item.end_at.strftime('%Y/%m/%d')]
+      dates = [item.start_at.to_date, item.end_at.to_date].uniq
+      dates.map! { |m| I18n.l(m, format: :gws_long) }
     else
-      dates = [item.start_at.strftime('%Y/%m/%d %H:%M'), item.end_at.strftime('%Y/%m/%d %H:%M')]
+      dates = [item.start_at, item.end_at].uniq
+      if dates.size == 1
+        dates.map! { |m| I18n.l(m, format: :gws_long) }
+      elsif dates[0].to_date == dates[1].to_date
+        dates = [I18n.l(item.start_at, format: :gws_long), I18n.l(item.end_at, format: :gws_time)]
+      else
+        dates.map! { |m| I18n.l(m, format: :gws_long) }
+      end
     end
-    dates.uniq.join(" - ")
+    dates.join(" - ")
   end
 
   def calendar_format(plans, opts = {})
-    events  = plans.map(&:calendar_format)
+    events  = plans.map { |m| m.calendar_format(@cur_user, @cur_site) }
     events += calendar_holidays opts[:holiday][0], opts[:holiday][1] if opts[:holiday]
     events += group_holidays opts[:holiday][0], opts[:holiday][1] if opts[:holiday]
     events

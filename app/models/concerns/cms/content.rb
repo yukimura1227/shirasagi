@@ -13,17 +13,19 @@ module Cms::Content
     seqid :id
     field :state, type: String, default: "public"
     field :name, type: String
+    field :index_name, type: String
     field :filename, type: String
     field :depth, type: Integer
     field :order, type: Integer, default: 0
     field :released, type: DateTime
     field :md5, type: String
 
-    permit_params :state, :name, :filename, :basename, :order, :released, :route
+    permit_params :state, :name, :index_name, :filename, :basename, :order, :released, :route
 
     validates :state, presence: true
     validates :name, presence: true, length: { maximum: 80 }
     validates :filename, uniqueness: { scope: :site_id }, length: { maximum: 200 }
+    validates :released, datetime: true
 
     before_validation :set_filename
     before_validation :validate_filename
@@ -64,6 +66,10 @@ module Cms::Content
       end
       criteria
     end
+  end
+
+  def name_for_index
+    index_name || name
   end
 
   def basename

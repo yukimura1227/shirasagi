@@ -5,8 +5,8 @@
   <dt><%= @model.t :term %></dt>
   <dd><%= term(@item) %></dd>
 
-  <% if nil && @item.category %>
-  <dt><%= @model.t :category_id %><%= @model.tt :category_id %></dt>
+  <% if @item.category %>
+  <dt><%= @model.t :category_id %></dt>
   <dd><%= @item.category.name %></dd>
   <% end %>
 </dl>

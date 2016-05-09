@@ -64,7 +64,6 @@ ul li {
   list-style: none;
 }
 table {
-  border-collapse: collapse;
   border-spacing: 0;
   empty-cells: show;
 }
@@ -201,6 +200,7 @@ td {
     .dropdown-menu {
       top: 100%;
       right: 0;
+      min-width: 200px;
       margin: 0;
       padding: 5px 0px;
       border: $border-gray4;
@@ -211,8 +211,9 @@ td {
         a {
           display: block;
           min-width: 120px;
-          padding: 5px 10px;
+          padding: 8px 10px;
           color: $black;
+          text-decoration: none;
           &:hover {
             color: $orange;
             background: #eee;
@@ -362,6 +363,12 @@ td {
   .icon-conf:hover:before {
     background-position: -32px -224px;
   }
+  .icon-portal:before {
+    background-position: left -256px;
+  }
+  .icon-portal:hover:before {
+    background-position: -32px -256px;
+  }
   .icon-schedule:before {
     background-position: left -288px;
   }
@@ -373,6 +380,24 @@ td {
   }
   .icon-board:hover:before {
     background-position: -32px -320px;
+  }
+  .icon-reminder:before {
+    background-position: left -352px;
+  }
+  .icon-reminder:hover:before {
+    background-position: -32px -352px;
+  }
+  .icon-facility:before {
+    background-position: left -384px;
+  }
+  .icon-facility:hover:before {
+    background-position: -32px -384px;
+  }
+  .icon-workflow:before {
+    background-position: left -416px;
+  }
+  .icon-workflow:hover:before {
+    background-position: -32px -416px;
   }
   @include mb {
     @include clear;
@@ -391,12 +416,6 @@ td {
       }
     }
   }
-}
-.portal h2 a:before {
-  background-position: left -256px;
-}
-.portal h2 a:hover:before {
-  background-position: -32px -256px;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -612,6 +631,21 @@ td {
 }
 
 // -------------------------------------------------------------------------------------------------
+// warning
+.warning {
+  @include clear;
+  margin: 0 0 1px;
+  padding: 10px 10px;
+  padding-left: 220px;
+  background: #f99;
+  a {
+    color: $black;
+    font-weight: bold;
+  }
+  @include mb { padding-left: 10px; }
+}
+
+// -------------------------------------------------------------------------------------------------
 // menu
 #menu {
   .nav-menu {
@@ -689,6 +723,9 @@ td {
   margin-bottom: 0;
   border: none;
 }
+.ss-confirm-text {
+  margin: 10px;
+}
 .addon-head {
   @include box-head;
 }
@@ -745,6 +782,9 @@ dl.see {
       margin-right: 15px;
     }
   }
+  > dt.depth-2 {
+    padding-left: 20px;
+  }
 }
 dl.mod-cms-parent_crumbs {
   dd { margin-bottom: 10px; }
@@ -773,6 +813,7 @@ dl.mod-cms-parent_crumbs {
     background: $white;
     @include box-shadow(0 1px 6px $gray4);
     color: $black;
+    font-size: 90%;
     font-weight: normal;
     text-align: left;
     cursor: auto;
@@ -845,6 +886,9 @@ footer.send {
 // -------------------------------------------------------------------------------------------------
 // addon
 #addon-cms-agents-addons-file .see, .addon-view .see {
+  .upload-menu-select {
+    float: right;
+  }
   #selected-files {
     margin-top: 30px;
     @include clear;
@@ -1011,7 +1055,7 @@ footer.send {
 .list-search {
   @include clear;
   @include box;
-  margin-bottom: 24px;
+  margin-bottom: 15px;
   padding: 12px;
   @include mb { margin: 0 10px 10px; }
   form {
@@ -1123,11 +1167,26 @@ div.index {
       margin-right: 10px;
       //font-size: $px12;
     }
+    .label {
+      margin-right: 0;
+      color: #844;
+      &:before { content: '['; }
+      &:after { content: ']'; }
+    }
     .id {
-      color: #888;
+      color: #444;
+    }
+    .datetime {
+      color: #777;
     }
     .filename {
       color: #080;
+    }
+    .order {
+      color: #888;
+      &:before {
+        content: '\25b9';
+      }
     }
   }
 }
@@ -1137,6 +1196,9 @@ table.index {
   background: $white;
   tr:nth-child(2n) {
     background: $gray1;
+  }
+  tr:hover {
+    background: $orange2;
   }
   th, td {
     padding: 6px 18px;
@@ -1151,6 +1213,9 @@ table.index {
     border-bottom: $border-gray5;
     background: $gray1;
     color: $gray2;
+    &.deselect {
+      width: 100px;
+    }
     @include mb {
       display: inline-block;
       padding: 5px 0;
@@ -1167,7 +1232,9 @@ table.index {
       }
     }
   }
-  img.toggle { cursor: pointer; }
+  .toggle {
+    cursor: pointer;
+  }
   @include mb {
     thead {
       background: $gray1;
@@ -1175,8 +1242,30 @@ table.index {
   }
   .padding {
     display: inline-block;
-    width: 12px;
+    width: 15px;
   }
+}
+.sortable-index {
+  tr {
+    cursor: move;
+  }
+  .ui-sortable-helper {
+    @include box-shadow(0px 1px 3px #888);
+    .deselect {
+      display: none;
+    }
+  }
+}
+.dropdown-container {
+  display: none;
+  position: absolute;
+  overflow: auto;
+  width: 70%;
+  max-height: 70%;
+  margin-top: 2px;
+  @include box-shadow(1px 2px 4px #888);
+  font-weight: normal;
+  z-index: 101;
 }
 .ads-total table.index {
   th,td {

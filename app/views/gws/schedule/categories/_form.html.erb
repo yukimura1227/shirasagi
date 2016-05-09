@@ -1,16 +1,11 @@
-<%= javascript_include_tag "/assets/js/tinyColorPicker/jqColorPicker.min.js" %>
-
 <%= jquery do %>
-$('#item_color').colorPicker(); // that's it
+  $('#item_color').colorPicker().data('colorMode', 'HEX');
 <% end %>
 
 <dl class="see">
-  <dt><%= @model.t :name %></dt>
+  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
   <dd><%= f.text_field :name %></dd>
 
-  <dt><%= @model.t :color %></dt>
+  <dt><%= @model.t :color %><%= @model.tt :color %></dt>
   <dd><%= f.text_field :color %></dd>
-
-  <dt><%= @model.t :target %><%= @model.tt :target %></dt>
-  <dd><%= f.select :target, @item.target_options %></dd>
 </dl>

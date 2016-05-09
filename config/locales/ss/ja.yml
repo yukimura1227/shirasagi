@@ -46,8 +46,12 @@ ja:
       import: 取り込み
       convert: 変換
       unlock_and_edit_forcibly: 強制的にロックを解除し編集する
+      random_password: ランダム生成
+      copy: コピー
+      paste: 貼り付け
     confirm:
       delete: 削除してよろしいですか？
+      soft_delete: データの実削除ではなく無効状態として保存されます。
       convert: 変換してよろしいですか？
       unload: 入力したデータは保存されません。
       clone: 複製してよろしいですか？
@@ -75,10 +79,13 @@ ja:
       open: 開く
       change: 変更する
       more: もっと見る
+      select: 選択する
       delete_all: すべて削除する
     notice:
       saved: 保存しました。
       deleted: 削除しました。
+    warning:
+      initial_password: 初期パスワードを変更してください。
     options:
       state:
         show: 表示
@@ -89,6 +96,9 @@ ja:
         closed: 非公開
         draft: 下書き
         ready: 公開待ち
+        active: 有効
+        expired: 無効
+        all: 全て
       resizing:
         320×240: 320×240(QVGA横)
         240x320: 240x320(QVGA縦)
@@ -100,10 +110,6 @@ ja:
         768x1024: 768x1024(XGA縦)
         1280x720: 1280x720(HD横)
         720x1280: 720x1280(HD縦)
-      trans_sid:
-        none: 無効
-        mobile: モバイルのみ
-        always: いつも
     state:
       public: 公開中
       closed: 非公開
@@ -118,24 +124,37 @@ ja:
       confirm_reset: 処理が終わっていない場合、複数回実行されてしまいます。\nタスクを削除してよろしいですか？
     units:
       count: 件
+      mega_byte: MB
 
   ss:
     views:
       login/login:
         id: ユーザーIDまたはメールアドレス
         password: パスワード
+    apis:
+      groups:
+        index: グループを選択する
+        search: グループを検索
+        select: グループを設定する
+      users:
+        index: ユーザーを選択する
+        search: ユーザーを検索
+        select: ユーザーを設定する
 
   modules:
     addons:
       ss/body: 本文
       ss/markdown: 内容
       ss/mobile_setting: モバイル設定
+      ss/user_group_history: 異動履歴
 
   mongoid:
     models:
       ss/site: サイト
       ss/user: ユーザー
+      ss/user_title: 役職
       ss/group: グループ
+      ss/user_group_history: 異動履歴
       ss/file: ファイル
       ss/temp_file: 一時ファイル
       ss/user_file: ユーザーファイル
@@ -163,18 +182,39 @@ ja:
         group_ids: グループ
       ss/model/user:
         name: 氏名
+        kana: カナ
         uid: ユーザーID
         email: メールアドレス
         password: パスワード
         in_password: パスワード
         tel: 電話番号
+        title_ids: 役職
+        in_title_id: 役職
         group_ids: グループ
         type: ユーザータイプ
         sns: SNSユーザー
         ldap: LDAPユーザー
+        account_start_date: 有効期限（開始）
+        account_expiration_date: 有効期限（終了）
+        initial_password_warning: 初期パスワード警告
+        remark: 備考
+      ss/model/user_title:
+        name: 役職名
+        order: 並び順
+        group_id: グループ
+        activation_date: 有効期限（開始）
+        expiration_date: 有効期限（終了）
       ss/model/group:
         name: グループ名
         order: 表示順
+        activation_date: 有効期限（開始）
+        expiration_date: 有効期限（終了）
+      ss/user_group_history:
+        created: 異動日時
+        cms_site_id: CMSサイト
+        gws_site_id: GWSサイト
+        group_ids: グループ
+        user_id: ユーザー
       ss/reference/user:
         user_id: ユーザー
       ss/reference/site:
@@ -189,6 +229,7 @@ ja:
       ss/model/file:
         model: モデル
         state: 状態
+        in_file: ファイル
         name: ファイル名（表示用）
         filename: ファイル名
         size: ファイルサイズ
@@ -206,7 +247,6 @@ ja:
         mobile_state: 状態
         mobile_location: ロケーション
         mobile_css: CSS
-        trans_sid: Trans SID
       ss/max_file_size:
         name: 名前
         extensions: 拡張子
@@ -218,6 +258,8 @@ ja:
     ss/model/user:
       name:
         - ユーザーの名称を入力します。
+      kana:
+        - ユーザーのカナを入力します。
       uid:
         - ユーザーIDを設定します。
         - ログイン時にユーザーIDもしくはメールアドレスを利用します。
@@ -237,6 +279,16 @@ ja:
         - ユーザータイプを選択します。
         - 通常はSNSユーザーを選択します。
         - LDAPを利用する場合にLDAPユーザーを選択します。
+      title_ids:
+        - 役職を選択します。
+      account_start_date:
+        - 有効期限の開始日を入力します。
+      account_expiration_date:
+        - 有効期限の終了日を入力します。
+      initial_password_warning:
+        - 初期パスワード警告を有効にするかどうかを選択します。
+      remark:
+        - 備考を入力します。
     ss/model/group:
       name:
         - グループの名称を入力します。
@@ -249,6 +301,8 @@ ja:
         - |-
           レイアウトに下記のように記述することでページに出力することが可能です。
           &lt;h1 id="ss-page-name">Page Name&lt;/h1>
+      title_for_index:
+        - 一覧のタイトルに利用されます。未設定の場合はタイトルが流用されます。
       filename:
         - ファイル名はURLに利用します。
         - 半角英数字で入力します。
@@ -287,3 +341,18 @@ ja:
         - このページを編集可能なユーザーのレベルを指定します。
       group_ids:
         - このページを編集可能にするグループを選択します。
+      user_ids:
+        - このページを編集可能にするユーザーを選択します。
+    ss/model/file:
+      in_file:
+        - ファイルを選択します。
+      name:
+        - ファイル名（表示用）を入力します。
+      filename:
+        - ファイル名を入力します。
+    ss/model/user_title:
+      name:
+        - 役職名を入力します。
+      order:
+        - 並び順を入力します。
+        - 数字が大きいほど上位に表示されます。

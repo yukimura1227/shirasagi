@@ -17,6 +17,15 @@ class Gws::UsersController < ApplicationController
     end
 
   public
+    def index
+      @items = @model.site(@cur_site).
+        state(params.dig(:s, :state)).
+        allow(:read, @cur_user, site: @cur_site).
+        search(params[:s]).
+        order_by_title(@cur_site).
+        page(params[:page]).per(50)
+    end
+
     def update
       other_group_ids = Gws::Group.nin(id: Gws::Group.site(@cur_site).pluck(:id)).in(id: @item.group_ids).pluck(:id)
       other_role_ids = Gws::Role.nin(id: Gws::Role.site(@cur_site).pluck(:id)).in(id: @item.gws_role_ids).pluck(:id)
@@ -29,5 +38,15 @@ class Gws::UsersController < ApplicationController
       @item.add_to_set(gws_role_ids: other_role_ids)
       raise "403" unless @item.allowed?(:edit, @cur_user, site: @cur_site)
       render_update @item.update
+    end
+
+
+    def destroy
+      raise "403" unless @item.allowed?(:delete, @cur_user, site: @cur_site)
+      render_destroy @item.disable
+    end
+
+    def destroy_all
+      disable_all
     end
 end

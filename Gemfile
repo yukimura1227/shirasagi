@@ -6,6 +6,7 @@ gem "uglifier", ">= 1.3.0"
 gem 'coffee-rails', '~> 4.1.0'
 gem "therubyracer", "~> 0.10.2", platforms: :ruby
 gem "jquery-rails"
+gem 'jquery-ui-rails'
 gem "turbolinks"
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
@@ -18,6 +19,7 @@ gem "unicorn-worker-killer"
 
 gem "mongoid", "~> 5.1.0"
 gem "mongoid-rspec"
+gem "mongo_session_store-rails4"
 #gem "mongo_mapper"
 #gem "bson_ext"
 gem "dynamic_form"
@@ -63,6 +65,8 @@ gem 'omniauth-github'
 
 # saml
 gem 'ruby-saml'
+# JWT/JWS
+gem 'json-jwt'
 
 #gem "rails-dev-boost", git: "git://github.com/thedarkone/rails-dev-boost.git", group: :development
 
@@ -86,9 +90,6 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-byebug'
   gem 'pry-stack_explorer'
-  # The latest version is 1.5.0 now, but getting the same error again.
-  # ref. https://github.com/DatabaseCleaner/database_cleaner/issues/390
-  gem 'database_cleaner'
   gem 'dotenv-rails'
 end
 

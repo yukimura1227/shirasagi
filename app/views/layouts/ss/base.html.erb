@@ -48,11 +48,14 @@
       <div class="dropdown">
         <h2>
           <% if @cur_group %>
-          <span class="group"><%= @cur_group.name.sub(/.*\//, "") %></span>
+          <span class="group"><%= @cur_group.trailing_name %></span>
           <% end %>
           <%= @cur_user.name %>
         </h2>
         <ul class="dropdown-menu">
+          <% @account_menu.to_a.each do |link_params| %>
+            <li><%= link_to *link_params %></li>
+          <% end %>
           <li><%= link_to t(:"sns.profile"), sns_cur_user_profile_path %></li>
           <li><%= link_to :logout, sns_logout_path %></li>
         </ul>
@@ -78,10 +81,6 @@
           <h2><%= link_to :"cms.view_site", @cur_site.full_url, target: "_blank" %></h2>
           <h2><%= link_to :"cms.preview_site", "#{cms_preview_path}/", target: "_blank" %></h2>
         </nav>
-        <% elsif @ss_mode == :gws %>
-        <nav class="main-navi portal">
-          <h2><%= link_to t('gws.portal'), "#{gws_portal_path}/" %></h2>
-        </nav>
         <% end %>
 
         <% if ::File.exists?("#{Rails.root}/app/views/#{params[:controller]}/_navi.html.erb") %>
@@ -93,6 +92,12 @@
     </div>
 
     <article id="main">
+      <% if @cur_user.initial_password_warning.present? %>
+      <div class="warning">
+        <%= link_to t("views.warning.initial_password"), sns_cur_user_account_path %>
+      </div>
+      <% end %>
+
       <% if @crumbs.size > 0 %>
       <ol class="breadcrumb" id="crumbs">
         <% @crumbs.each_with_index do |item, idx| %>

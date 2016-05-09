@@ -1,27 +1,28 @@
-<%
-
-menu = []
-if @item.permit_comment?
-  menu << link_to(t('gws/board.links.comment'), new_gws_board_topic_parent_comment_path(topic_id: @item.id, parent_id: @item.id), class: "btn primary")
-end
-menu << link_to(:edit, { action: :edit, id: @item }, class: "btn") if @item.allowed?(:edit, @cur_user, site: @cur_site)
-menu << link_to(:delete, { action: :delete, id: @item }, class: "btn") if @item.allowed?(:delete, @cur_user, site: @cur_site)
-
-%>
 <div class="gws-board gws-board-tree">
   <article class="topic">
     <header>
-      <h2><%= @item.name %></h2>
+      <h2>
+        <span class="name"><%= @item.name %></span>
+        <span class="categories">
+          <% @item.categories.each do |category| %>
+            <%= link_to category.trailing_name, gws_board_category_topics_path(category: category.id),
+                        class: "gws-category-label", style: category_label_css(category) %>
+          <% end %>
+        </span>
+      </h2>
       <nav class="meta">
-        <span class="user"><%= @item.user.name %></span>
-        <span class="datetime"><%= @item.created.strftime("%Y/%m/%d %H:%M") %></span>
+        <span class="user"><%= @item.user_long_name %></span>
+        <span class="datetime"><%= @item.updated.strftime("%Y/%m/%d %H:%M") %></span>
       </nav>
     </header>
 
     <div class="body markdown-body"><%== @item.html %></div>
 
-    <% if menu.present? %>
-    <div class="menu"><%= safe_join(menu) %></div>
+    <% if @item.permit_comment? && @model.allowed?(:edit, @cur_user, site: @cur_site) %>
+    <div class="menu">
+      <%= link_to(t('gws/board.links.comment'), @category.present? ? new_gws_board_category_topic_parent_comment_path(topic_id: @item.id, parent_id: @item.id) : new_gws_board_topic_parent_comment_path(topic_id: @item.id, parent_id: @item.id),
+        class: "btn primary") %>
+    </div>
     <% end %>
   </article>
 

@@ -1,6 +1,15 @@
-<dl class="see">
+<%= jquery do %>
+  $("#random-password").click(function() {
+    $("#item_in_password").attr({ type: 'text' }).val(SS.randomPassword());
+  });
+<% end %>
+
+<dl class="see mod-sys-user">
   <dt><%= @model.t :name %><%= @model.tt :name %></dt>
   <dd><%= f.text_field :name %></dd>
+
+  <dt><%= @model.t :kana %><%= @model.tt :kana %></dt>
+  <dd><%= f.text_field :kana %></dd>
 
   <dt><%= @model.t :uid %><%= @model.tt :uid %></dt>
   <dd><%= f.text_field :uid %></dd>
@@ -9,15 +18,31 @@
   <dd><%= f.email_field :email %></dd>
 
   <dt><%= @model.t :in_password %><%= @model.tt :in_password %></dt>
-  <dd><%= f.password_field :in_password %></dd>
+  <dd>
+    <%= f.password_field :in_password, style: "width: 200px" %>
+    <%= button_tag t("views.button.random_password"), type: :button, id: "random-password" %>
+    <span id="random-password-view"></span>
+  </dd>
 
   <dt><%= @model.t :tel %><%= @model.tt :tel %></dt>
   <dd><%= f.text_field :tel %></dd>
 
+  <dt><%= @model.t :type %><%= @model.tt :type %></dt>
+  <dd><%= f.select :type, @model.type_options %></dd>
+
+  <dt><%= @model.t :account_start_date %><%= @model.tt :account_start_date %></dt>
+  <dd><%= f.text_field :account_start_date, class: "datetime js-datetime", value: tryb { @item.account_start_date.strftime("%Y/%m/%d %H:%M") } %></dd>
+
+  <dt><%= @model.t :account_expiration_date %><%= @model.tt :account_expiration_date %></dt>
+  <dd><%= f.text_field :account_expiration_date, class: "datetime js-datetime", value: tryb { @item.account_expiration_date.strftime("%Y/%m/%d %H:%M") } %></dd>
+
+  <dt><%= @model.t :initial_password_warning %><%= @model.tt :initial_password_warning %></dt>
+  <dd><%= f.select :initial_password_warning, @item.initial_password_warning_options %></dd>
+
   <dt><%= @model.t :group_ids %><%= @model.tt :group_ids %></dt>
   <dd>
     <%= f.hidden_field "group_ids[]", value: "", class: "hidden-ids" %>
-    <%= link_to t("sys.apis.groups.index"), sys_apis_groups_path, class: "ajax-box" %>
+    <%= link_to t("ss.apis.groups.index"), sys_apis_groups_path, class: "ajax-box" %>
   </dd>
   <dd>
     <table class="index ajax-selected">
@@ -37,7 +62,4 @@
       </tbody>
     </table>
   </dd>
-
-  <dt><%= @model.t :type %><%= @model.tt :type %></dt>
-  <dd><%= f.select :type, @model.type_options %></dd>
 </dl>

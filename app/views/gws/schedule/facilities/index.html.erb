@@ -1,26 +1,55 @@
+<%
+  def categories_options_for_select
+    options = @categories.reduce([]) do |ret, g|
+      ret << [Gws::Category::Traversable.option_name(g.name, g.depth), g.id]
+    end.to_a
+    options_for_select(options, @category.try(:id))
+  end
+%>
 <%= jquery do %>
-Gws_Schedule_Calendar.renderController('#calendar-controller');
+  $("#s_category").change(function() {
+    $(".main-box form.search").submit();
+  });
+
+  Gws_Schedule_Multiple_Calendar.renderController('#calendar-controller', {
+    defaultView: 'timelineDay',
+    header: { left: 'today prev next title', right: 'basicWeek timelineDay' },
+  });
 <% end %>
 
 <%= render "gws/schedule/main/tabs" %>
 
 <section class="main-box">
-  <header><h2><%= t('gws/schedule.tabs.facility') %></h2></header>
+  <%= form_for :s, url: { action: :index }, html: { method: "GET", class: :search } do |f| %>
+    <header><h2>
+      <% if @categories.present? %>
+        <%= select_tag "s[category]", categories_options_for_select, include_blank: t('gws/schedule.tabs.facility') %>
+      <% else %>
+      <%= t('gws/schedule.tabs.facility') %>
+      <% end %>
+    </h2></header>
+  <% end %>
 
+  <% if @items.present? %>
   <div class="calendar" id="calendar-controller"></div>
+  <% end %>
 
   <% @items.each_with_index do |item, idx| %>
-    <div class="calendar-name" id="cal-<%= item.id %>-name">
-      <%= link_to item.name, gws_schedule_facility_plans_path(facility: item.id) %>
+    <div class="calendar-multiple-header">
+      <%= link_to item.name, gws_schedule_facility_plans_path(facility: item.id), class: "calendar-name" %>
+      <% if item.reservable?(@cur_user) %>
       <%= link_to t('gws/schedule.links.add_plan'), new_gws_schedule_facility_plan_path(facility: item.id), class: 'add-plan' %>
+      <% end %>
     </div>
     <div class="calendar multiple" id="cal-<%= item.id %>"></div>
 
     <%= jquery do %>
-    Gws_Schedule_Calendar.render('#cal-<%= item.id %>', {
-      defaultView: 'basicWeek',
+    Gws_Schedule_Multiple_Calendar.render('#cal-<%= item.id %>', {
+      tapMenu: <%= item.reservable?(@cur_user) %>,
+      defaultView: 'timelineDay',
+      header: { left: 'today prev next title', right: 'basicWeek timelineDay' },
       restUrl: '<%= gws_schedule_facility_plans_path(facility: item.id) %>',
-      eventSources: [{ url: '<%= gws_schedule_facility_plans_path(facility: item.id, format: :json) %>' }]
+      eventSources: [{ url: '<%= events_gws_schedule_facility_plans_path(facility: item.id, format: :json) %>' }]
     });
     <% end %>
   <% end %>

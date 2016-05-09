@@ -5,8 +5,14 @@
   <% if Gws::Group.allowed?(:read, @cur_user, site: @cur_site) %>
     <h3><%= link_to t('mongoid.models.ss/group'), gws_groups_path %></h3>
   <% end %>
+  <% if Gws::CustomGroup.allowed?(:read, @cur_user, site: @cur_site) %>
+    <h3><%= link_to t('mongoid.models.gws/custom_group'), gws_custom_groups_path %></h3>
+  <% end %>
   <% if Gws::User.allowed?(:read, @cur_user, site: @cur_site) %>
     <h3><%= link_to t('mongoid.models.ss/user'), gws_users_path %></h3>
+  <% end %>
+  <% if Gws::UserTitle.allowed?(:read, @cur_user, site: @cur_site) %>
+    <h3><%= link_to t('mongoid.models.ss/user_title'), gws_user_titles_path %></h3>
   <% end %>
   <% if Gws::Role.allowed?(:read, @cur_user, site: @cur_site) %>
     <h3><%= link_to t('mongoid.models.gws/role'), gws_roles_path %></h3>
@@ -20,13 +26,14 @@
   <% if Gws::Link.allowed?(:read, @cur_user, site: @cur_site) %>
     <h3><%= link_to t('mongoid.models.gws/link'), gws_links_path %></h3>
   <% end %>
-  <% if Gws::Schedule::Holiday.allowed?(:read, @cur_user, site: @cur_site) %>
-    <h3><%= link_to t('gws/schedule.holiday'), gws_schedule_holidays_path %></h3>
+
+  <% Gws::GroupSetting.plugins.each do |mod, url_lazy| %>
+    <% if mod.allowed?(:read, @cur_user, site: @cur_site) %>
+      <h3><%= link_to mod.human_name, instance_exec(&url_lazy) %></h3>
+    <% end %>
   <% end %>
-  <% if Gws::Facility.allowed?(:read, @cur_user, site: @cur_site) %>
-    <h3><%= link_to t('mongoid.models.gws/facility'), gws_facilities_path %></h3>
-  <% end %>
-  <% if Gws::Schedule::Category.allowed?(:read, @cur_user, site: @cur_site) %>
-    <h3><%= link_to t('gws/schedule.category'), gws_schedule_categories_path %></h3>
+
+  <% if Gws::History.allowed?(:read, @cur_user, site: @cur_site) %>
+    <h3><%= link_to t('mongoid.models.gws/history'), gws_histories_path %></h3>
   <% end %>
 </nav>

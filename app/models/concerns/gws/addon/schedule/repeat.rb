@@ -46,7 +46,12 @@ module Gws::Addon::Schedule::Repeat
   end
 
   def extract_repeat_plans
-    repeat_plan.extract_plans(self)
+    repeat_plan.extract_plans(self, cur_site, cur_user)
+  end
+
+  def destroy_without_repeat_plan
+    @skip_remove_repeat_plan = true
+    destroy
   end
 
   private
@@ -78,10 +83,12 @@ module Gws::Addon::Schedule::Repeat
     end
 
     def remove_repeat_plan
+      return if @skip_remove_repeat_plan
+
       if repeat_plan
         plans = self.class.where(repeat_plan_id: repeat_plan_id, :_id.ne => id)
-        plans.delete
-        repeat_plan.destroy if plans.empty?
+        plans.each { |plan| plan.destroy_without_repeat_plan }
+        repeat_plan.destroy #if plans.empty?
       end
       remove_attribute(:repeat_plan_id)
     end

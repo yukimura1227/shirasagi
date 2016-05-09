@@ -9,16 +9,23 @@ class Gws::PortalController < ApplicationController
 
   public
     def index
-      @plans = Gws::Schedule::Plan.site(@cur_site).
-        member(@cur_user).
-        where(:end_at.gte => Time.zone.now).
-        #allow(:read, @cur_user, site: @cur_site).
-        order_by(end_at: 1, start_at: 1).
-        limit(5)
+      items_limit = 5
 
-      @boards = Gws::Board::Post.site(@cur_site).topic.
-        allow(:read, @cur_user, site: @cur_site).
+      @links = Gws::Link.site(@cur_site).and_public.
+        readable(@cur_user, @cur_site, exclude_role: true).to_a
+
+      @notices = Gws::Notice.site(@cur_site).and_public.
+        readable(@cur_user, @cur_site, exclude_role: true).
+        page(1).per(items_limit)
+
+      @reminders = Gws::Reminder.site(@cur_site).
+        user(@cur_user).
+        page(1).per(items_limit)
+
+      @boards = Gws::Board::Topic.site(@cur_site).topic.
+        and_public.
+        readable(@cur_user, @cur_site).
         order(descendants_updated: -1).
-        limit(5)
+        page(1).per(items_limit)
     end
 end

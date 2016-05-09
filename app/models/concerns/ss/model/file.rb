@@ -3,10 +3,12 @@ module SS::Model::File
   extend SS::Translation
   include SS::Document
   include SS::Reference::User
+  include ActiveSupport::NumberHelper
 
   attr_accessor :in_file, :in_files, :resizing
 
   included do
+    cattr_accessor(:root, instance_accessor: false) { "#{Rails.root}/private/files" }
     store_in collection: "ss_files"
 
     seqid :id
@@ -34,13 +36,13 @@ module SS::Model::File
     before_save :rename_file, if: ->{ @db_changes.present? }
     before_save :save_file
     before_destroy :remove_file
+
+    default_scope ->{
+      order_by id: -1
+    }
   end
 
   module ClassMethods
-    def root
-      "#{Rails.root}/private/files"
-    end
-
     def resizing_options
       [
         [I18n.t('views.options.resizing.320×240'), "320,240"],
@@ -99,7 +101,7 @@ module SS::Model::File
   end
 
   def humanized_name
-    "#{name} (#{extname.upcase} #{number_to_human_size(size)})"
+    "#{name.sub(/\.[^\.]+$/, '')} (#{extname.upcase} #{number_to_human_size(size)})"
   end
 
   def download_filename
@@ -135,6 +137,8 @@ module SS::Model::File
 
     in_files.each do |file|
       item = self.class.new(attributes)
+      item.cur_site = cur_site if respond_to?(:cur_site)
+      item.cur_user = cur_user if respond_to?(:cur_user)
       item.in_file = file
       item.resizing = resizing
       next if item.save
@@ -231,9 +235,5 @@ module SS::Model::File
                  size: number_to_human_size(file.size),
                  limit: number_to_human_size(limit_size)
       false
-    end
-
-    def number_to_human_size(size)
-      ApplicationController.helpers.number_to_human_size(size)
     end
 end

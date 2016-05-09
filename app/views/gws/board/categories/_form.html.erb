@@ -1,0 +1,11 @@
+<%= jquery do %>
+  $('#item_color').colorPicker().data('colorMode', 'HEX');
+<% end %>
+
+<dl class="see mod-gws-board-category">
+  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
+  <dd><%= f.text_field :name %></dd>
+
+  <dt><%= @model.t :color %><%= @model.tt :color %></dt>
+  <dd><%= f.text_field :color %></dd>
+</dl>

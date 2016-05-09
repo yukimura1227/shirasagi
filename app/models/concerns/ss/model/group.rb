@@ -2,7 +2,9 @@ module SS::Model::Group
   extend ActiveSupport::Concern
   extend SS::Translation
   include SS::Document
+  include SS::Scope::ActivationDate
   include Ldap::Addon::Group
+  include SS::Fields::DependantNaming
 
   attr_accessor :in_password
 
@@ -13,13 +15,20 @@ module SS::Model::Group
     seqid :id
     field :name, type: String
     field :order, type: Integer
-    permit_params :name, :order
+    field :activation_date, type: DateTime
+    field :expiration_date, type: DateTime
+    permit_params :name, :order, :activation_date, :expiration_date
 
     default_scope -> { order_by(order: 1, name: 1) }
 
     validates :name, presence: true, uniqueness: true, length: { maximum: 80 }
+    validates :activation_date, datetime: true
+    validates :expiration_date, datetime: true
     validate :validate_name
-    after_save :rename_children, if: ->{ @db_changes }
+
+    scope :in_group, ->(group) {
+      where(name: /^#{group.name}(\/|$)/)
+    }
   end
 
   module ClassMethods
@@ -41,22 +50,13 @@ module SS::Model::Group
     name.tr("/", " ")
   end
 
-  def trailing_name
-    name.split("/").pop
+  def section_name
+    return name unless name.include?('/')
+    name.split("/")[1..-1].join(' ')
   end
 
-  def rename_children
-    return unless @db_changes["name"]
-    return unless @db_changes["name"][0]
-    return unless @db_changes["name"][1]
-
-    src = @db_changes["name"][0]
-    dst = @db_changes["name"][1]
-
-    SS::Group.where(name: /^#{Regexp.escape(src)}\//).each do |item|
-      item.name = item.name.sub(/^#{Regexp.escape(src)}\//, "#{dst}\/")
-      item.save validate: false
-    end
+  def trailing_name
+    name.split("/").pop
   end
 
   def root
@@ -76,6 +76,12 @@ module SS::Model::Group
 
   def descendants
     self.class.where(name: /^#{name}\//)
+  end
+
+  # Soft delete
+  def disable
+    super
+    descendants.each { |item| item.disable }
   end
 
   private

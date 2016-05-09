@@ -25,75 +25,61 @@ describe "gws_notices", type: :feature, dbscope: :example do
   context "with auth" do
     before { login_gws_user }
 
-    describe "#index" do
-      it do
-        visit index_path
-        expect(status_code).to eq 200
-        expect(current_path).to eq index_path
-      end
+    it "#index" do
+      visit index_path
+      expect(status_code).to eq 200
+      expect(current_path).to eq index_path
     end
 
-    describe "#new" do
-      it do
-        visit new_path
-        within "form#item-form" do
-          fill_in "item[name]", with: "name"
-          fill_in "item[text]", with: "text"
-          click_button "保存"
-        end
-        expect(status_code).to eq 200
-        expect(current_path).not_to eq new_path
-        expect(page).not_to have_css("form#item-form")
+    it "#new" do
+      visit new_path
+      within "form#item-form" do
+        fill_in "item[name]", with: "name"
+        fill_in "item[text]", with: "text"
+        click_button "保存"
       end
+      expect(status_code).to eq 200
+      expect(current_path).not_to eq new_path
+      expect(page).not_to have_css("form#item-form")
     end
 
-    describe "#show" do
-      it do
-        visit show_path
-        expect(status_code).to eq 200
-        expect(current_path).to eq show_path
-      end
+    it "#show" do
+      visit show_path
+      expect(status_code).to eq 200
+      expect(current_path).to eq show_path
     end
 
-    describe "#edit" do
-      it do
-        visit edit_path
-        within "form#item-form" do
-          fill_in "item[name]", with: "name"
-          fill_in "item[text]", with: "text"
-          click_button "保存"
-        end
-        expect(status_code).to eq 200
-        expect(current_path).to eq show_path
-        expect(page).not_to have_css("form#item-form")
+    it "#edit" do
+      visit edit_path
+      within "form#item-form" do
+        fill_in "item[name]", with: "name"
+        fill_in "item[text]", with: "text"
+        click_button "保存"
       end
+      expect(status_code).to eq 200
+      expect(current_path).to eq show_path
+      expect(page).not_to have_css("form#item-form")
     end
 
-    describe "#delete" do
-      it do
-        visit delete_path
-        within "form" do
-          click_button "削除"
-        end
-        expect(status_code).to eq 200
-        expect(current_path).to eq index_path
+    it "#delete" do
+      visit delete_path
+      within "form" do
+        click_button "削除"
       end
+      expect(status_code).to eq 200
+      expect(current_path).to eq index_path
     end
 
-    describe "#index" do
-      it do
-        visit public_index_path
-        expect(status_code).to eq 200
-        expect(current_path).to eq public_index_path
-      end
+    it "#index" do
+      visit public_index_path
+      expect(status_code).to eq 200
+      expect(current_path).to eq public_index_path
     end
 
-    describe "#show" do
-      it do
-        visit public_show_path
-        expect(status_code).to eq 200
-        expect(current_path).to eq public_show_path
-      end
+    it "#show" do
+      visit public_show_path
+      expect(status_code).to eq 200
+      expect(current_path).to eq public_show_path
     end
   end
 end
