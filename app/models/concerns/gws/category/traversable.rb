@@ -9,7 +9,7 @@ module Gws::Category::Traversable
   class_methods do
     def build(site, user = nil)
       criteria = model_class.site(site)
-      criteria = criteria.readable(user, site, exclude_role: true) if user
+      criteria = criteria.readable(user, site) if user
       raw_categories = criteria.to_a
 
       # build category hierarchy
@@ -38,7 +38,7 @@ module Gws::Category::Traversable
   end
 
   def each
-    @hierarchy.keys.sort.each do |category|
+    @hierarchy.keys.each do |category|
       yield create_wrapper(category)
     end
   end
