@@ -2,7 +2,7 @@ module Opendata::ListHelpers::App
   extend ActiveSupport::Concern
 
   def default_app_upper_html
-    app_node = Opendata::Node::App.site(@cur_site).and_public.first
+    app_node = Opendata::Node::App.site(@cur_site).where(native_id: nil).and_public.first
     show_point = app_node.show_point?
 
     h = []
@@ -33,7 +33,7 @@ module Opendata::ListHelpers::App
     cur_item = @cur_part || @cur_node
     cur_item.cur_date = @cur_date
 
-    app_node = Opendata::Node::App.site(@cur_site).and_public.first
+    app_node = Opendata::Node::App.site(@cur_site).where(native_id: nil).and_public.first
     return if app_node.blank?
     show_point = app_node.show_point?
 

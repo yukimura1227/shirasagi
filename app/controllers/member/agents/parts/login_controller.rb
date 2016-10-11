@@ -4,7 +4,7 @@ class Member::Agents::Parts::LoginController < ApplicationController
 
   def index
     @cur_member  = get_member_by_session(@cur_site)
-    @login_node  = Member::Node::Login.site(@cur_site).first
-    @mypage_node = Member::Node::Mypage.site(@cur_site).first
+    @login_node  = Member::Node::Login.site(@cur_site).where(native_id: nil).first
+    @mypage_node = Member::Node::Mypage.site(@cur_site).where(native_id: nil).first
   end
 end
