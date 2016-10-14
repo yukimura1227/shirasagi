@@ -23,6 +23,9 @@ module Member::Node
     include Multilingual::Addon::Node
 
     default_scope ->{ where(route: "member/login") }
+
+    show_foreign_addon Member::Addon::Redirection
+    foreign_field :redirect_url
   end
 
   class Mypage

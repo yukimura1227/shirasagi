@@ -33,4 +33,19 @@ module Oauth::Base
   def client
     ::OAuth2::Client.new(client_id, client_secret, deep_symbolize(options.client_options))
   end
+
+  def request_path
+    return if node.blank?
+    "#{node.url}#{name}"
+  end
+
+  def callback_path
+    return if node.blank?
+    "#{node.url}#{name}/callback"
+  end
+
+  def on_path?(path)
+    return false if path.blank?
+    super
+  end
 end

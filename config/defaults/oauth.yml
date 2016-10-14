@@ -1,6 +1,5 @@
 production: &production
-  # prefix_path must be set to same path as member/login node.
-  # prefix_path: "/auth"
+  disable: true
 
   # set OAuth id and secret pairs you want to activate.
   twitter_client_id:
@@ -16,7 +15,6 @@ production: &production
 
 test:
   <<: *production
-  prefix_path: "/auth"
 
 development:
   <<: *production
