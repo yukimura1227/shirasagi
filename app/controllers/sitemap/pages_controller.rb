@@ -7,6 +7,7 @@ class Sitemap::PagesController < ApplicationController
 
   append_view_path "app/views/cms/pages"
   navi_view "sitemap/main/navi"
+  lang_view "cms/node/pages/lang"
 
   private
     def fix_params
