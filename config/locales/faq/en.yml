@@ -1,19 +1,22 @@
 en:
   faq:
-    page: FAQ記事
-    search: 検索
-    reset: リセット
-    result: 検索結果
-    count: 件
+    page: FAQs
+    search: Search
+    reset: Reset
     query:
-      category: カテゴリー
-      keyword: キーワード
+      category: Category
+      keyword: Keyword
+    formats:
+      search_result_html:
+        zero: "No FAQs are found"
+        one: "Found %{count} FAQ"
+        other: "Found %{count} FAQs"
 
   modules:
     faq: FAQ
     addons:
-      faq/question: 質問
-      faq/search: FAQ記事検索
+      faq/question: Questions
+      faq/search: FAQ Search
 
   cms:
     nodes:

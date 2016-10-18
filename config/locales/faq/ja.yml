@@ -3,11 +3,11 @@ ja:
     page: FAQ記事
     search: 検索
     reset: リセット
-    result: 検索結果
-    count: 件
     query:
       category: カテゴリー
       keyword: キーワード
+    formats:
+      search_result_html: "検索結果<span>%{count}</span>件"
 
   modules:
     faq: FAQ
