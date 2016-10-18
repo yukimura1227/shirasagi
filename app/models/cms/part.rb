@@ -66,6 +66,10 @@ class Cms::Part
     include Multilingual::Addon::Part
 
     default_scope ->{ where(route: "cms/crumb") }
+
+    # Cms::Addon::Crumb
+    show_foreign_addon Cms::Addon::Crumb
+    foreign_field :home_label
   end
 
   class SnsShare
