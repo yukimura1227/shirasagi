@@ -7,6 +7,7 @@ class Cms::PublicController < ApplicationController
   after_action :put_access_log
   after_action :render_mobile, if: ->{ mobile_path? }
   after_action :render_multilingual, if: ->{ multilingual_path? }
+  after_action :render_multilingual_url, unless: ->{ multilingual_path? }
 
   private
     def protect_csrf?

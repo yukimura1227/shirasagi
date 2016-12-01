@@ -27,7 +27,7 @@ module Multilingual::PublicFilter
 
       # links
       location = Multilingual::Initializer.lang
-      body.gsub!(/(href|action)=".*?"/) do |m|
+      body.gsub!(/(href|action)="(?!:\w\w:).*?"/) do |m|
         url = m.match(/="(.*?)"/)[1]
         if url =~ /^\/(#{location}|fs|assets|assets-dev)\//
           m
@@ -38,6 +38,29 @@ module Multilingual::PublicFilter
         else
           m
         end
+      end
+
+      render_multilingual_url(body)
+    end
+
+    def render_multilingual_url(body = response.body)
+      return if response.content_type != "text/html"
+
+      langs = {}
+      body.gsub!(/(href|action)=":(\w\w):(.+?)"/) do |m|
+        attr = $1
+        lang_code = $2
+        url = $3
+
+        langs[lang_code] ||= begin
+          Multilingual::Node::Lang.site(@cur_site).where(filename: lang_code, depth: 1).first
+        end
+        if langs[lang_code]
+          url = url[1..-1] if url.start_with?("/")
+          url = "#{langs[lang_code].url}#{url}"
+        end
+
+        "#{attr}=\"#{url}\""
       end
 
       response.body = body
