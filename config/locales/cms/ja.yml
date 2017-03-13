@@ -347,6 +347,8 @@ ja:
       cms/reference/layout:
         layout_id: レイアウト
         body_layout_id: 本文レイアウト
+      cms/reference/lang:
+        lang_id: 言語
       cms/reference/page_layout:
         page_layout_id: ページレイアウト
       cms/site:
@@ -667,6 +669,8 @@ ja:
         - .htmlなどの拡張子の記述は不要です。
       layout_id:
         - フォルダーのレイアウトを選択します。
+      lang_id:
+        - フォルダーの言語を選択します。
       page_layout_id:
         - ページのレイアウトを選択します。
         - 初期値は上位のフォルダの設定を継承しています。

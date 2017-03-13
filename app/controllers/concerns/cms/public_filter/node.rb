@@ -24,6 +24,14 @@ module Cms::PublicFilter::Node
       @cur_node = node
       controller = node.route.sub(/\/.*/, "/agents/#{spec[:cell]}")
 
+      if node.lang_id.present?
+        Multilingual::Initializer.lang = node.lang_id
+        I18n.locale = Multilingual::Initializer.lang
+        Multilingual::Initializer.preview = preview_path?
+
+        filters << :multilingual
+      end
+
       agent = new_agent controller
       agent.controller.params.merge! spec
       agent.render spec[:action]

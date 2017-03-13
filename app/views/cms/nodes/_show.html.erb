@@ -29,6 +29,11 @@ file = "#{Rails.root}/app/views/" + @item.route.sub('/', '/agents/nodes/') + "/e
 
   <dt><%= @model.t :layout_id %></dt>
   <dd><%= tryb { @item.layout.name }%></dd>
+
+  <% if @item.lang_id.present? %>
+  <dt><%= @model.t :lang_id %></dt>
+  <dd><%= I18n.t("views.options.lang.#{@item.lang_id}") || @item.lang_id %></dd>
+  <% end %>
 </dl>
 
 <%= render file: file if File.exists?(file) %>

@@ -6,6 +6,8 @@ url = params[:action] =~ /new|create/ ? url_for(action: :new) : url_for(action: 
 bind  = "$(this).parent().parent().parent().parent().hide();"
 bind << "location.href = '#{url}?route=' + $(this).val();"
 
+langs = Multilingual::Node::Lang.site(@cur_site).and_public.pluck(:filename)
+
 %><dl class="see">
   <dt><%= @model.t :route %><%= @model.tt :route %></dt>
   <dd><%= f.hidden_field :route %>
@@ -22,6 +24,13 @@ bind << "location.href = '#{url}?route=' + $(this).val();"
 
   <dt><%= @model.t :layout_id %><%= @model.tt :layout_id %></dt>
   <dd><%= f.select :layout_id, ancestral_layouts(@item), include_blank: " " %></dd>
+
+  <dt><%= @model.t :lang_id %><%= @model.tt :lang_id %></dt>
+  <dd>
+    <% if langs.present? %>
+    <%= f.select :lang_id, langs.map { |v| [ I18n.t("views.options.lang.#{v}"), v ] }, include_blank: I18n.t('views.options.lang.ja') %>
+    <% end %>
+  </dd>
 </dl>
 
 <%= render file: file, locals: { f: f } if File.exists?(file) %>

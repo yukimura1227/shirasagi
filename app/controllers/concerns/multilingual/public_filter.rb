@@ -9,7 +9,7 @@ module Multilingual::PublicFilter
     def set_request_path_with_multilingual
       I18n.locale = I18n.default_locale
       Multilingual::Initializer.lang = nil
-      langs = Multilingual::Node::Lang.site(@cur_site).all.map(&:filename)
+      langs = Multilingual::Node::Lang.site(@cur_site).and_public.pluck(:filename)
 
       return if langs.blank?
       return if @cur_path !~ /^\/(#{langs.join("|")})\//
@@ -53,7 +53,7 @@ module Multilingual::PublicFilter
         url = $3
 
         langs[lang_code] ||= begin
-          Multilingual::Node::Lang.site(@cur_site).where(filename: lang_code, depth: 1).first
+          Multilingual::Node::Lang.site(@cur_site).and_public.where(filename: lang_code, depth: 1).first
         end
         if langs[lang_code]
           url = url[1..-1] if url.start_with?("/")

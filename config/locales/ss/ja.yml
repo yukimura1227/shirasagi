@@ -149,6 +149,9 @@ ja:
         hiragana: ひらがな
         katakana: カタカナ
         romaji: ローマ字
+      lang:
+        ja: 日本語
+        en: 英語
 
     state:
       public: 公開中
