@@ -1,6 +1,9 @@
 <%= code_editor ".mod-multilingual-partial_html .html", mode: :html, readonly: true %>
 
 <dl class="see mod-multilingual-partial_html">
+  <dt><%= @model.t :conditions %></dt>
+  <dd><%= br @item.conditions.join("\n") %></dd>
+
   <dt><%= @model.t :upper_html %></dt>
   <dd>
     <% if @item.upper_html.present? %>

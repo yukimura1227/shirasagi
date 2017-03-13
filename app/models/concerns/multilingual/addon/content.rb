@@ -23,7 +23,7 @@ module Multilingual::Addon
       foreign_field :layout, :layout_id
       foreign_field :url, :full_url, :path
       foreign_field :summary, :summary_html, :description, :keywords
-      foreign_field :upper_html, :loop_html, :lower_html
+      foreign_field :conditions, :upper_html, :loop_html, :lower_html
       foreign_field :released
       #foreign_field :created, :updated
 
