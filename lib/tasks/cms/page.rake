@@ -20,7 +20,7 @@ namespace :cms do
   end
 
   task :generate_nodes => :environment do
-    with_node(Cms::Node::GenerateJob)
+    with_node(Cms::Node::GenerateJob, foreigner: ENV["foreigner"])
   end
 
   task :generate_pages => :environment do

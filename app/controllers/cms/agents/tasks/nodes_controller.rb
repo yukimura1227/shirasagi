@@ -9,6 +9,22 @@ class Cms::Agents::Tasks::NodesController < ApplicationController
       #
     end
 
+    def set_language(node)
+      lang = node.lang_id.presence
+      lang ||= node.filename.partition('/').first
+      return if lang.blank?
+
+      Multilingual::Initializer.lang = lang
+      I18n.locale = Multilingual::Initializer.lang.to_sym
+      filters << :multilingual
+    end
+
+    def clear_language(node)
+      Multilingual::Initializer.lang = nil
+      I18n.locale = I18n.default_locale
+      filters.delete_if { |f| f == :multilingual }
+    end
+
   public
     def generate
       @task.log "# #{@site.name}"
@@ -24,6 +40,11 @@ class Cms::Agents::Tasks::NodesController < ApplicationController
         next unless node
         next unless node.public?
         next unless node.public_node?
+        next if @foreigner != '1' && (node.foreigner? || node.lang_id.present?)
+
+        if node.foreigner? || node.lang_id.present?
+          set_language(node)
+        end
 
         node  = node.becomes_with_route
         cname = node.route.sub("/", "/agents/tasks/node/").camelize.pluralize + "Controller"
@@ -37,6 +58,7 @@ class Cms::Agents::Tasks::NodesController < ApplicationController
         agent.invoke :generate
 
         #generate_node_pages node
+        clear_language(node)
       end
     end
 

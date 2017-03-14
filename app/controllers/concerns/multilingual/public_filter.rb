@@ -12,9 +12,10 @@ module Multilingual::PublicFilter
       langs = Multilingual::Node::Lang.site(@cur_site).and_public.pluck(:filename)
 
       return if langs.blank?
-      return if @cur_path !~ /^\/(#{langs.join("|")})\//
-      Multilingual::Initializer.lang = @cur_path.scan(/^\/(#{langs.join("|")})\//).flatten.first
-      I18n.locale = Multilingual::Initializer.lang
+      langs_matcher = /^\/(#{langs.join("|")})\//.freeze
+      return if @cur_path !~ langs_matcher
+      Multilingual::Initializer.lang = @cur_path.scan(langs_matcher).flatten.first
+      I18n.locale = Multilingual::Initializer.lang.to_sym
       Multilingual::Initializer.preview = preview_path?
       @cur_path.sub!(/^\/(#{langs.join("|")})\//, "/")
 

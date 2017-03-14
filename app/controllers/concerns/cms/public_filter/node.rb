@@ -26,8 +26,7 @@ module Cms::PublicFilter::Node
 
       if node.lang_id.present?
         Multilingual::Initializer.lang = node.lang_id
-        I18n.locale = Multilingual::Initializer.lang
-        Multilingual::Initializer.preview = preview_path?
+        I18n.locale = Multilingual::Initializer.lang.to_sym
 
         filters << :multilingual
       end
