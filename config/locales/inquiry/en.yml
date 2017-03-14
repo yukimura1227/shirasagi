@@ -1,24 +1,24 @@
 en:
   inquiry:
-    form: mail form
-    nodes: forms
-    column: questions
-    answer: answers
-    result: results
-    feedback: feedback
+    form: Mail Form
+    nodes: Forms
+    column: Questions
+    answer: Answers
+    result: Results
+    feedback: Feedback
     required_field: ※required
-    confirm_message: 下記事項をご確認の上、送信ボタンを押してください。
-    submit: 送信する
-    cancel: 変更する
-    confirm: 確認画面へ
+    confirm_message: Confirm the following and then click "submit".
+    submit: Submit
+    cancel: Edit
+    confirm: Preview
     notify: 自動通知
     reply: 自動返信
     total_count: 総回答数
     reception_plan: 回答受付期間
     aggregate: 集計
     from: から
-    confirm_input: "%{name}確認用"
-    confirm_input_description: "もう一度、同じ%{name}を入力してください。"
+    confirm_input: "Confirm %{name}"
+    confirm_input_description: "Type your %{name} again"
 
     options:
       state:
@@ -42,7 +42,7 @@ en:
         enabled: する
 
     links:
-      back_to_page: 元のページに戻る
+      back_to_page: Back to page
 
   modules:
     inquiry: メールフォーム
