@@ -8,9 +8,9 @@ en:
       keyword: Keyword
     formats:
       search_result_html:
-        zero: "No FAQs are found"
-        one: "Found %{count} FAQ"
-        other: "Found %{count} FAQs"
+        zero: "Not found"
+        one: "Search result: %{count}"
+        other: "Search results: %{count}"
 
   modules:
     faq: FAQ
