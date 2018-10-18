@@ -9,6 +9,9 @@
  *= require cropperjs/cropper.min.css
  */
 
+// bootstrap
+@import "bootstrap";
+
 // base
 @import "init";
 @import "lib";
@@ -20,6 +23,7 @@
 @import "ss/login";
 @import "ss/addon";
 @import "ss/image_editor";
+@import "ss/custom_form";
 @import "sys/ss";
 @import "sns/ss";
 @import "cms/ss";

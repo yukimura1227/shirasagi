@@ -98,163 +98,70 @@
   }
 }
 .gws-memos {
-  .list-item {
-    padding: 5px 8px;
+  td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  td.icon-star, td.icon-attachment {
+    padding: 0.75rem 0;
+  }
+  @include mb {
     display: block;
-  }
-  .list-item-head {
-    font-weight: bold;
-    padding-bottom: 8px;
-    .head {
-      @include display-flex;
-      -js-display: flex;
-      height: 20px;
-      position: relative;
-      .field {
-        display: inline-block;
-        cursor: pointer;
-      }
-      .from, .to {
-        width: calc(50% - 100px);
-        text-indent: 79.84px;
-      }
-      .title {
-        width: calc(50% - 130px);
-      }
-      .priority {
-        width: 50px;
-      }
-      .datetime {
-        width: 120px;
-      }
-      .size {
-        width: 60px;
-      }
-    }
-    @include mb { display: none; }
-  }
-  .info {
-    @include truncate;
-    @include display-flex;
-    -js-display: flex;
-    @include mb {
-      clear: both;
+    white-space: nowrap;
+    thead { display: none; }
+    tbody {
       display: block;
     }
-    .field {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      vertical-align: text-top;
-      @include mb {
-        display: inline-block;
-      }
+    tr {
+      position: relative;
+      display: block;
+      padding: 0.75rem;
+      border-top: 1px solid $gray2;
     }
-    .from, .to {
-      width: calc(50% - 132.84px);
-      padding-right: 5px;
-      @include mb {
-        width: 100%;
-        padding-right: 0;
-      }
+    th, td {
+      display: block;
+      padding: 0 ;
+      border: none;
     }
-    .title {
-      width: calc(50% - 75px);
-      padding-right: 5px;
-      font-size: 100%;
-      @include mb {
-        width: 100%;
-        padding-right: 0;
-      }
+    td.check {
+      float: left;
+      line-height: 6.5rem;
+      padding-right: 1rem;
     }
-    .priority {
-      width: 50px;
+    td.icon-star {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
     }
-    .datetime {
-      width: 120px;
-      font-weight: normal;
+    td.icon-attachment {
+      position: absolute;
+      top: 4rem;
+      right: 0.75rem;
     }
-    .size {
-      width: 60px;
-      font-weight: normal;
+    td.from, td.title, td.priority, td.datetime, td.size {
+      padding-right: 2rem;
+    }
+    td.title {
+      font-size: $px16;
     }
   }
 }
-
-table.index.gws-memo-folder {
-  position: relative;
-  width: auto;
-  min-width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 100%;
-    width: 12px;
-    height: 1px;
+.gws-memo-folder {
+  .nav-item.unseen a {
+    color: $orange;
   }
-  .folder {
-    background: #ffffff !important;
-  }
-  .current {
-    background: #f2f2f2 !important;
-  }
-  .unseen {
-    font-weight: bold;
-    color: #f25a38;
-  }
-
-  @for $i from 0 through 40 {
-    .depth-#{$i} {
-      padding-left: #{$i * 20}px;
-    }
+  .nav-item.unseen a:hover {
+    color: $primary2;
   }
 }
 
 .gws-memo-search {
   display: none;
-  margin: 0 10px;
-  padding: 10px 20px;
-  border-bottom: 1px solid #eee;
-
-  input[type="text"] {
-    width: 300px;
-  }
-}
-
-.gws-memo-dropdown {
-display: inline;
-font-weight: normal;
-  .dropdown-menu {
-    left: 0;
-    margin: 0;
-    padding: 5px 0;
-    border: 1px solid #ccc;
-    @include box-shadow(0px 3px 12px rgba(0,0,0,.2));
-    background: #fff;
-    text-align: left;
-    a {
-      @include truncate;
-      padding: 5px 10px;
-      color: $black;
-    }
-    a:hover {
-      background-color: $gray1;
-      color: $orange;
-      text-decoration: none;
-    }
-    .pad {
-      display: inline-block;
-      width: 10px;
-    }
-  }
 }
 .gws-addon-memo-member {
   dl.cc-bcc {
     padding-top: 10px;
-    border-top: 1px solid #e4e4e4;
+    border-top: 1px solid $gray4;
   }
   dt {
     min-width: 50px !important;

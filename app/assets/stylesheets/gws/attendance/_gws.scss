@@ -7,7 +7,6 @@
     position: absolute;
     z-index: 100;
     padding: 5px 0px;
-    border: $border-gray4;
     background: $white;
     @include box-shadow(0px 3px 12px rgba(0,0,0,.2));
     a {
@@ -17,33 +16,6 @@
       white-space: nowrap;
       &:hover { background: $gray1; }
     }
-  }
-
-  .attendance-box {
-    @include box;
-    @include mb { margin: 0 10px 10px; }
-  }
-
-  .attendance-box-title {
-    //margin: -15px -10px 15px;
-    padding: 8px 10px;
-    border-bottom: $border-gray1;
-    background: rgba(0,0,0,.02);
-    font-weight: bold;
-  }
-
-  .attendance-box-main {
-    padding: 8px 10px;
-  }
-
-  .nav-menu, .nav-operation {
-    margin: 5px 0;
-    display: inline-block;
-  }
-
-  .nav-operation {
-    float: right;
-    @include mb { float: none; }
   }
 
   .reason-tooltip {
@@ -62,15 +34,11 @@
       display: none;
       position: absolute;
       z-index: 101;
-
       color: $black;
       text-align: left;
-      //padding: 5px;
-      border: $border-gray4;
       background: $white;
       @include box-shadow(0px 3px 12px rgba(0,0,0,.2));
       @include border-radius(3px);
-
       bottom: 100%;
       left: 50%;
       margin-left: -50px;
@@ -78,7 +46,6 @@
       time {
         display: block;
         padding: 5px;
-        border-top: $border-gray1;
         font-size: 80%;
         color: $gray2;
         text-align: right;
@@ -101,23 +68,8 @@
     }
   }
 
-  .today-wrap {
-    overflow-x: auto;
-  }
-
   .today {
     white-space: nowrap;
-    border-collapse: collapse;
-    border-spacing: 0px;
-
-    th, td {
-      padding: 5px;
-      border: 1px solid $gray4;
-    }
-
-    th {
-      background-color: $gray1;
-    }
 
     th.time, td.time {
       width: 6em;
@@ -128,31 +80,10 @@
     }
   }
 
-  .time-card-wrap {
-    overflow-x: auto;
-  }
-
   .time-card {
     white-space: nowrap;
-    border-collapse: collapse;
-    border-spacing: 0px;
-
-    th {
-      padding: 5px;
-      border: 1px solid $gray4;
-    }
-
-    td {
-      padding: 5px;
-      border: 1px solid $gray4;
-    }
-
-    tr.header {
-      background-color: $gray1;
-    }
-
     tr.current {
-      background-color: #ffffae;
+      background-color: #dbefdc;
     }
 
     th.date, td.date {
@@ -161,10 +92,6 @@
 
     th.time, td.time {
       width: 6em;
-    }
-
-    td.time {
-      text-align: center;
     }
 
     th.memo, td.memo {
@@ -184,7 +111,7 @@
     }
 
     .focus {
-      background-color: #f2a950;
+      background-color: #ffddd3;
     }
   }
 }

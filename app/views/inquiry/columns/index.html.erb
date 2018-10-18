@@ -1,32 +1,33 @@
-<div class="main-box">
-  <table class="index">
-    <thead>
-      <tr>
-        <th class="checkbox"><input type="checkbox" /></th>
-        <th><%= @model.t :name %></th>
-        <th><%= @model.t :order %></th>
-        <th class="datetime"><%= @model.t :updated %></th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% @items.each do |item| %>
-      <tr class="list-item">
-        <td class="checkbox">
-          <input type="checkbox" name="ids[]" value="<%= item.id %>" />
-          <nav class="tap-menu">
-            <%= link_to t('ss.links.show'), action: :show, id: item if @cur_node.allowed?(:read, @cur_user, site: @cur_site) %>
-            <%= link_to t('ss.links.edit'), action: :edit, id: item if @cur_node.allowed?(:edit, @cur_user, site: @cur_site) %>
-            <%= link_to t('ss.links.delete'), action: :delete, id: item if @cur_node.allowed?(:edit, @cur_user, site: @cur_site) %>
-          </nav>
-        </td>
-        <td><%= link_to item.name, action: :show, id: item %></td>
-        <td><%= item.order %></td>
-        <td><%= item.updated.strftime("%Y/%m/%d %H:%M") %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+<div class="list-head d-flex align-item-center">
+  <div class="btn-group align-self-end mb-0">
+    <select class="custom-select mr-sm-2">
+      <option selected>アクション</option>
+      <option value="1">並び順一括変更</option>
+      <option value="2">削除</option>
+    </select>
+  </div>
 </div>
 
-<%= paginate @items if @items.try(:current_page) %>
+<% @table_def = define_ss_table do |tbl| %>
+  <% tbl.column_checkbox %>
+
+  <% tbl.column do %>
+    <% tbl.th @model.t(:name) %>
+    <% tbl.td do |item| %><%= link_to item.name, action: :show, id: item %><% end %>
+  <% end %>
+
+  <% tbl.column do %>
+    <% tbl.th @model.t(:order) %>
+    <% tbl.td do |item| %><%= item.order %><% end %>
+  <% end %>
+
+  <% tbl.column_updated %>
+
+  <% tbl.tap_menu do |item| %>
+    <%= link_to(t('ss.links.show'), { action: :show, id: item }, { class: "dropdown-item" }) if @cur_node.allowed?(:read, @cur_user, site: @cur_site) %>
+    <%= link_to(t('ss.links.edit'), { action: :edit, id: item }, { class: "dropdown-item" }) if @cur_node.allowed?(:edit, @cur_user, site: @cur_site) %>
+    <%= link_to(t('ss.links.delete'), { action: :delete, id: item }, { class: "dropdown-item" }) if @cur_node.allowed?(:edit, @cur_user, site: @cur_site) %>
+  <% end %>
+<% end %>
+
+<%= render file: "cms/crud/index" %>

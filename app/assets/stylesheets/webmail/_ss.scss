@@ -26,9 +26,9 @@
     width: 10px;
   }
 }
-#menu .nav-menu .dropdown {
+#menu .nav-menu .ss-dropdown {
   display: inline;
-  .dropdown-menu {
+  .ss-dropdown-menu {
     a {
       display: block;
       padding: 5px 10px;
@@ -128,14 +128,14 @@ li.webmail-accounts {
 // mails
 
 .webmail-mails-head {
-  .dropdown {
+  .ss-dropdown {
     display: inline;
     font-weight: normal;
     .btn {
       padding-right: 8px;
     }
   }
-  .dropdown-menu {
+  .ss-dropdown-menu {
     width: 200px;
   }
 }
@@ -156,7 +156,7 @@ li.webmail-accounts {
 
 @media print {
   .webmail-print {
-    #head, #foot, #navi, #crumbs, #menu {
+    #head, #foot, #navi, #ss-crumbs, #menu {
       display: none;
     }
     #page:after {
@@ -365,35 +365,10 @@ li.webmail-accounts {
     }
   }
 }
-.cc-bcc-label {
-  display: inline-block;
-  margin: 0 0 0 60px;
-  color: #888;
-}
 .webmail-addon-mail-body {
   @include clear;
-  .subject {
-    float: left;
-    width: calc(100% - 300px);
-    widht: -webkit-calc(100% - 300px);
-    min-width: 300px;
-    margin-bottom: 15px;
-    input {
-      width: 100%;
-      padding: 10px 6px;
-    }
-  }
-  .options {
-    float: right;
-    margin-bottom: 15px;
-    text-align: right;
-  }
   #item_signature {
     max-width: 200px;
-  }
-  .body-content {
-    clear: both;
-    margin-top: 15px;
   }
   .template-options {
     margin-top: 10px;

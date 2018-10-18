@@ -9,7 +9,7 @@
 
 <%= form_tag({ action: :import }, { method: :post, multipart: true }) do %>
   <div class="addon-views">
-    <div class="addon-view" id="cms-all-contents-import">
+    <div class="addon-view mb-5" id="cms-all-contents-import">
       <div class="addon-head"><h2><%= t("cms.all_content.import_head") %></h2></div>
       <div class="addon-body">
         <% if @errors %>

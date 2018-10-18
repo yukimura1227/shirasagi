@@ -10,13 +10,15 @@
   var workflow = new SS_Workflow('.mod-workflow', options);
 <% end %>
 
-<div class="mod-workflow">
+<div class="mod-workflow pt-5">
+  <h2 class="h4">承認</h2>
+
   <% if @item.state == "closed" %>
     <% if @item.allowed?(:approve, @cur_user, site: @cur_site) && @item.workflow_state == "request" %>
       <% @item.workflow_pull_up_approvers_at(@item.workflow_current_level).each do |workflow_approver| %>
         <% next if @cur_user._id != workflow_approver[:user_id] || @item.approve_disabled?(workflow_approver[:state]) %>
         <section class="mod-workflow-approve">
-          <div class="addon-view">
+          <div class="addon-view mb-5">
             <div class="addon-head">
               <h2><%= t("workflow.buttons.approve") %>/<%= t("workflow.buttons.remand") %><%= @model.tt :approve_remand %></h2>
             </div>

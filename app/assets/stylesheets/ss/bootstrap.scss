@@ -1,0 +1,72 @@
+/**
+ */
+@import "compass-mixins/lib/compass";
+@import "bootstrap-material-design/scss/bootstrap-material-design";
+
+// -------------------------------------------------------------------------------------------------
+// table
+.table {
+  @include media-breakpoint-down(sm) {
+    white-space: nowrap;
+  }
+  th, td {
+    vertical-align: middle;
+  }
+  th {
+    white-space: nowrap;
+  }
+  td.categories ul {
+    margin: 0;
+    padding: 0;
+    li:after {
+      content: "、";
+    }
+    li:last-child:after {
+      content: "";
+    }
+  }
+  .padding {
+    display: inline-block;
+    width: 15px;
+  }
+}
+// form
+textarea.form-control {
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.26);
+  background: none;
+}
+// -------------------------------------------------------------------------------------------------
+// breadcrumb
+.breadcrumb {
+  margin: 0 0 0 32px;
+  padding: 0;
+  background: transparent;
+  font-size: .855rem;
+}
+// -------------------------------------------------------------------------------------------------
+// card
+.card {
+  font-size: 1rem;
+}
+.card-header {
+  @include display-flex;
+  @include align-items(center);
+  i {
+    margin-right: .5rem;
+  }
+}
+.card-body.border-bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05)!important;
+}
+.card-columns {
+  @include media-breakpoint-only(xl) {
+    column-count: 4;
+  }
+}
+// -------------------------------------------------------------------------------------------------
+// nav-tabs
+.nav-tabs .nav-link.active {
+  border-color: #009688;
+  color: #009688;
+}

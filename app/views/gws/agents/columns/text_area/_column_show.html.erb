@@ -1,10 +1,11 @@
 <dt><%= value.name %></dt>
 <dd>
-  <% if column.try(:prefix_label).present? %>
-  <%= column.try(:prefix_label) %><br/>
+  <% if column.prefix_label.present? %>
+    <%= column.prefix_label %><br>
   <% end %>
   <%= br value.value %>
-  <% if column.try(:postfix_label).present? %>
-  <br/><%= column.try(:postfix_label) %>
+  <% if column.postfix_label.present? %>
+    <br>
+    <%= column.postfix_label %>
   <% end %>
 </dd>

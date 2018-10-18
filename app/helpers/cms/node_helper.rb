@@ -10,17 +10,18 @@ module Cms::NodeHelper
   def node_navi(mod_name = nil, &block)
     h = []
 
-    if block_given?
-      h << %(<nav class="mod-navi">).html_safe
-
-      if mod_name
-        mod_name = t("modules.#{mod_name}")
-        h << mod_navi { %(<h2>#{mod_name}</h2>).html_safe }
-      end
-
-      h << capture(&block)
-      h << %(</nav>).html_safe
-    end
+    # if block_given?
+    #   h << %(<nav class="mod-navi">).html_safe
+    #
+    #   if mod_name
+    #     mod_name = t("modules.#{mod_name}")
+    #     h << mod_navi { %(<h2>#{mod_name}</h2>).html_safe }
+    #   end
+    #
+    #   h << capture(&block)
+    #   h << %(</nav>).html_safe
+    # end
+    Rails.logger.warn("#{Kernel.caller.first}: [DEPRECATION] node_navi with block is deprecated.") if block_given?
 
     h << render(partial: "cms/node/main/node_navi")
     #h << render(partial: "cms/main/navi")
@@ -37,9 +38,9 @@ module Cms::NodeHelper
     end
 
     h = []
-    h << %(<div class="dropdown dropdown-toggle">).html_safe
+    h << %(<div class="ss-dropdown ss-dropdown-toggle">).html_safe
     h << capture(&block) if block_given?
-    h << %(<ul class="dropdown-menu">#{safe_join(mods)}</ul>).html_safe
+    h << %(<ul class="ss-dropdown-menu">#{safe_join(mods)}</ul>).html_safe
     h << %(</div>).html_safe
 
     safe_join(h)
