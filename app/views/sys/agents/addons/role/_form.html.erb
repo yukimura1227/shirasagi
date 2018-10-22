@@ -1,10 +1,9 @@
-<dl class="see">
-  <dt><%= @model.t :sys_role_ids %><%= @model.tt :sys_role_ids %></dt>
-  <dd>
-    <%= f.hidden_field "sys_role_ids[]", value: "" %>
+<%= f.ss_field_set :sys_role_ids, tt: true do %>
+  <div id="item_sys_role_ids">
+    <%= f.hidden_field "sys_role_ids[]", id: nil, value: "" %>
 
     <% Sys::Role.order_by(name: 1).each do |role| %>
     <label><%= f.check_box("sys_role_ids[]", {}, role.id) %> <%= role.name %></label><br />
     <% end %>
-  </dd>
-</dl>
+  </div>
+<% end %>

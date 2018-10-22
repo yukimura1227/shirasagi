@@ -1,24 +1,10 @@
-<div id="wrap">
-  <div class="wrap d-flex flex-wrap">
-    <%= tryb(ActionView::MissingTemplate) {render(file: "_content_navi")} %>
+<% @search = proc { render file: "_search" } %>
 
-    <article id="main">
-      <%= render file: "_search" %>
+<% if ::File.exists?("#{Rails.root}/app/views/#{params[:controller]}/_menu.html.erb") %>
+  <div id="menu"><%= render partial: "#{params[:controller]}/menu" %></div>
+<% elsif controller.menu_view_file %>
+  <div id="menu"><%= render partial: controller.menu_view_file %></div>
+<% end %>
 
-      <div class="wrap d-flex">
-        <div class="wrap-body">
-          <% if ::File.exists?("#{Rails.root}/app/views/#{params[:controller]}/_menu.html.erb") %>
-            <div id="menu"><%= render partial: "#{params[:controller]}/menu" %></div>
-          <% elsif controller.menu_view_file %>
-            <div id="menu"><%= render partial: controller.menu_view_file %></div>
-          <% end %>
-
-          <%= render file: "_list_head" %>
-          <%= render file: "_index" %>
-        </div>
-
-      </div>
-    </article>
-
-  </div>
-</div>
+<%= render file: "_list_head" %>
+<%= render file: "_index" %>

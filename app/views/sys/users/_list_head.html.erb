@@ -1,14 +1,29 @@
-<div class="list-head">
-  <label class="check"><input type="checkbox" /></label>
-
-  <div class="list-head-action">
-    <%= render file: "_list_head_tags" %>
-    <div class="list-head-action-destroy">
-      <button class="destroy-all btn"><%= t("ss.links.delete") %></button>
-      <button class="lock-all btn" data-ss-list-head-method="post" data-ss-list-head-action="<%= url_for(action: :lock_all) %>"><%= t("ss.links.lock_user") %></button>
-      <button class="unlock-all btn" data-ss-list-head-method="post" data-ss-list-head-action="<%= url_for(action: :unlock_all) %>"><%= t("ss.links.unlock_user") %></button>
-    </div>
+<div class="list-head d-flex align-item-center justify-content-between">
+  <div class="btn-group align-self-end mb-0" role="group">
+    <button class="destroy-all btn btn-outline-secondary"><%= t("ss.links.delete") %><div class="ripple-container"></div></button>
+    <button class="lock-all btn btn-outline-secondary" data-ss-list-head-method="post" data-ss-list-head-action="<%= url_for(action: :lock_all) %>"><%= t("ss.links.lock_user") %><div class="ripple-container"></div></button>
+    <button class="unlock-all btn btn-outline-secondary" data-ss-list-head-method="post" data-ss-list-head-action="<%= url_for(action: :unlock_all) %>"><%= t("ss.links.unlock_user") %><div class="ripple-container"></div></button>
   </div>
 
-  <%= render file: "_search" %>
+  <div class="form-row align-items-center">
+    <div class="col-auto my-1">
+      <label class="" for="inlineFormCustomSelect">ソート</label>
+      <span class="bmd-form-group is-filled"><select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+        <option value="1">更新日時（降順）</option>
+        <option value="2">更新日時（昇順）</option>
+        <option value="3">作成日時（降順）</option>
+        <option value="4">作成日時（昇順）</option>
+        <option value="9">タイトル（降順）</option>
+        <option value="10">タイトル（昇順）</option>
+      </select></span>
+    </div>
+    <div class="col-auto my-1">
+      <label class="" for="inlineFormCustomSelect">表示件数</label>
+      <span class="bmd-form-group is-filled"><select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+        <option value="1">50</option>
+        <option value="2">100</option>
+        <option value="3">200</option>
+      </select></span>
+    </div>
+  </div>
 </div>

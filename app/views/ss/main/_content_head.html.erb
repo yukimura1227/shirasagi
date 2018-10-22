@@ -10,20 +10,24 @@
 <% if content_head %>
   <%= render partial: content_head %>
 <% else %>
-  <section class="content-head">
-    <div class="d-flex justify-content-between flex-wrap">
-      <div class="title">
-        <h1 class="icon-content d-flex align-items-center"><%= ss_window_name %></h1>
-        <% if @crumbs.size > 0 %>
-        <ol class="breadcrumb">
-          <% @crumbs.each_with_index do |item, idx| %>
-            <li class="breadcrumb-item" <%== %(class="active") if @crumbs.size == idx + 1 %>><%= link_to *item %></li>
+  <% if ss_window_name.present? || @crumbs.present? %>
+    <section class="content-head">
+      <div class="d-flex justify-content-between flex-wrap">
+        <div class="title">
+          <% if ss_window_name.present? %>
+            <h1 class="icon-content d-flex align-items-center"><%= ss_window_name %></h1>
           <% end %>
-        </ol>
-        <% end %>
+          <% if @crumbs.size > 0 %>
+          <ol class="breadcrumb">
+            <% @crumbs.each_with_index do |item, idx| %>
+              <li class="breadcrumb-item" <%== %(class="active") if @crumbs.size == idx + 1 %>><%= link_to *item %></li>
+            <% end %>
+          </ol>
+          <% end %>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  <% end %>
 
   <%
     mod_navi = nil

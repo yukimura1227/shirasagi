@@ -1,0 +1,13 @@
+<% @table_def = define_ss_table do |tbl| %>
+  <% tbl.column_checkbox %>
+
+  <% tbl.column(class: "name") do %>
+    <% tbl.th @model.t :name %>
+    <% tbl.td do |item| %><%= link_to item.name, action: :show, id: item %><% end %>
+  <% end %>
+
+  <% tbl.column_updated %>
+  <% tbl.tap_menu %>
+<% end %>
+
+<%= render file: "ss/crud/index" %>

@@ -2,7 +2,4 @@
   <%= t 'ss.info.soft_delete' %>
 </div>
 
-<dl class="see">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.name %></dd>
-</dl>
+<%= f.ss_field_set :name, disabled: true %>

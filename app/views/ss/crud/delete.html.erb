@@ -1,17 +1,19 @@
 <%= form_for :item, url: { action: :show }, html: { method: :delete, multipart: true } do |f| %>
-<%= error_messages_for :item %>
+  <%= error_messages_for :item %>
 
-<div class="addon-views">
-  <div class="addon-view mb-5" id="addon-basic">
-    <div class="addon-head"><h2><%= t("ss.confirm.delete") %></h2></div>
-    <div class="addon-body">
-      <%= render file: "_delete" %>
+  <div class="addon-views">
+    <div class="addon-view mb-5" id="addon-basic">
+      <fieldset class="see">
+        <h2 class="addon-head h4"><%= t("ss.confirm.delete") %></h2>
+        <div class="addon-body">
+          <%= render file: "_delete", locals: { f: f } %>
+        </div>
+      </fieldset>
     </div>
   </div>
-</div>
 
-<footer class="send">
-  <%= f.submit t("ss.buttons.delete"), class: 'btn-danger delete' %>
-  <%= f.button t("ss.buttons.cancel"), class: 'btn-default', type: :reset, onclick: "location.href='#{url_for(action: :show)}'; return false;" %>
-</footer>
+  <footer class="send">
+    <%= f.submit t("ss.buttons.delete"), class: 'btn btn-danger delete' %>
+    <%= f.button t("ss.buttons.cancel"), class: 'btn btn-default', type: :reset, onclick: "location.href='#{url_for(action: :show)}'; return false;" %>
+  </footer>
 <% end %>

@@ -1,12 +1,10 @@
 <% css_classes ||= [] %>
 <% addons.each do |addon| %>
   <% buf = nil %>
-  <% buf = render file: addon.show_file if addon.show_file %>
+  <% buf = render file: addon.show_file, locals: { f: f } if addon.show_file %>
   <% next if buf.blank? %>
-  <div class="addon-view <%= css_classes.join(' ') %>" id="addon-<%= addon.id %>">
-    <div class="addon-head toggle-head <%= css_classes.join(' ') %>"><h2><%= addon.name %></h2></div>
-    <div class="addon-body toggle-body <%= css_classes.join(' ') %>">
-      <%= buf %>
-    </div>
-  </div>
+  <% addon_options = { id: "addon-#{addon.id}", head: addon.name, class: css_classes, toggle: true } %>
+  <%= render "ss/crud/addon_show", addon: addon_options do %>
+    <%= buf %>
+  <% end %>
 <% end %>

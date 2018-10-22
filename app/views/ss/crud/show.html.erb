@@ -1,29 +1,22 @@
 <% addons = @addons || @item.try(:addons) || [] %>
+<% @addon_navi = proc { render file: "_addon_navi" } %>
 
-<div id="wrap">
-  <div class="wrap d-flex flex-wrap">
-    <article id="main">
-      <div class="wrap d-flex">
-        <div class="wrap-body">
-          <% if ::File.exists?("#{Rails.root}/app/views/#{params[:controller]}/_menu.html.erb") %>
-          <div id="menu"><%= render partial: "menu" %></div>
-          <% elsif controller.menu_view_file %>
-          <div id="menu"><%= render partial: controller.menu_view_file %></div>
-          <% end %>
+<% if ::File.exists?("#{Rails.root}/app/views/#{params[:controller]}/_menu.html.erb") %>
+<div id="menu"><%= render partial: "menu" %></div>
+<% elsif controller.menu_view_file %>
+<div id="menu"><%= render partial: controller.menu_view_file %></div>
+<% end %>
 
-          <div class="addon-views">
-            <div class="addon-view mb-5" id="addon-basic">
-              <% if addons.size > 0 %><div class="addon-head"><h2><%= t "ss.basic_info"%></h2></div><% end %>
-              <div class="addon-body">
-                <%= render file: "_show" %>
-              </div>
-            </div>
-            <%= render file: "_addons_show", locals: { addons: addons } if addons.size > 0 %>
-          </div>
-        </div>
-
-        <%= render file: "_addon_navi" %>
-      </div>
-    </article>
+<%= form_for :item, url: nil, html: { id: "item-form", method: "get", multipart: true, autocomplete: :off, enforce_utf8: false } do |f| %>
+  <div class="addon-views">
+    <%
+      addon_options = {}
+      addon_options[:id] = "addon-basic"
+      addon_options[:head] = @addon_basic_name || t("ss.basic_info") if addons.size > 0
+    %>
+    <%= render "ss/crud/addon_show", addon: addon_options do %>
+      <%= render file: "_show", locals: { f: f } %>
+    <% end %>
+    <%= render file: "_addons_show", locals: { f: f, addons: addons } if addons.size > 0 %>
   </div>
-</div>
+<% end %>

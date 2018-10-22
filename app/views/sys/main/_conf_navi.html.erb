@@ -1,0 +1,46 @@
+<% menus = capture do %>
+  <% if Sys::Group.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.group"), sys_groups_path, class: "dropdown-item" %>
+  <% end %>
+  <% if SS::User.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.user"), sys_users_path, class: "dropdown-item" %>
+  <% end %>
+  <% if Sys::Role.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.role"), sys_roles_path, class: "dropdown-item" %>
+  <% end %>
+  <% if SS::User.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.auth"), sys_auth_path, class: "dropdown-item" %>
+  <% end %>
+
+  <% if Sys::Site.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.site"), sys_sites_path, class: "dropdown-item" %>
+  <% end %>
+  <% if Sys::Site.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.site_copy"), sys_site_copy_path, class: "dropdown-item" %>
+  <% end %>
+
+  <% if Sys::Notice.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.notice"), sys_notice_index_path, class: "dropdown-item" %>
+  <% end %>
+  <% if Sys::Setting.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.menu_settings"), sys_menu_settings_path, class: "dropdown-item" %>
+    <%= link_to t("sys.password_policy"), sys_password_policy_path, class: "dropdown-item" %>
+    <%= link_to t("sys.postal_code"), sys_postal_codes_path, class: "dropdown-item" %>
+    <%= link_to t("sys.max_file_size"), sys_max_file_sizes_path, class: "dropdown-item" %>
+  <% end %>
+
+  <% if SS::User.allowed?(:edit, @cur_user) %>
+    <%= link_to t("sys.test"), sys_test_path, class: "dropdown-item" %>
+    <%= link_to t("job.main"), job_sys_main_path, class: "dropdown-item" %>
+    <%= link_to t("history.log"), history_sys_logs_path, class: "dropdown-item" %>
+  <% end %>
+
+  <% if Sys::MailLog.allowed?(:edit, @cur_user) %>
+    <%= link_to Sys::MailLog.model_name.human, sys_mail_logs_path, class: "dropdown-item" %>
+  <% end %>
+<% end %>
+<% if menus.present? %>
+<div class="dropdown-menu d-flex flex-wrap" aria-labelledby="dropdownMenuButton">
+  <%= menus %>
+</div>
+<% end %>

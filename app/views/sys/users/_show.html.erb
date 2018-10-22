@@ -1,68 +1,43 @@
-<dl class="see">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.send :name %></dd>
+<%= f.ss_field_set :name, disabled: true %>
+<%= f.ss_field_set :kana, disabled: true %>
+<%= f.ss_field_set :uid, disabled: true %>
+<% if @item.organization_uid.present? %>
+  <%= f.ss_field_set :organization_uid, disabled: true %>
+<% end %>
+<%= f.ss_field_set :email, type: :email, disabled: true %>
+<%= f.ss_field_set :tel, type: :tel, disabled: true %>
+<%= f.ss_field_set :tel_ext, type: :tel, disabled: true %>
+<%= f.ss_field_set :type, value: @item.label(:type), disabled: true %>
+<%= f.ss_field_set :account_start_date, disabled: true %>
+<%= f.ss_field_set :account_expiration_date, disabled: true %>
+<%= f.ss_field_set :initial_password_warning, type: :text, value: @item.label(:initial_password_warning), disabled: true %>
 
-  <dt><%= @model.t :kana %></dt>
-  <dd><%= @item.send :kana %></dd>
+<%= f.ss_field_set :session_lifetime, type: :text, value: @item.session_lifetime_label, disabled: true %>
 
-  <dt><%= @model.t :uid %></dt>
-  <dd><%= @item.uid %></dd>
+<% if @item.restriction.present? %>
+  <%= f.ss_field_set :restriction, value: @item.label(:restriction), disabled: true %>
+<% end %>
 
-  <% if @item.organization_uid.present? %>
-  <dt><%= @model.t :organization_uid %></dt>
-  <dd><%= @item.send :organization_uid %></dd>
-  <% end %>
+<%= f.ss_field_set :lock_state, value: @item.label(:lock_state), disabled: true %>
 
-  <dt><%= @model.t :email %></dt>
-  <dd><%= @item.send :email %></dd>
+<% if @item.organization.present? %>
+  <%= f.ss_field_set :organization_id, value: @item.organization.name, disabled: true %>
+<% end %>
 
-  <dt><%= @model.t :tel %></dt>
-  <dd><%= @item.send :tel %></dd>
+<%= f.ss_field_set :group_ids, disabled: true do %>
+  <div id="item_group_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+        <% @item.groups.order_by(name: 1).pluck(:name).each do |group_name| %>
+        <tr>
+          <td><%= group_name %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
 
-  <dt><%= @model.t :tel_ext %></dt>
-  <dd><%= @item.send :tel_ext %></dd>
-
-  <dt><%= @model.t :type %></dt>
-  <dd><%= @item.label :type %></dd>
-
-  <% if @item.account_start_date.present? %>
-  <dt><%= @model.t :account_start_date %></dt>
-  <dd><%= tryb{@item.account_start_date.strftime("%Y/%m/%d %H:%M")} %></dd>
-  <% end %>
-
-  <% if @item.account_expiration_date.present? %>
-  <dt><%= @model.t :account_expiration_date %></dt>
-  <dd><%= tryb{@item.account_expiration_date.strftime("%Y/%m/%d %H:%M")} %></dd>
-  <% end %>
-
-  <% if @item.initial_password_warning.present? %>
-  <dt><%= @model.t :initial_password_warning %></dt>
-  <dd><%= @item.label :initial_password_warning %></dd>
-  <% end %>
-
-  <% if @item.session_lifetime.present? %>
-  <dt><%= @model.t :session_lifetime %></dt>
-  <dd><%= @item.label(:session_lifetime) || I18n.t('datetime.distance_in_words.x_seconds', count: @item.session_lifetime) %></dd>
-  <% end %>
-
-  <% if @item.restriction.present? %>
-  <dt><%= @model.t :restriction %></dt>
-  <dd><%= @item.label :restriction %></dd>
-  <% end %>
-
-  <dt><%= @model.t :lock_state %></dt>
-  <dd><%= @item.label :lock_state %></dd>
-
-  <% if @item.organization.present? %>
-  <dt><%= @model.t :organization_id %></dt>
-  <dd><%= @item.organization.name %></dd>
-  <% end %>
-
-  <dt><%= @model.t :group_ids %></dt>
-  <dd><%=br @item.groups.order_by(name: 1).map{|c| c.name }.join("\n") %></dd>
-
-  <% if @item.remark.present? %>
-  <dt><%= @model.t :remark %></dt>
-  <dd><%=br @item.send :remark %></dd>
-  <% end %>
-</dl>
+<% if @item.remark.present? %>
+  <%= f.ss_field_set :remark, type: :text_area, value: @item.remark, disabled: true %>
+<% end %>

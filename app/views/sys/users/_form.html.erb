@@ -4,94 +4,93 @@
   });
 <% end %>
 
-<dl class="see mod-sys-user">
-  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
-  <dd><%= f.text_field :name %></dd>
+<%= f.ss_field_set :name, tt: true %>
 
-  <dt><%= @model.t :kana %><%= @model.tt :kana %></dt>
-  <dd><%= f.text_field :kana %></dd>
+<%= f.ss_field_set :kana, tt: true %>
 
-  <dt><%= @model.t :uid %><%= @model.tt :uid %></dt>
-  <dd><%= f.text_field :uid %></dd>
+<%= f.ss_field_set :uid, tt: true %>
 
-  <dt><%= @model.t :organization_uid %><%= @model.tt :organization_uid %></dt>
-  <dd><%= f.text_field :organization_uid %></dd>
+<%= f.ss_field_set :organization_uid, tt: true %>
 
-  <dt><%= @model.t :email %><%= @model.tt :email %></dt>
-  <dd><%= f.email_field :email %></dd>
+<%= f.ss_field_set :email, type: :email, tt: true %>
 
-  <dt><%= @model.t :in_password %><%= @model.tt :in_password %></dt>
-  <dd>
-    <div class="input-group" style="width: 300px;">
-      <%= f.password_field :in_password %>
-      <%= button_tag t("ss.buttons.random_password"), type: :button, id: "random-password", class: "btn" %>
-    </div>
-    <span id="random-password-view"></span>
-  </dd>
+<%= f.ss_field_set :in_password, tt: true do %>
+  <div class="input-group" style="width: 300px;">
+    <%= f.password_field :in_password %>
+    <%= button_tag t("ss.buttons.random_password"), type: :button, id: "random-password", class: "btn" %>
+  </div>
+  <span id="random-password-view"></span>
+<% end %>
 
-  <dt><%= @model.t :tel %><%= @model.tt :tel %></dt>
-  <dd><%= f.text_field :tel %></dd>
+<%= f.ss_field_set :tel, type: :tel, tt: true %>
 
-  <dt><%= @model.t :tel_ext %><%= @model.tt :tel_ext %></dt>
-  <dd><%= f.text_field :tel_ext %></dd>
+<%= f.ss_field_set :tel_ext, type: :tel, tt: true %>
 
-  <dt><%= @model.t :type %><%= @model.tt :type %></dt>
-  <dd><%= f.select :type, @item.type_options %></dd>
+<%= f.ss_field_set :type, tt: true do %>
+  <%= f.select :type, @item.type_options %>
+<% end %>
 
-  <dt><%= @model.t :account_start_date %><%= @model.tt :account_start_date %></dt>
-  <dd><%= f.text_field :account_start_date, class: "datetime js-datetime", value: tryb { @item.account_start_date.strftime("%Y/%m/%d %H:%M") } %></dd>
+<%= f.ss_field_set :account_start_date, tt: true %>
 
-  <dt><%= @model.t :account_expiration_date %><%= @model.tt :account_expiration_date %></dt>
-  <dd><%= f.text_field :account_expiration_date, class: "datetime js-datetime", value: tryb { @item.account_expiration_date.strftime("%Y/%m/%d %H:%M") } %></dd>
+<%= f.ss_field_set :account_expiration_date, tt: true %>
 
-  <dt><%= @model.t :initial_password_warning %><%= @model.tt :initial_password_warning %></dt>
-  <dd><%= f.select :initial_password_warning, @item.initial_password_warning_options %></dd>
+<%= f.ss_field_set :initial_password_warning, tt: true do %>
+  <%= f.select :initial_password_warning, @item.initial_password_warning_options %>
+<% end %>
 
-  <dt><%= @model.t :session_lifetime %><%= @model.tt :session_lifetime %></dt>
-  <dd>
-    <%= f.number_field :session_lifetime, autocomplete: :on, list: :session_lifetime %>
-    <datalist id="session_lifetime">
-      <% @item.session_lifetime_options.each do |label, value| %>
-        <option label="<%= label %>" value="<%= value %>">
-      <% end %>
-    </datalist>
-  </dd>
+<%= f.ss_field_set :session_lifetime, tt: true do %>
+  <%= f.number_field :session_lifetime, autocomplete: :on, list: :session_lifetime %>
+  <datalist id="session_lifetime">
+    <% @item.session_lifetime_options.each do |label, value| %>
+      <option label="<%= label %>" value="<%= value %>">
+    <% end %>
+  </datalist>
+<% end %>
 
-  <dt><%= @model.t :restriction %><%= @model.tt :restriction %></dt>
-  <dd><%= f.select :restriction, @item.restriction_options %></dd>
+<%= f.ss_field_set :restriction, tt: true do %>
+  <%= f.select :restriction, @item.restriction_options %>
+<% end %>
 
-  <dt><%= @model.t :lock_state %><%= @model.tt :lock_state %></dt>
-  <dd><%= f.select :lock_state, @item.lock_state_options, include_blank: true %></dd>
+<%= f.ss_field_set :lock_state, tt: true do %>
+  <%= f.select :lock_state, @item.lock_state_options %>
+<% end %>
 
-  <dt><%= @model.t :organization_id %><%= @model.tt :organization_id %></dt>
-  <dd><%= f.select :organization_id, @item.organization_id_options %></dd>
+<%= f.ss_field_set :organization_id, tt: true do %>
+  <%= f.select :organization_id, @item.organization_id_options %>
+<% end %>
 
-  <dt><%= @model.t :group_ids %><%= @model.tt :group_ids %></dt>
-  <dd>
-    <%= f.hidden_field "group_ids[]", value: "", class: "hidden-ids" %>
-    <%= link_to t("ss.apis.groups.index"), sys_apis_groups_path, class: "ajax-box" %>
-  </dd>
-  <dd>
-    <table class="index ajax-selected">
-      <thead>
-        <tr>
-          <th class="name"><%= Sys::Group.t :name %></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @item.groups.each do |group| %>
-          <tr data-id="<%= group.id %>">
-            <td><%= f.hidden_field "group_ids[]", value: group.id %> <%= group.name %></td>
-            <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
+<%= f.ss_field_set :group_ids, tt: true do %>
+  <% render_template = proc do |id, name| %>
+    <tr data-id="<%= id %>">
+      <td><%= f.hidden_field "group_ids[]", id: nil, value: id %> <%= name %></td>
+      <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+    </tr>
+  <% end %>
+
+  <div class="ajax-select">
+    <%= link_to t("ss.apis.groups.index"), sys_apis_groups_path, class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= f.hidden_field "group_ids[]", id: nil, value: "", class: "ajax-hidden-ids" %>
+
+    <div class="table-responsive">
+      <table class="index ajax-selected table table-striped">
+        <thead>
+          <tr>
+            <th class="name"><%= Sys::Group.t :name %></th>
+            <th></th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </dd>
-</dl>
+        </thead>
+        <tbody>
+          <% @item.groups.each do |group| %>
+            <% render_template.call(group.id, group.name) %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
 
-<dl class="see mod-gws-user-remark">
-  <dt><%= @model.t :remark %><%= @model.tt :remark %></dt>
-  <dd><%= f.text_area :remark %></dd>
-</dl>
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
+  </div>
+<% end %>
+
+<%= f.ss_field_set :remark, type: :text_area, tt: true %>

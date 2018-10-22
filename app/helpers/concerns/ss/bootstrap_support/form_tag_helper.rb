@@ -161,5 +161,67 @@ module SS::BootstrapSupport::FormTagHelper
   # def utf8_enforcer_tag
   #   super
   # end
+
+  def ss_field_tag_set(name, value = nil, options = {})
+    tt = options.delete(:tt)
+    content_tag(:div, class: "col12 mb-3") do
+      output_buffer << label_tag(name) do
+        output_buffer << options.delete(:label)
+        if tt
+          output_buffer << tt
+        end
+      end
+
+      if block_given?
+        output_buffer << capture { yield }
+      else
+        case guess_type(options.delete(:type), value)
+        when :text
+          output_buffer << text_field_tag(name, value, options)
+        when :password
+          output_buffer << password_field_tag(name, value, options)
+        when :email
+          output_buffer << email_field_tag(name, value, options)
+        when :url
+          output_buffer << url_field(name, value, options)
+        when :tel
+          output_buffer << telephone_field_tag(name, value, options)
+        when :hidden
+          output_buffer << hidden_field_tag(name, value, options)
+        when :number
+          output_buffer << number_field_tag(name, value, options)
+        when :file
+          output_buffer << file_field_tag(name, options)
+        when :text_area
+          output_buffer << text_area_tag(name, value, options)
+        when :date
+          options[:class] = %w(date js-date)
+          value = value ? I18n.l(value.to_date, format: :picker) : nil
+          output_buffer << text_field_tag(name, value, options)
+        when :datetime
+          options[:class] = %w(datetime js-datetime)
+          value = value ? I18n.l(value, format: :picker) : nil
+          output_buffer << text_field_tag(name, value, options)
+        else
+          raise "unknown type: #{type}"
+        end
+      end
+    end
+  end
+
+  private
+
+  def guess_type(type, value)
+    return type if type.present? && type != :auto
+
+    case value
+    when Integer
+      :number
+    when DateTime
+      :datetime
+    else
+      :text
+    end
+  end
 end
 

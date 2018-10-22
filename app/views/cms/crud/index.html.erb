@@ -1,9 +1,10 @@
 <% @table_def ||= define_ss_table do |tbl| %>
   <% tbl.column_checkbox %>
 
-  <% tbl.column(class: "state") do %>
-    <% tbl.th t("cms.status") %>
-    <% tbl.td do |item| %><span class="public"><%= t "ss.state.#{item.status}" %></span>
+  <% if @model.new.respond_to?(:status) %>
+    <% tbl.column(class: "state") do %>
+      <% tbl.th t("cms.status") %>
+      <% tbl.td do |item| %><span class="public"><%= t "ss.state.#{item.status}" %></span><% end %>
     <% end %>
   <% end %>
 
@@ -32,11 +33,13 @@
     <% end %>
   <% end %>
 
-  <% tbl.column(class: "author") do %>
-    <% tbl.th t("mongoid.attributes.cms/content.user") %>
-    <% tbl.td do |item| %>
-      <% if item.user.present? %>
-        <%= item.user.long_name %>
+  <% if @model.new.respond_to?(:user) %>
+    <% tbl.column(class: "author") do %>
+      <% tbl.th t("mongoid.attributes.cms/content.user") %>
+      <% tbl.td do |item| %>
+        <% if item.user.present? %>
+          <%= item.user.long_name %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

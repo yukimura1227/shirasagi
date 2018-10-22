@@ -1,19 +1,11 @@
-<dl class="see">
-  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
-  <dd><%= f.text_field :name %></dd>
+<%= f.ss_field_set :name, tt: true %>
 
-  <% if @item.domain_editable? %>
-  <dt><%= @model.t :domains %><%= @model.tt :domains %></dt>
-  <dd><%= f.text_field :domains %></dd>
-  <% end %>
+<% if @item.domain_editable? %>
+<%= f.ss_field_set :domains, tt: true %>
+<% end %>
 
-  <dt><%= @model.t :order %><%= @model.tt :order %></dt>
-  <dd><%= f.number_field :order %></dd>
+<%= f.ss_field_set :order, tt: true %>
 
-  <dt><%= @model.t :activation_date %><%= @model.tt :activation_date %></dt>
-  <dd><%= f.text_field :activation_date, class: 'datetime js-datetime', value: tryb { @item.activation_date.strftime("%Y/%m/%d %H:%M") } %></dd>
+<%= f.ss_field_set :activation_date, tt: true %>
 
-  <dt><%= @model.t :expiration_date %><%= @model.tt :expiration_date %></dt>
-  <dd><%= f.text_field :expiration_date, class: 'datetime js-datetime', value: tryb { @item.expiration_date.strftime("%Y/%m/%d %H:%M") } %></dd>
-</dl>
-
+<%= f.ss_field_set :expiration_date, tt: true %>

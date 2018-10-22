@@ -1,9 +1,10 @@
+<% css_classes ||= [] %>
 <% addons.each do |addon| %>
   <% buf = nil %>
   <% buf = render file: addon.form_file, locals: { f: f, a: 1 } if addon.form_file %>
   <% next if buf.blank? %>
-  <div class="addon-view mb-5" id="addon-<%= addon.id %>">
-    <h2 class="h4"><%= addon.name %></h2>
+  <% addon_options = { id: "addon-#{addon.id}", head: addon.name, class: css_classes, toggle: true } %>
+  <%= render "ss/crud/addon_form", addon: addon_options do %>
     <%= buf %>
-  </div>
+  <% end %>
 <% end %>

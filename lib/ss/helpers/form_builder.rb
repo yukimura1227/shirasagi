@@ -32,16 +32,90 @@ module SS::Helpers
       @template.check_box_tag(object_method, checked_value, checked, options)
     end
 
+    def ss_field_set(method, options = {}, &block)
+      model = @template.assigns["model"]
+
+      method = method.to_sym
+      tt = normalize_tooltip(options.delete(:tt), model, method)
+
+      @template.content_tag(:div, class: "col12 mb-3") do
+        @template.output_buffer << label(method) do
+          @template.output_buffer << model.t(method)
+          if tt
+            @template.output_buffer << tt
+          end
+        end
+        if block_given?
+          @template.output_buffer << @template.capture { yield }
+        else
+          case guess_type(options.delete(:type), model, method)
+          when :text
+            @template.output_buffer << text_field(method, options)
+          when :password
+            @template.output_buffer << password_field(method, options)
+          when :email
+            @template.output_buffer << email_field(method, options)
+          when :url
+            @template.output_buffer << url_field(method, options)
+          when :tel
+            @template.output_buffer << telephone_field(method, options)
+          when :hidden
+            @template.output_buffer << hidden_field(method, options)
+          when :number
+            @template.output_buffer << number_field(method, options)
+          when :file
+            @template.output_buffer << file_field(method, options)
+          when :text_area
+            @template.output_buffer << text_area(method, options)
+          when :date
+            options[:class] = %w(date js-date)
+            object = @template.instance_variable_get(:"@#{object_name}")
+            val = object.send(method)
+            options[:value] = val ? I18n.l(val.to_date, format: :picker) : nil
+            @template.output_buffer << text_field(method, options)
+          when :datetime
+            options[:class] = %w(datetime js-datetime)
+            object = @template.instance_variable_get(:"@#{object_name}")
+            val = object.send(method)
+            options[:value] = val ? I18n.l(val, format: :picker) : nil
+            @template.output_buffer << text_field(method, options)
+          else
+            raise "unknown type: #{type}"
+          end
+        end
+      end
+    end
+
     private
 
     def array_value(method)
       item = @template.instance_variable_get(:"@#{@object_name}")
-      code = method.sub(/\[\]$/, "").gsub(/\[(\D.*?)\]/, '["\\1"]')
+      normalized = method.sub(/\[\]$/, "").gsub(/\[(\D.*?)\]/, '["\\1"]')
 
       if method.end_with?('[]')
-        value = eval("item.#{code}") || []
+        item.send(normalized) || []
       else
-        value = eval("item.#{code}")
+        item.send(normalized)
+      end
+    end
+
+    def normalize_tooltip(tooltip, model, method)
+      return unless tooltip
+      return tooltip if !tooltip.is_a?(TrueClass)
+
+      model.tt(method)
+    end
+
+    def guess_type(type, model, method)
+      return type if type.present? && type != :auto
+
+      klass = model.fields[method.to_s].type
+      if klass == Integer
+        :number
+      elsif klass == DateTime
+        :datetime
+      else
+        :text
       end
     end
   end

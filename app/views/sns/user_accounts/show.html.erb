@@ -1,8 +1,12 @@
+<%= form_for :item, url: nil, html: { id: "item-form", method: "get", multipart: true, autocomplete: :off, enforce_utf8: false } do |f| %>
 <div class="addon-views">
-  <div class="addon-view mb-5" id="addon-basic">
-    <div class="addon-head"><h2><%= t "ss.basic_info"%></h2></div>
-    <div class="addon-body">
-      <%= render file: "_show" %>
-    </div>
-  </div>
+  <%
+    addon_options = {}
+    addon_options[:id] = "addon-basic"
+    addon_options[:head] = t("ss.basic_info")
+  %>
+  <%= render "ss/crud/addon_show", addon: addon_options do %>
+    <%= render file: "_show", locals: { f: f } %>
+  <% end %>
 </div>
+<% end %>

@@ -6,7 +6,6 @@ module Sns::UserFilter
     before_action :set_sns_user
     before_action :require_self
     before_action :set_crumbs
-    navi_view "sns/user/main/navi"
   end
 
   private

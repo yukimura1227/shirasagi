@@ -1,14 +1,18 @@
-<nav class="nav-menu">
-  <% if params[:action] =~ /index/ %>
-    <%= link_to t('ss.links.new'), { action: :new }, class: :new if @model.allowed?(:edit, @cur_user) %>
-  <% elsif params[:action] =~ /new|create/ %>
-    <%= link_to t('ss.links.back_to_index'), { action: :index }, class: "back-to-index" %>
-  <% elsif params[:action] =~ /edit|update|delete/ %>
-    <%= link_to t('ss.links.back_to_show'), { action: :show, id: @item }, class: "back-to-show" if @item.allowed?(:edit, @cur_user) %>
-    <%= link_to t('ss.links.back_to_index'), { action: :index }, class: "back-to-index" %>
-  <% else %>
-    <%= link_to t('ss.links.edit'), { action: :edit, id: @item }, class: :edit if @item.allowed?(:edit, @cur_user) %>
-    <%= link_to t('ss.links.delete'), { action: :delete, id: @item }, class: :delete if @item.allowed?(:edit, @cur_user) %>
-    <%= link_to t('ss.links.back_to_index'), { action: :index }, class: "back-to-index" %>
-  <% end %>
-</nav>
+<div id="menu">
+  <div class="d-flex flex-wrap align-item-center justify-content-between mb-0">
+    <nav>
+      <% if params[:action] =~ /index/ %>
+        <%= link_to(t('ss.links.new'), { action: :new }, { class: "btn btn-outline-secondary new" }) if @model.allowed?(:edit, @cur_user) %>
+      <% elsif params[:action] =~ /new|create/ %>
+        <%= link_to(t('ss.links.back_to_index'), { action: :index }, { class: "btn btn-outline-secondary back-to-index" }) %>
+      <% elsif params[:action] =~ /edit|update|delete/ %>
+        <%= link_to(t('ss.links.back_to_show'), { action: :show, id: @item }, { class: "btn btn-outline-secondary back-to-show" }) if @item.allowed?(:edit, @cur_user) %>
+        <%= link_to(t('ss.links.back_to_index'), { action: :index }, { class: "btn btn-outline-secondary back-to-index" }) %>
+      <% else %>
+        <%= link_to(t('ss.links.edit'), { action: :edit, id: @item }, { class: "btn btn-outline-secondary edit" }) if @item.allowed?(:edit, @cur_user) %>
+        <%= link_to(t('ss.links.delete'), { action: :delete, id: @item }, { class: "btn btn-outline-secondary delete" }) if @item.allowed?(:edit, @cur_user) %>
+        <%= link_to(t('ss.links.back_to_index'), { action: :index }, { class: "btn btn-outline-secondary back-to-index" }) %>
+      <% end %>
+    </nav>
+  </div>
+</div>

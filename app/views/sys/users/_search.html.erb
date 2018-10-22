@@ -1,8 +1,22 @@
-<% @s = OpenStruct.new params[:s] %>
-<div class="list-head-search">
-  <%= form_for :s, url: "", html: { class: "index-search", method: :get } do |f| %>
-    <%= f.text_field :keyword, style: "width: 300px;" %>
-    <%= f.select :state, @model.new.search_state_options %>
-    <input type="submit" value="<%= t('ss.buttons.search') %>" class="btn" />
-  <% end %>
+<% @s ||= OpenStruct.new params[:s] %>
+<div class="content-search card mb-5">
+  <div class="card-body">
+    <%= form_for :s, url: "", html: { method: :get } do |f| %>
+      <div class="search-group d-flex align-items-center flex-wrap">
+        <h2><%= t("ss.keyword") %></h2>
+        <div class="form-group bmd-form-group">
+          <%= f.text_field :keyword, placeholder: "", class: "keyword form-control" %>
+        </div>
+      </div>
+      <div class="search-group d-flex align-items-center flex-wrap">
+        <h2><%= @model.t :state %></h2>
+        <div class="form-group bmd-form-group">
+          <%= f.select :state, @model.new.search_state_options %>
+        </div>
+      </div>
+      <div class="search-group d-flex align-items-center flex-wrap justify-content-between">
+        <%= f.submit t('ss.buttons.search'), name: nil, class: "btn btn-outline-primary" %>
+      </div>
+    <% end %>
+  </div>
 </div>

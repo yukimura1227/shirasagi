@@ -1,22 +1,15 @@
-<dl class="see">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.send :name %></dd>
+<%= f.ss_field_set :name, disabled: true %>
 
-  <% if @item.domains.present? %>
-  <dt><%= @model.t :domains %></dt>
-  <dd><%= @item.send :domains %></dd>
-  <% end %>
+<% if @item.domains.present? %>
+<%= f.ss_field_set :domains, disabled: true %>
+<% end %>
 
-  <dt><%= @model.t :order %></dt>
-  <dd><%= @item.send :order %></dd>
+<%= f.ss_field_set :order, disabled: true %>
 
-  <% if @item.activation_date.present? %>
-  <dt><%= @model.t :activation_date %></dt>
-  <dd><%= tryb { @item.activation_date.strftime("%Y/%m/%d %H:%M") } %></dd>
-  <% end %>
+<% if @item.activation_date.present? %>
+<%= f.ss_field_set :activation_date, disabled: true %>
+<% end %>
 
-  <% if @item.expiration_date.present? %>
-  <dt><%= @model.t :expiration_date %></dt>
-  <dd><%= tryb { @item.expiration_date.strftime("%Y/%m/%d %H:%M") } %></dd>
-  <% end %>
-</dl>
+<% if @item.expiration_date.present? %>
+<%= f.ss_field_set :expiration_date, disabled: true %>
+<% end %>

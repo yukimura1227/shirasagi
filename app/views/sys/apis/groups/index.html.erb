@@ -1,31 +1,37 @@
 <%= jquery do %> SS_SearchUI.modal(); <% end %>
 
-<div class="search-ui-form">
-<%= form_for :s, url: { action: :index }, html: { method: "GET", class: :search } do |f| %>
-  <%= f.text_field :name, value: params[:s].try(:[], :name) %>
-  <%= f.submit  t("ss.apis.groups.search"), class: :btn %>
-<% end %>
+<div class="content-search card mb-3">
+  <div class="card-body search-ui-form">
+    <%= form_for :s, url: { action: :index }, html: { method: "GET", class: "search no-form-inline" } do |f| %>
+      <%= f.text_field :name, value: params[:s].try(:[], :name) %>
+      <%= f.submit  t("ss.apis.groups.search"), class: "btn btn-outline-primary" %>
+    <% end %>
+  </div>
 </div>
 
-<table class="index">
-  <thead class="list-head">
-    <tr>
-      <th class="checkbox"><input type="checkbox" /></th>
-      <th class="name"><%= @model.t :name %></th>
-    </tr>
-  </thead>
-  <tbody class="items">
-    <% @items.each do |item| %>
-      <tr data-id="<%= item.id %>" class="list-item">
-        <td class="checkbox">
-          <input type="checkbox" name="ids[]" value="<%= item.id %>" />
-        </td>
-        <td><%= link_to item.name, "#", class: "select-item" %></td>
+<div class="table-responsive">
+  <table class="table table-striped index">
+    <thead class="list-head">
+      <tr>
+        <th class="checkbox"><input type="checkbox" /></th>
+        <th class="name"><%= @model.t :name %></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody class="items">
+      <% @items.each do |item| %>
+        <tr data-id="<%= item.id %>" class="list-item">
+          <td class="check">
+            <div class="checkbox">
+              <input type="checkbox" name="ids[]" value="<%= item.id %>" />
+            </div>
+          </td>
+          <td><%= link_to item.name, "#", class: "select-item" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <div class="search-ui-select">
-  <%= button_tag t("ss.apis.groups.select"), { type: :button, class: "select-items btn" } %>
+  <%= button_tag t("ss.apis.groups.select"), { type: :button, class: "select-items btn btn-outline-primary" } %>
 </div>

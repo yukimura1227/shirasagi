@@ -42,13 +42,26 @@
       </div>
     <% end %>
 
-    <%# content_head %>
-    <%= yield(:content_head).presence || render(partial: "ss/main/content_head") %>
-
     <%# notice %>
     <%= yield(:notice).presence || render(partial: "ss/main/notice") %>
 
-    <%= yield %>
+    <%# content_head %>
+    <%= yield(:content_head).presence || render(partial: "ss/main/content_head") %>
+
+    <div id="wrap">
+      <div class="wrap d-flex flex-wrap">
+        <% if @content_navi %><% content_navi.call %><% end %>
+        <article id="main">
+          <% if @search %><% @search.call %><% end %>
+          <div class="wrap d-flex">
+            <div class="wrap-body">
+              <%= yield %>
+            </div>
+            <% if @addon_navi %><%= @addon_navi.call %><% end %>
+          </div>
+        </article>
+      </div>
+    </div>
 
     <%# foot %>
     <%= yield(:foot).presence || render(partial: "ss/main/foot") %>

@@ -1,13 +1,28 @@
-<% @index_meta = proc do |item| %>
-  <span class="id">#<%= item.uid.presence || item.id %></span>
-  <span class="datetime"><%= item.updated.strftime("%Y/%m/%d %H:%M") %></span>
+<% @table_def = define_ss_table do |tbl| %>
+  <% tbl.column_checkbox %>
 
-  <% if item.email.present? %>
-    <span><%= mail_to item.email %></span>
+  <% tbl.column(class: "name") do %>
+    <% tbl.th @model.t :name %>
+    <% tbl.td do |item| %><%= link_to(item.name, action: :show, id: item) %><% end %>
   <% end %>
-  <% if item.tel_label.present? %>
-    <span class="tel"><%= item.tel_label %></span>
+
+  <% tbl.column(class: "id") do %>
+    <% tbl.th @model.t :uid %>
+    <% tbl.td do |item| %>#<%= item.uid.presence || item.id %><% end %>
   <% end %>
+
+  <% tbl.column(class: "email") do %>
+    <% tbl.th @model.t :email %>
+    <% tbl.td do |item| %><%= mail_to item.email %><% end %>
+  <% end %>
+
+  <% tbl.column(class: "tel") do %>
+    <% tbl.th @model.t :tel %>
+    <% tbl.td do |item| %><%= item.tel_label %><% end %>
+  <% end %>
+
+  <% tbl.column_updated %>
+  <% tbl.tap_menu %>
 <% end %>
 
 <%= render file: "ss/crud/index" %>

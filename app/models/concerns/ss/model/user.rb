@@ -240,6 +240,11 @@ module SS::Model::User
     end
   end
 
+  def session_lifetime_label
+    return if session_lifetime.blank?
+    label(:session_lifetime).presence || I18n.t('datetime.distance_in_words.x_seconds', count: session_lifetime)
+  end
+
   def restriction_options
     %w(none api_only).map do |v|
       [ I18n.t("ss.options.restriction.#{v}"), v ]
