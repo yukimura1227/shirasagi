@@ -2,10 +2,17 @@
 <% return "" if @item.opendata_dataset_state == 'none' %>
 <%= jquery do %> SS_AddonTabs.hide("dl.mod-cms-opendata-dataset"); <% end %>
 
-<dl class="see mod-cms-opendata-dataset">
-  <dt><%= @model.t :opendata_dataset_state %></dt>
-  <dd><%= @item.label :opendata_dataset_state %></dd>
-
-  <dt><%= @model.t :opendata_dataset_ids %></dt>
-  <dd><%= br @item.opendata_datasets.pluck(:name).join("\n") %></dd>
-</dl>
+<% f.ss_field_set :opendata_dataset_state, value: @item.label(:opendata_dataset_state) %>
+<% f.ss_field_set :opendata_dataset_ids do %>
+  <div id="item_opendata_dataset_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.opendata_datasets.pluck(:name).each do |opendata_dataset_name| %>
+      <tr>
+        <td><%= opendata_dataset_name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

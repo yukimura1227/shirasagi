@@ -1,33 +1,34 @@
-<%= jquery do %>
-  SS_AddonTabs.hide(".mod-cms-default-release-plan");
-<% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 <%
   @item.default_release_days_after ||= 3
   @item.default_close_days_after ||= 1000
 %>
 
-<dl class="see mod-cms-default-release-plan">
-  <dt><%= @model.t :default_release_plan_state %><%= @model.tt :default_release_plan_state %></dt>
-  <dd><%= f.select :default_release_plan_state, @item.default_release_plan_state_options %></dd>
+<%= f.ss_select_set :default_release_plan_state, tt: true %>
 
-  <dt><%= @model.t :default_release_days_after %><%= @model.tt :default_release_days_after %></dt>
-  <dd class="short">
+<%= f.ss_field_set :default_release_days_after, tt: true do %>
+  <div class="short">
     <div class="input-group" style="width: 12em;">
       <%= f.number_field :default_release_days_after %> <span class="input-group-append"><%= t("ss.units.days_after") %></span>
     </div>
-  </dd>
+  </div>
+<% end %>
 
-  <dt><%= @model.t :default_close_days_after %><%= @model.tt :default_close_days_after %></dt>
-  <dd class="short">
+<%= f.ss_field_set :default_close_days_after, tt: true do %>
+  <div class="short">
     <div class="input-group" style="width: 12em;">
       <%= f.number_field :default_close_days_after %> <span class="input-group-append"><%= t("ss.units.days_after") %></span>
     </div>
-  </dd>
+  </div>
+<% end %>
 
-  <dt><%= @model.t :close_days_before %><%= @model.tt :close_days_before %></dt>
-  <dd class="short">
+<%= f.ss_field_set :close_days_before, tt: true do %>
+  <div class="short">
     <div class="input-group" style="width: 12em;">
       <%= f.number_field :close_days_before %> <span class="input-group-append"><%= t("ss.units.days_before") %></span>
     </div>
-  </dd>
-</dl>
+  </div>
+<% end %>

@@ -37,18 +37,24 @@ module SS::Helpers
 
       method = method.to_sym
       tt = normalize_tooltip(options.delete(:tt), model, method)
+      label_text = options.fetch(:label, model.t(method))
+      options.delete(:label)
 
       @template.content_tag(:div, class: "col12 mb-3") do
-        @template.output_buffer << label(method) do
-          @template.output_buffer << model.t(method)
-          if tt
-            @template.output_buffer << tt
+        if label_text.present?
+          @template.output_buffer << label(method) do
+            @template.output_buffer << label_text
+            if tt
+              @template.output_buffer << tt
+            end
           end
         end
         if block_given?
           @template.output_buffer << @template.capture { yield }
         else
-          case guess_type(options.delete(:type), model, method)
+          type = options.delete(:type)
+          value = options[:value]
+          case guess_type(type, model, method, value)
           when :text
             @template.output_buffer << text_field(method, options)
           when :password
@@ -69,20 +75,47 @@ module SS::Helpers
             @template.output_buffer << text_area(method, options)
           when :date
             options[:class] = %w(date js-date)
-            object = @template.instance_variable_get(:"@#{object_name}")
-            val = object.send(method)
-            options[:value] = val ? I18n.l(val.to_date, format: :picker) : nil
+            value ||= begin
+              object = @template.instance_variable_get(:"@#{object_name}")
+              object.send(method)
+            end
+            options[:value] = value ? I18n.l(value.to_date, format: :picker) : nil
             @template.output_buffer << text_field(method, options)
           when :datetime
             options[:class] = %w(datetime js-datetime)
-            object = @template.instance_variable_get(:"@#{object_name}")
-            val = object.send(method)
-            options[:value] = val ? I18n.l(val, format: :picker) : nil
+            value ||= begin
+              object = @template.instance_variable_get(:"@#{object_name}")
+              object.send(method)
+            end
+            options[:value] = value ? I18n.l(value, format: :picker) : nil
             @template.output_buffer << text_field(method, options)
           else
             raise "unknown type: #{type}"
           end
         end
+      end
+    end
+
+    def ss_select_set(method, options = {}, html_options = {})
+      model = @template.assigns["model"]
+
+      method = method.to_sym
+      tt = normalize_tooltip(options.delete(:tt), model, method)
+
+      @template.content_tag(:div, class: "col12 mb-3") do
+        @template.output_buffer << label(method) do
+          @template.output_buffer << model.t(method)
+          if tt
+            @template.output_buffer << tt
+          end
+        end
+
+        choices = options.delete(:choices)
+        choices ||= begin
+          object = @template.instance_variable_get(:"@#{object_name}")
+          object.send("#{method}_options")
+        end
+        @template.output_buffer << select(method, choices, options, html_options)
       end
     end
 
@@ -106,10 +139,10 @@ module SS::Helpers
       model.tt(method)
     end
 
-    def guess_type(type, model, method)
+    def guess_type(type, model, method, value)
       return type if type.present? && type != :auto
 
-      klass = model.fields[method.to_s].type
+      klass = value ? value.class : model.fields[method.to_s].type
       if klass == Integer
         :number
       elsif klass == DateTime

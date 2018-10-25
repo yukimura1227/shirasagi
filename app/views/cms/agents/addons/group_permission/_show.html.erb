@@ -1,14 +1,14 @@
-<fieldset class="see" disabled>
-  <div class="form-group">
-    <h2 class="h4">権限</h2>
-    <div class="col12 mb-3">
-      <label><%= @model.t :group_ids %></label>
-      <input class="form-control" type="text" value="<%=br @item.groups.order_by(name: 1).map{|c| c.name }.join("\n") %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :permission_level %></label>
-      <input class="form-control" type="text" value="<%= @item.label :permission_level %>" />
-    </div>
+<%= f.ss_field_set :group_ids, disabled: true do %>
+  <div id="item_group_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.groups.order_by(name: 1).pluck(:name).each do |group_name| %>
+      <tr>
+        <td><%= group_name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
-</fieldset>
+<% end %>
+<%= f.ss_field_set :permission_level, value: @item.label(:permission_level), disabled: true %>

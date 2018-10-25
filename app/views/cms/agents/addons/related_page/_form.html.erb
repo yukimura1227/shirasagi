@@ -1,31 +1,40 @@
-<%= jquery do %> SS_AddonTabs.hide(".mod-cms-related_pages"); <% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
-<dl class="see mod-cms-related_pages">
-  <dt><%= @model.t :related_page_ids %><%= @model.tt :related_page_ids %></dt>
-  <dd>
-    <%= f.hidden_field "related_page_ids[]", value: "", class: "hidden-ids" %>
-    <%= link_to t("cms.apis.pages.index"), cms_apis_pages_path, class: "ajax-box" %>
-  </dd>
-  <dd>
-    <table class="index ajax-selected">
-      <thead>
-        <tr>
-          <th class="name"><%= @model.t :name %></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @item.related_pages.each do |page| %>
-        <tr data-id="<%= page.id %>">
-          <td><%= f.hidden_field "related_page_ids[]", value: page.id %> <%= page.name %></td>
-          <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
-        </tr>
-        <% end %>
-        <tr style="display:none" <%= raw(@item.present? ? "data-id=#{@item.id}" : "") %>></tr>
-      </tbody>
-    </table>
-  </dd>
+<%= f.ss_field_set :related_page_ids, tt: true do %>
+  <% render_template = proc do |id, name| %>
+    <tr data-id="<%= id %>">
+      <td><%= f.hidden_field "related_page_ids[]", id: nil, value: id %> <%= name %></td>
+      <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+    </tr>
+  <% end %>
 
-  <dt><%= @model.t :related_page_sort %><%= @model.tt :related_page_sort %></dt>
-  <dd><%= f.select :related_page_sort, @item.related_page_sort_options, include_blank: true %></dd>
-</dl>
+  <div class="ajax-select">
+    <%= link_to t("cms.apis.pages.index"), cms_apis_pages_path, class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= f.hidden_field "related_page_ids[]", id: nil, value: "", class: "ajax-hidden-ids" %>
+
+    <div class="table-responsive">
+      <table class="index ajax-selected table table-striped">
+        <thead>
+          <tr>
+            <th class="name"><%= @model.t :name %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @item.related_pages.each do |page| %>
+            <% render_template.call(page.id, page.host) %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
+  </div>
+<% end %>
+
+<%= f.ss_select_set :related_page_sort, tt: true, include_blank: true %>

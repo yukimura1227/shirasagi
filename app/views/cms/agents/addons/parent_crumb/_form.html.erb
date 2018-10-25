@@ -1,6 +1,4 @@
 <%= jquery do %>
-  SS_AddonTabs.hide(".mod-cms-parent_crumbs");
-
   var blank = $(".parent-crumbs").first().text();
   $(".parent-crumbs").mousedown(function(){
     $(this).toggleClass("pulled");
@@ -67,29 +65,33 @@
     return false;
   });
 <% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
 <% render_crumb_url = proc do |url| %>
-<dd class="crumb-urls">
-  <div class="input-group">
-    <%= text_field_tag "item[parent_crumb_urls][]", url, class: :parent_crumb_urls %>
-    <%= button_tag t("ss.buttons.delete"), {type: :button, class: "delete-crumb btn"} %>
+  <div class="crumb-urls">
+    <div class="input-group">
+      <%= text_field_tag "item[parent_crumb_urls][]", url, class: :parent_crumb_urls %>
+      <%= button_tag t("ss.buttons.delete"), {type: :button, class: "delete-crumb btn"} %>
+    </div>
   </div>
-</dd>
-<dd class="crumb-categories">
-  <%= select_tag('parent-crumbs', options_for_select([]), { id: nil, include_blank: t('cms.options.parent_crumb.blank'), class: 'parent-crumbs' }) %>
-</dd>
+  <div class="crumb-categories">
+    <%= select_tag('parent-crumbs', options_for_select([]), { id: nil, include_blank: t('cms.options.parent_crumb.blank'), class: 'parent-crumbs' }) %>
+  </div>
 <% end %>
 
-<dl class="see mod-cms-parent_crumbs">
-  <dt><%= @model.t :parent_crumb_urls %><%= @model.tt :parent_crumb_urls %></dt>
-
-  <% if @item.parent_crumb_urls.present? %>
-    <% @item.parent_crumb_urls.each do |url| %>
-      <% render_crumb_url.call(url) %>
+<%= f.ss_field_set :parent_crumb_urls, tt: true do %>
+  <div>
+    <% if @item.parent_crumb_urls.present? %>
+      <% @item.parent_crumb_urls.each do |url| %>
+        <% render_crumb_url.call(url) %>
+      <% end %>
+    <% else %>
+      <% render_crumb_url.call("") %>
     <% end %>
-  <% else %>
-    <% render_crumb_url.call("") %>
-  <% end %>
+  </div>
 
-  <dd><%= button_tag t("cms.buttons.add_crumb"), { type: :button, class: "add-crumb btn" } %></dd>
-</dl>
+  <div><%= button_tag t("cms.buttons.add_crumb"), { type: :button, class: "add-crumb btn" } %></div>
+<% end %>

@@ -1,15 +1,17 @@
 <% return "" if @item.related_pages.blank? %>
 
-<fieldset class="see" disabled>
-  <div class="form-group">
-    <div class="col12 mb-3">
-      <label><%= @model.t :related_pages %></label>
-      <input class="form-control" type="text" placeholder="<%=br @item.send(:related_pages).pluck(:name).join("\n") %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :related_page_sort %></label>
-      <input class="form-control" type="text" placeholder="<%=br @item.label :related_page_sort %>" />
-    </div>
+<%= f.ss_field_set :related_pages do %>
+  <div id="item_related_pages" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.related_pages.pluck(:name).each do |related_page_name| %>
+      <tr>
+        <td><%= related_page_name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
-</fieldset>
+<% end %>
+
+<%= f.ss_field_set :related_page_sort, value: @item.label(:related_page_sort) %>

@@ -11,8 +11,6 @@
 <% end %>
 
 <div class="mod-workflow pt-5">
-  <h2 class="h4">承認</h2>
-
   <% if @item.state == "closed" %>
     <% if @item.allowed?(:approve, @cur_user, site: @cur_site) && @item.workflow_state == "request" %>
       <% @item.workflow_pull_up_approvers_at(@item.workflow_current_level).each do |workflow_approver| %>

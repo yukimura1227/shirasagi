@@ -1,5 +1,8 @@
 <% return "" if @cur_node.becomes_with_route.try(:opendata_site_ids).blank? %>
-<%= jquery do %> SS_AddonTabs.hide(".mod-cms-opendata-dataset"); <% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 <style type="text/css">
   .mod-cms-opendata-dataset ul { padding: 0px; }
   .mod-cms-opendata-dataset li { margin: 10px 0px; }
@@ -9,9 +12,8 @@
   }
 </style>
 
-<dl class="see mod-cms-opendata-dataset">
-  <dt><%= @model.t :opendata_dataset_state %><%= @model.tt :opendata_dataset_state %></dt>
-  <dd>
+<%= f.ss_field_set :opendata_dataset_state, tt: true do %>
+  <div class="mod-cms-opendata-dataset">
     <ul>
       <li>
         <label>
@@ -35,26 +37,40 @@
         <label>
           <%= f.radio_button :opendata_dataset_state, 'existance' %>
           <%= t('cms.options.opendata_dataset.existance') %>
-          <%= f.hidden_field "opendata_dataset_ids[]", value: "", class: "hidden-ids" %>
-          <%= link_to t("cms.apis.opendata_ref.datasets.index"), cms_apis_opendata_ref_datasets_path(single: 1), class: "ajax-box" %>
-          <table class="index ajax-selected">
-            <thead>
-            <tr>
-              <th class="name"><%= t("mongoid.models.opendata/dataset") %></th>
-              <th></th>
+
+          <% render_template = proc do |id, name| %>
+            <tr data-id="<%= id %>">
+              <td><%= f.hidden_field "opendata_dataset_ids[]", id: nil, value: id %> <%= name %></td>
+              <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
             </tr>
-            </thead>
-            <tbody>
-            <% @item.opendata_datasets.each do |dataset| %>
-              <tr data-id="<%= dataset.id %>">
-                <td><%= f.hidden_field "opendata_dataset_ids[]", value: dataset.id %> <%= dataset.name %></td>
-                <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
-              </tr>
-            <% end %>
-            </tbody>
-          </table>
+          <% end %>
+
+          <div class="ajax-select">
+            <%= link_to t("cms.apis.opendata_ref.datasets.index"), cms_apis_opendata_ref_datasets_path(single: 1), class: "ajax-box btn btn-outline-secondary btn-sm" %>
+            <%= f.hidden_field "opendata_dataset_ids[]", id: nil, value: "", class: "ajax-hidden-ids" %>
+
+            <div class="table-responsive">
+              <table class="index ajax-selected table table-striped">
+                <thead>
+                  <tr>
+                    <th class="name"><%= t("mongoid.models.opendata/dataset") %></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @item.opendata_datasets.each do |dataset| %>
+                    <% render_template.call(dataset.id, dataset.host) %>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+
+            <script type="text/html" class="ajax-item-template">
+              <% render_template.call("#id", "#name") %>
+            </script>
+          </div>
         </label>
       </li>
     </ul>
-  </dd>
-</dl>
+  </div>
+<% end %>

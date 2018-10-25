@@ -11,18 +11,16 @@
 
     cur_form = @item.form
   %>
-  <div class="col12 mb-3">
-    <label><%= @model.t :form_id %><%= @model.tt :form_id %></label>
+  <%= f.ss_field_set :form_id, tt: true do %>
     <div class="input-group">
-      
       <%= f.select(:form_id, options_from_collection_for_select(ancestral_forms, :id, :name, selected: cur_form.try(:id)), { include_blank: true }) %>
       <div class="input-group-append"><%= button_tag(t('ss.buttons.change'), type: :button, class: %w(btn btn-outline-secondary)) %></div>
     </div>
+  <% end %>
 
-    <%= jquery do %>
-      Cms_TemplateForm.render({
-        formUrlTemplate: <%== cms_apis_form_path(id: ':id', item_type: 'page', item_id: @item.new_record? ? nil : @item.id).to_json %>
-      });
-    <% end %>
-  </div>
+  <%= jquery do %>
+    Cms_TemplateForm.render({
+      formUrlTemplate: <%== cms_apis_form_path(id: ':id', item_type: 'page', item_id: @item.new_record? ? nil : @item.id).to_json %>
+    });
+  <% end %>
 <% end %>

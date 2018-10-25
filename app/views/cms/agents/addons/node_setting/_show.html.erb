@@ -1,13 +1,8 @@
-<dl class="see">
-  <dt><%= @model.t :page_layout_id %></dt>
-  <dd><%= tryb { @item.page_layout.name }%></dd>
-
-  <dt><%= @model.t :order %></dt>
-  <dd><%= @item.send :order %></dd>
-
-  <dt><%= @model.t :shortcut %></dt>
-  <dd><%= @item.label :shortcut %></dd>
-
-  <dt><%= @model.t :view_route %></dt>
-  <dd><%= Cms::Node.new.route_options.map(&:reverse).to_h[@item.view_route] if @item.view_route.present? %></dd>
-</dl>
+<%= f.ss_field_set :page_layout_id, value: tryb { @item.page_layout.name }, disabled: true %>
+<%= f.ss_field_set :order, disabled: true %>
+<%= f.ss_field_set :shortcut, value: @item.label(:shortcut), disabled: true %>
+<%= f.ss_field_set :view_route, disabled: true do %>
+  <% if @item.view_route.present? %>
+    <%= f.text_field :view_route, value: Cms::Node.new.route_options.map(&:reverse).to_h[@item.view_route] %>
+  <% end %>
+<% end %>

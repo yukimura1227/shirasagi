@@ -1,11 +1,15 @@
 <% return "" if @item.categories.blank? %>
 
-<fieldset class="see" disabled>
-  <div class="form-group">
-    <h2 class="h5">カテゴリー</h2>
-    <div class="col12 mb-3">
-      <label>カテゴリー</label>
-      <input class="form-control" type="text" value="<%= @item.send(:categories).pluck(:name).join(", ") %>" />
-    </div>
+<%= f.ss_field_set :category_ids do %>
+  <div id="item_category_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.categories.pluck(:name).each do |category_name| %>
+      <tr>
+        <td><%= category_name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
-</fieldset>
+<% end %>

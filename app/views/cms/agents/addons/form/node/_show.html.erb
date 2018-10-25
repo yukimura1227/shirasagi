@@ -1,3 +1,14 @@
-<dl class="see mod-cms-form-node">
-  <dd class="wide"><%= br @item.st_forms.pluck(:name).join("\n") %></dd>
-</dl>
+<% return if @item.st_forms.blank? %>
+<%= f.ss_field_set :st_form_ids, label: nil, disabled: true do %>
+  <div id="item_st_form_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.st_forms.pluck(:name).each do |name| %>
+      <tr>
+        <td><%= name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

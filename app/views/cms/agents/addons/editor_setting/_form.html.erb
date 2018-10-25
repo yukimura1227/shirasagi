@@ -1,13 +1,10 @@
-<%= jquery do %>
-  SS_AddonTabs.hide(".mod-ss-editor-setting");
-<% end %>
-<dl class="see mod-ss-editor-setting">
-  <dt><%= @model.t :color_button %><%= @model.tt :color_button %></dt>
-  <dd><%= f.select :color_button, @item.color_button_options, include_blank: true %></dd>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
-  <dt><%= @model.t :editor_css_path %><%= @model.tt :editor_css_path %></dt>
-  <dd><%= f.text_field :editor_css_path %></dd>
+<%= f.ss_select_set :color_button, tt: true, include_blank: true %>
 
-  <dt><%= @model.t :syntax_check %><%= @model.tt :syntax_check %></dt>
-  <dd><%= f.select :syntax_check, @item.syntax_check_options, include_blank: true %></dd>
-</dl>
+<%= f.ss_field_set :editor_css_path, tt: true  %>
+
+<%= f.ss_select_set :syntax_check, tt: true, include_blank: true %>

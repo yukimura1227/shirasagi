@@ -1,3 +1,15 @@
-<dl class="see">
-  <dd class="wide"><%=br @item.send(:st_categories).pluck(:name).join("\n") %></dd>
-</dl>
+<% return if @item.st_categories.blank? %>
+<%= f.ss_field_set :st_category_ids, label: nil, disabled: true do %>
+  <div id="item_st_category_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.st_categories.pluck(:name).each do |name| %>
+      <tr>
+        <td><%= name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+

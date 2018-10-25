@@ -1,8 +1,15 @@
-<div class="see mod-cms-form-node">
-  <div class="mb-3">
-    <label><%= @model.t :st_form_ids %><%= @model.tt :st_form_ids %></label>
-    <%= f.hidden_field 'st_form_ids[]', value: '', class: 'hidden-ids' %>
+<%= f.ss_field_set :st_form_ids, tt: true do %>
+  <% render_template = proc do |id, name| %>
+    <tr data-id="<%= id %>">
+      <td><%= f.hidden_field "st_form_ids[]", id: nil, value: id %> <%= name %></td>
+      <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+    </tr>
+  <% end %>
+
+  <div class="ajax-select">
     <%= link_to t('cms.apis.forms.index'), cms_apis_forms_path, class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= f.hidden_field 'st_form_ids[]', value: '', class: 'ajax-hidden-ids' %>
+
     <div class="table-responsive">
       <table class="index ajax-selected table table-striped">
         <thead>
@@ -13,13 +20,14 @@
         </thead>
         <tbody>
         <% @item.st_forms.each do |form| %>
-          <tr data-id="<%= form.id %>">
-            <td><%= f.hidden_field 'st_form_ids[]', value: form.id %> <%= form.name %></td>
-            <td><%= link_to t('ss.buttons.delete'), '#', class: 'deselect btn' %></td>
-          </tr>
+          <% render_template.call(form.id, form.name) %>
         <% end %>
         </tbody>
       </table>
     </div>
+
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
   </div>
-</div>
+<% end %>

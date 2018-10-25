@@ -1,17 +1,23 @@
 <% addon ||= local_assigns.fetch(:addon, {}) %>
 <% addon_id = addon.fetch(:id, "addon-#{Time.zone.now.to_i}") %>
 <% addon_head ||= addon.fetch(:head, nil) %>
-<% addon_classes ||= Array[addon.fetch(:class, nil)].flatten.compact %>
+<% addon_classes ||= Array(addon.fetch(:class, nil)).flatten.compact %>
 <% addon_toggle ||= addon.fetch(:toggle, false) %>
+<% addon_disabled ||= addon.fetch(:disabled, true) %>
 
-<% addon_view_classes = %w(addon-view mb-5) + addon_classes %>
+<%
+  addon_view_classes = %w(addon-view mb-5) + addon_classes
+  if addon[:display_body] == "hide"
+    addon_view_classes << "body-closed"
+  end
+%>
 <% addon_head_classes = %w(addon-head h4) + (addon_toggle ? %w(toggle-head) : []) + addon_classes %>
 <% addon_body_classes = %w(addon-body) + (addon_toggle ? %w(toggle-body) : []) + addon_classes %>
 
-<div class="<%= addon_view_classes.join(' ') %>" id="<% addon_id %>">
-  <fieldset class="see" disabled>
+<div id="<%= addon_id %>" class="<%= addon_view_classes.join(' ') %>">
+  <fieldset class="see" <% if addon_disabled %>disabled<% end %>>
     <% if addon_head %><h2 class="<%= addon_head_classes.join(' ') %>"><%= addon_head %></h2><% end %>
-    <div class="<%= addon_body_classes.join(' ') %>">
+    <div class="<%= addon_body_classes.join(' ') %>" <% if addon[:display_body] == "hide" %>style="display: none;"<% end %>>
       <%= yield %>
     </div>
   </fieldset>

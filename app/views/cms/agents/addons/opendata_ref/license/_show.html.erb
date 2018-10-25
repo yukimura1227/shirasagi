@@ -1,7 +1,16 @@
 <% return "" if @item.opendata_license_ids.blank? %>
 <%= jquery do %> SS_AddonTabs.hide(".mod-cms-opendata-license"); <% end %>
 
-<dl class="see mod-cms-opendata-license">
-  <dt><%= @model.t :opendata_license_ids %></dt>
-  <dd><%= br @item.opendata_licenses.pluck(:name).join("\n") %></dd>
-</dl>
+<% f.ss_field_set :opendata_license_ids do %>
+  <div id="item_opendata_opendata_license_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.opendata_licenses.pluck(:name).each do |opendata_license_name| %>
+      <tr>
+        <td><%= opendata_license_name %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

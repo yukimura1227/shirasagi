@@ -1,31 +1,40 @@
 <% return "" unless Cms::Site.allowed?(:read, @cur_user, site: @cur_site) %>
 
-<%= jquery do %>
-  SS_AddonTabs.hide(".mod-cms-opendata-site");
-<% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
-<dl class="see mod-cms-opendata-site">
-  <dt><%= @model.t :opendata_site_ids %><%= @model.tt :opendata_site_ids %></dt>
-  <dd>
-    <%= f.hidden_field "opendata_site_ids[]", value: "", class: "hidden-ids" %>
-    <%= link_to t("cms.apis.sites.index"), cms_apis_sites_path, class: "ajax-box" %>
-  </dd>
-  <dd>
-    <table class="index ajax-selected">
-      <thead>
-        <tr>
-          <th class="name"><%= t("mongoid.models.cms/site") %></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @item.opendata_sites.each do |site| %>
-        <tr data-id="<%= site.id %>">
-          <td><%= f.hidden_field "opendata_site_ids[]", value: site.id %> <%= site.host %></td>
-          <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </dd>
-</dl>
+<%= f.ss_field_set :opendata_site_ids, tt: true do %>
+  <% render_template = proc do |id, name| %>
+    <tr data-id="<%= id %>">
+      <td><%= f.hidden_field "opendata_site_ids[]", id: nil, value: id %> <%= name %></td>
+      <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+    </tr>
+  <% end %>
+
+  <div class="ajax-select">
+    <%= link_to t("cms.apis.sites.index"), cms_apis_sites_path, class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= f.hidden_field "opendata_site_ids[]", id: nil, value: "", class: "ajax-hidden-ids" %>
+
+    <div class="table-responsive">
+      <table class="index ajax-selected table table-striped">
+        <thead>
+          <tr>
+            <th class="name"><%= t("mongoid.models.cms/site") %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @item.opendata_sites.each do |site| %>
+            <% render_template.call(site.id, site.host) %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
+  </div>
+<% end %>

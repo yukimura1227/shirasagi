@@ -1,9 +1,11 @@
 <% css_classes ||= [] %>
+<% css_classes = Array(css_classes).flatten.compact %>
 <% addons.each do |addon| %>
+  <% addon_options = { id: "addon-#{addon.id}", head: addon.name, class: css_classes.dup, toggle: true } %>
+
   <% buf = nil %>
-  <% buf = render file: addon.form_file, locals: { f: f, a: 1 } if addon.form_file %>
+  <% buf = render file: addon.form_file, locals: { f: f, addon: addon_options } if addon.form_file %>
   <% next if buf.blank? %>
-  <% addon_options = { id: "addon-#{addon.id}", head: addon.name, class: css_classes, toggle: true } %>
   <%= render "ss/crud/addon_form", addon: addon_options do %>
     <%= buf %>
   <% end %>

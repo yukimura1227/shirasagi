@@ -1,10 +1,15 @@
 <% return "" if @item.parent_crumb_urls.blank? %>
 
-<fieldset class="see" disabled>
-  <div class="form-group">
-    <div class="col12 bm-3">
-      <label><%= @model.t :parent_crumb_urls %></label>
-      <input class="form-control" type="text" value="<%=br @item.send(:parent_crumb_urls).join("\n") %>" />
-    </div>
+<%= f.ss_field_set :parent_crumb_urls do %>
+  <div id="item_parent_crumb_urls" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.parent_crumb_urls.each do |parent_crumb_url| %>
+      <tr>
+        <td><%= parent_crumb_url %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
   </div>
-</fieldset>
+<% end %>

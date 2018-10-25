@@ -1,14 +1,2 @@
-<fieldset class="see" disabled>
-  <div class="form-group">
-    <h2 class="h4">公開設定</h2>
-    <div class="col12 mb-3">
-      <label><%= @model.t :state %></label>
-      <input class="form-control" type="text" value="<%= @item.label :state %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :released %></label>
-      <input class="form-control" type="text" value="<%= tryb{@item.send(:released).strftime("%Y/%m/%d %H:%M")} %>" />
-    </div>
-  </div>
-</fieldset>
+<% f.ss_field_set :state, value: @item.label(:state), disabled: true %>
+<% f.ss_field_set :released, disabled: true %>

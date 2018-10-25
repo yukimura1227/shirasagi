@@ -29,6 +29,8 @@ ja:
         partial_node: フォルダー
         integration_master_node: 統合元フォルダー
         integration_partial_node: 対象フォルダー
+      category/addon/setting:
+        st_category_ids: カテゴリー設定
 
   errors:
     messages:
@@ -52,3 +54,7 @@ ja:
       integration_partial_node:
         - 統合対象となるフォルダーを選択します。
         - 統合後は削除されます。
+    category/addon/setting:
+      st_category_ids:
+        - フォルダー下で使用するカテゴリーを設定します。
+        - 設定されていない場合は全カテゴリーが対象となります。

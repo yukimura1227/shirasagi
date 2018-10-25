@@ -1,25 +1,33 @@
-<dl class="see mod-category">
-  <dt><%= t("category.setting") %><%= @model.tt :st_categories %></dt>
-  <dd class="wide" style="line-height: 2.5">
-    <%= f.hidden_field "st_category_ids[]", value: "", class: "hidden-ids" %>
-    <%= link_to t("cms.apis.categories.index"), cms_apis_categories_path, class: "ajax-box" %>
-  </dd>
-  <dd>
-    <table class="index ajax-selected">
-      <thead>
-        <tr>
-          <th class="name"><%= t("category.name") %></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @item.st_categories.each do |cate| %>
-        <tr data-id="<%= cate.id %>">
-          <td><%= f.hidden_field "st_category_ids[]", value: cate.id %> <%= cate.name %></td>
-          <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </dd>
-</dl>
+<%= f.ss_field_set :st_category_ids, tt: true do %>
+  <% render_template = proc do |id, name| %>
+    <tr data-id="<%= id %>">
+      <td><%= f.hidden_field "st_category_ids[]", id: nil, value: id %> <%= name %></td>
+      <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+    </tr>
+  <% end %>
+
+  <div class="ajax-select">
+    <%= link_to t("cms.apis.categories.index"), cms_apis_categories_path, class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= f.hidden_field "st_category_ids[]", id: nil, value: "", class: "ajax-hidden-ids" %>
+
+    <div class="table-responsive">
+      <table class="index ajax-selected table table-striped">
+        <thead>
+          <tr>
+            <th class="name"><%= t("category.name") %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @item.st_categories.each do |cate| %>
+            <% render_template.call(cate.id, cate.name) %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
+  </div>
+<% end %>

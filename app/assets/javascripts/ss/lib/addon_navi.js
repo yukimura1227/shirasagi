@@ -20,6 +20,7 @@ window.SS_AddonNavi = (function () {
     if (renderedNaviMenus || renderedNaviButtons) {
       this.$el.show();
       this.initFixedScroll();
+      this.setNavLinkHandler();
     }
 
     SS_AddonNavi.instance = this;
@@ -36,7 +37,7 @@ window.SS_AddonNavi = (function () {
       var id = $this.attr("id");
       var name = $this.find(".addon-head").text();
 
-      var html = template.replace(/#href/, "#" + id).replace(/#name/, name);
+      var html = template.replace(/#href/, "#" + id).replace(/#id/, id).replace(/#name/, name);
       $nav.append(html);
       nameCount += 1;
     });
@@ -98,6 +99,17 @@ window.SS_AddonNavi = (function () {
     } else {
       this.$fixElement.removeClass(this.fixClass);
     }
+  };
+
+  SS_AddonNavi.prototype.setNavLinkHandler = function() {
+    this.$el.on("click", ".nav-link", function() {
+      var target = $(this).data("target");
+      var targetElement = $("#" + target)[0];
+      if (targetElement) {
+        SS_AddonTabs.showWithAnimation(targetElement);
+      }
+      return true;
+    });
   };
 
   return SS_AddonNavi;

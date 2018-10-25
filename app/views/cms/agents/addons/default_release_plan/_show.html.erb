@@ -1,25 +1,13 @@
-<dl class="see">
-  <dt><%= @model.t :default_release_plan_state %></dt>
-  <dd><%= @item.label :default_release_plan_state %></dd>
+<%= f.ss_field_set :default_release_plan_state, value: @item.label(:default_release_plan_state), disabled: true %>
 
-  <dt><%= @model.t :default_release_days_after %></dt>
-  <dd>
-    <% if @item.default_release_days_after %>
-    <%= @item.default_release_days_after %> <%= t("ss.units.days_after") %>
-    <% end %>
-  </dd>
+<% if @item.default_release_days_after %>
+  <%= f.ss_field_set :default_release_days_after, value: "#{@item.default_release_days_after} #{t("ss.units.days_after")}", disabled: true %>
+<% end %>
 
-  <dt><%= @model.t :default_close_days_after %></dt>
-  <dd>
-    <% if @item.default_close_days_after %>
-    <%= @item.default_close_days_after %> <%= t("ss.units.days_after") %>
-    <% end %>
-  </dd>
+<% if @item.default_close_days_after %>
+  <%= f.ss_field_set :default_close_days_after, value: "#{@item.default_close_days_after} #{t("ss.units.days_after")}", disabled: true %>
+<% end %>
 
-  <dt><%= @model.t :close_days_before %></dt>
-  <dd>
-    <% if @item.close_days_before %>
-    <%= @item.close_days_before %> <%= t("ss.units.days_before") %>
-    <% end %>
-  </dd>
-</dl>
+<% if @item.close_days_before %>
+  <%= f.ss_field_set :close_days_before, value: "#{@item.close_days_before} #{t("ss.units.days_before")}", disabled: true %>
+<% end %>

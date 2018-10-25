@@ -1,6 +1,15 @@
 <% return "" unless Cms::Site.allowed?(:read, @cur_user, site: @cur_site) %>
 
-<dl class="see mod-facility-opendata-assoc">
-  <dt><%= @model.t :opendata_site_ids %></dt>
-  <dd><%= br @item.opendata_sites.pluck(:host).join("\n") %></dd>
-</dl>
+<%= f.ss_field_set :opendata_site_ids, disabled: true do %>
+  <div id="item_opendata_site_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+      <% @item.opendata_sites.pluck(:host).each do |host| %>
+      <tr>
+        <td><%= host %></td>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

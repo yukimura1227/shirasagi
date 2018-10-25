@@ -1,16 +1,17 @@
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 <% max_term_form = SS.config.event.max_term_form.to_i %>
 <%= jquery do%>
-  SS_AddonTabs.hide(".mod-event");
   Event_Form.maxTermForm = <%= (max_term_form > 0) ? max_term_form : 1 %>;
   Event_Form.render();
 <% end %>
 
-<dl class="see mod-event">
-  <dt><%= @model.t :event_name %><%= @model.tt :event_name %></dt>
-  <dd><%= f.text_field :event_name %></dd>
+<%= f.ss_field_set :event_name, tt: true %>
 
-  <dt><%= @model.t :event_dates %><%= @model.tt :event_dates %></dt>
-  <dd class="dates">
+<%= f.ss_field_set :event_dates, tt: true do %>
+  <div class="dates">
     <div class="input-group">
       <div class="form-group">
         <%= text_field_tag "event[][start_date]", nil, { id: nil, class: "date js-date start-date" } %>
@@ -25,10 +26,10 @@
         <%= button_tag t("event.del_date"), { type: :button, class: "clear btn" } %>
       </div>
     </div>
-  </dd>
-  <dd class="setting-dates">
+  </div>
+  <div class="setting-dates">
     <%= button_tag t("event.add_date"), { type: :button, class: "add-date btn" } %>
     <%= link_to t("event.add_repeat_dates"), event_apis_repeat_dates_path, class: "ajax-box btn" %>
-  </dd>
-  <dd style="display: none;"><%= f.text_area :event_dates, class: "event-dates btn" %></dd>
-</dl>
+  </div>
+  <div style="display: none;"><%= f.text_area :event_dates, class: "event-dates btn" %></div>
+<% end %>

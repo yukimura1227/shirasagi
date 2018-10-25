@@ -1,35 +1,41 @@
-<%= jquery do %> SS_AddonTabs.hide(".mod-cms-owner_permission"); <% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
-<dl class="see mod-cms-owner_permission">
-  <dt><%= @model.t :group_ids %><%= @model.tt :group_ids %></dt>
-  <dd>
-    <%= f.hidden_field "group_ids[]", value: "", class: "hidden-ids" %>
-    <%= link_to t("ss.apis.groups.index"), cms_apis_groups_path, class: "ajax-box" %>
-  </dd>
-  <dd>
-    <table class="index ajax-selected">
-      <thead>
-        <tr>
-          <th class="name"><%= Cms::Group.t :name %></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-id="<%= @cur_group.id %>">
-          <td><%= f.hidden_field "group_ids[]", value: @cur_group.id %> <%= @cur_group.name %></td>
-          <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
-        </tr>
-        <% @item.groups.each do |group| %>
-        <% next if group.id == @cur_group.id %>
-        <tr data-id="<%= group.id %>">
-          <td><%= f.hidden_field "group_ids[]", value: group.id %> <%= group.name %></td>
-          <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </dd>
+<%= f.ss_field_set :group_ids, tt: true do %>
+  <% render_template = proc do |id, name| %>
+    <tr data-id="<%= id %>">
+      <td><%= f.hidden_field "group_ids[]", id: nil, value: id %> <%= name %></td>
+      <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+    </tr>
+  <% end %>
 
-  <dt><%= @model.t :permission_level %><%= @model.tt :permission_level %></dt>
-  <dd><%= f.select :permission_level, (1..@cur_user.cms_role_level(@cur_site)).map { |i| %W(#{i} #{i}) } %></dd>
-</dl>
+  <div class="ajax-select">
+    <%= link_to t("ss.apis.groups.index"), cms_apis_groups_path, class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= f.hidden_field "group_ids[]", id: nil, value: "", class: "ajax-hidden-ids" %>
+
+    <div class="table-responsive">
+      <table class="index ajax-selected table table-striped">
+        <thead>
+          <tr>
+            <th class="name"><%= Cms::Group.t :name %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% render_template.call(@cur_group.id, @cur_group.name) %>
+          <% @item.groups.each do |group| %>
+            <% render_template.call(group.id, group.name) %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
+  </div>
+<% end %>
+
+<%= f.ss_select_set :permission_level, tt: true, choices: (1..@cur_user.cms_role_level(@cur_site)).map { |i| %W(#{i} #{i}) } %>

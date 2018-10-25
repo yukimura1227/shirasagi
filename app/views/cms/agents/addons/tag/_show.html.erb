@@ -1,6 +1,3 @@
 <% return if @item.tags.blank? %>
 
-<dl class="see mod-cms-tag">
-  <dt><%= @model.t :tags %></dt>
-  <dd><%= @item.tags %></dd>
-</dl>
+<%= f.ss_field_set :tags %>

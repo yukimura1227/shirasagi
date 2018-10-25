@@ -1,39 +1,31 @@
-<%= code_editor ".mod-event-pagelist .html", mode: :html, readonly: true %>
+<%= code_editor "#addon-event-agents-addons-page_list .html", mode: :html, readonly: true %>
 
-<dl class="see mod-event-pagelist">
-  <dt><%= @model.t :conditions %></dt>
-  <dd><%=br @item.conditions.join("\n") %></dd>
-
-  <dt><%= @model.t :sort %></dt>
-  <dd><%= @item.label :sort %></dd>
-
-  <dt><%= @model.t :limit %></dt>
-  <dd><%= @item.send :limit %></dd>
-
-  <dt><%= @model.t :upper_html %></dt>
-  <dd>
-    <% if @item.upper_html.present? %>
-    <%= text_area_tag :upper_html, @item.upper_html, class: "html" %>
-    <% end %>
-  </dd>
-
-  <dt><%= @model.t :loop_html %></dt>
-  <% if @item.send(:loop_setting).present? %>
-  <dd><%= tryb{@item.loop_setting.name} %></dd>
+<%= f.ss_field_set :conditions, disabled: true do %>
+  <% @item.conditions.each do |condition| %>
+    <% condition %>
   <% end %>
-  <dd>
-    <% if @item.loop_html.present? %>
-    <%= text_area_tag :loop_html, @item.loop_html, class: "html", style: "height: 100px;"  %>
-    <% end %>
-  </dd>
+<% end %>
 
-  <dt><%= @model.t :lower_html %></dt>
-  <dd>
-    <% if @item.lower_html.present? %>
-    <%= text_area_tag :lower_html, @item.lower_html, class: "html" %>
-    <% end %>
-  </dd>
+<%= f.ss_field_set :sort, value: @item.label(:sort), disabled: true %>
 
-  <dt><%= @model.t :new_days %></dt>
-  <dd><%= @item.send :new_days %> <%= t "datetime.prompts.day" %></dd>
-</dl>
+<%= f.ss_field_set :limit, disabled: true %>
+
+<%= f.ss_field_set :upper_html, disabled: true do %>
+  <%= f.text_area :upper_html, class: "html", disabled: true, rows: 6 %>
+<% end %>
+
+<%= f.ss_field_set :loop_html, disabled: true do %>
+  <% if @item.loop_setting.present? %>
+    <%= f.text_field :loop_setting_id, value: @item.loop_setting.name, disabled: true %>
+  <% end %>
+
+  <%= f.text_area :loop_html, class: "html", disabled: true, rows: 6 %>
+<% end %>
+
+<%= f.ss_field_set :lower_html, disabled: true do %>
+  <%= f.text_area :lower_html, class: "html", disabled: true, rows: 6 %>
+<% end %>
+
+<%= f.ss_field_set :new_days, disabled: true do %>
+  <%= f.text_field :new_days, value: "#{@item.new_days} #{t "datetime.prompts.day"}", disabled: true %>
+<% end %>

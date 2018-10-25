@@ -1,19 +1,20 @@
-<%= jquery do %> SS_AddonTabs.hide(".mod-cms-node_setting"); <% end %>
 <%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
 
-view_route = params[:route] ? params[:route] : @item.route
-view_route = @item.view_route if @item.view_route.present?
+  view_route = params[:route] ? params[:route] : @item.route
+  view_route = @item.view_route if @item.view_route.present?
+%>
+<%= f.ss_field_set :page_layout_id, tt: true do %>
+  <%= f.select :page_layout_id, ancestral_layouts(@item), include_blank: true %>
+<% end %>
 
-%><dl class="see mod-cms-node_setting">
-  <dt><%= @model.t :page_layout_id %><%= @model.tt :page_layout_id %></dt>
-  <dd><%= f.select :page_layout_id, ancestral_layouts(@item), include_blank: " " %></dd>
+<%= f.ss_field_set :order, tt: true  %>
 
-  <dt><%= @model.t :order %><%= @model.tt :order %></dt>
-  <dd><%= f.number_field :order %></dd>
+<%= f.ss_field_set :shortcut, tt: true do %>
+  <%= f.select :shortcut, @item.shortcut_options %>
+<% end %>
 
-  <dt><%= @model.t :shortcut %><%= @model.tt :shortcut %></dt>
-  <dd><%= f.select :shortcut, @item.shortcut_options %></dd>
-
-  <dt><%= @model.t :view_route %><%= @model.tt :view_route %></dt>
-  <dd><%= f.select :view_route, Cms::Node.new.route_options, selected: view_route, include_blank: " " %></dd>
-</dl>
+<%= f.ss_field_set :view_route, tt: true do %>
+  <%= f.select :view_route, Cms::Node.new.route_options, selected: view_route, include_blank: true %>
+<% end %>

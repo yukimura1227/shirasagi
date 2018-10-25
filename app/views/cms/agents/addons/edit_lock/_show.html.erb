@@ -1,15 +1,15 @@
 <% if @item.locked? && !@item.lock_owned? %>
-  <dl class="see">
-    <dd class="wide"><%= t("errors.messages.locked", user: @item.lock_owner.long_name) %></dd>
+  <div class="col12 mb-3">
+    <div><%= t("errors.messages.locked", user: @item.lock_owner.long_name) %></div>
     <% if @item.allowed?(:unlock, @cur_user, site: @cur_site, node: @cur_node) %>
-    <dd class="wide">
+    <div>
       <%= form_for :item, url: { action: :unlock }, html: { id: "item-form", method: :delete, multipart: true } do |f| %>
         <%= hidden_field_tag "force", "true" %>
-        <button name="button" type="submit" class="release-lock"><%= t("ss.buttons.unlock_and_edit_forcibly") %></button>
+        <button name="button" type="submit" class="release-lock btn btn-outline-secondary"><%= t("ss.buttons.unlock_and_edit_forcibly") %></button>
       <% end %>
-    </dd>
+    </div>
     <% end %>
-  </dl>
+  </div>
 
   <%= jquery do %>
     var self = $('#addon-cms-agents-addons-edit_lock');

@@ -1,46 +1,10 @@
 <% return if @item.contact_state != "show" || !@item.contact_present? %>
 
-<fieldset class="see mod-contact" disabled>
-  <div class="form-group">
-    <h2 class="h4">連絡先</h2>
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_state %></label>
-      <input class="form-control" type="text" value="<%= @item.label :contact_state %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_group_id %></label>
-      <input class="contact-group-id form-control" type="text" value="<%= tryb { @item.contact_group.name } %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_charge %></label>
-      <input class="contact-charge form-control" type="text" value="<%= @item.contact_charge %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_tel %></label>
-      <input class="contact-tel form-control" type="text" value="<%= @item.contact_tel %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_fax %></label>
-      <input class="contact-fax form-control" type="text" value="<%= @item.contact_fax %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_email %></label>
-      <input class="contact-email form-control" type="text" value="<%= @item.contact_email %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_link_url %></label>
-      <input class="contact-link-url form-control" type="text" value="<%= @item.contact_link_url %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :contact_link_name %></label>
-      <input class="contact-link-name form-control" type="text" value="<%= @item.contact_link_name %>" />
-    </div>
-    </div>
-</fieldset>
+<%= f.ss_field_set :contact_state, value: @item.label(:contact_state) %>
+<%= f.ss_field_set :contact_group_id, value: tryb { @item.contact_group.name } %>
+<%= f.ss_field_set :contact_charge %>
+<%= f.ss_field_set :contact_tel, type: :tel %>
+<%= f.ss_field_set :contact_fax, type: :tel %>
+<%= f.ss_field_set :contact_email, type: :email %>
+<%= f.ss_field_set :contact_link_url, type: :url %>
+<%= f.ss_field_set :contact_link_name %>

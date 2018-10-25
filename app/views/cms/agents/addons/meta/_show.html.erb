@@ -1,22 +1,9 @@
 <% return "" unless @item.meta_present? %>
-<%= jquery do %> SS_AddonTabs.hide("dl.meta"); <% end %>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
-<fieldset class="see meta" disabled>
-  <div class="form-group">
-    <h2 class="h4">メタ情報</h2>
-    <div class="col12 mb-3">
-      <label><%= @model.t :keywords %></label>
-      <input class="form-control" type="text" value="<%= @item.send :keywords %>" />
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :description %></label>
-      <textarea class="form-control" rows="3"><%= @item.send :description %></textarea>
-    </div>
-
-    <div class="col12 mb-3">
-      <label><%= @model.t :summary_html %></label>
-      <textarea class="form-control" row="3"><%= @item.send :summary_html %></textarea>
-    </div>
-  </div>
-</fieldset>
+<%= f.ss_field_set :keywords, disabled: true %>
+<%= f.ss_field_set :description, type: :text_area, disabled: true %>
+<%= f.ss_field_set :summary_html, type: :text_area, disabled: true %>

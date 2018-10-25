@@ -1,30 +1,25 @@
-<%= code_editor ".mod-event-pagelist .html", mode: :html %>
+<%= code_editor "#addon-event-agents-addons-page_list .html", mode: :html %>
 <%= jquery do %> Cms_Editor_CodeMirror.lock('#item_loop_setting_id', '#item_loop_html'); <% end %>
 
-<dl class="see mod-event-pagelist">
-  <dt><%= @model.t :conditions %><%= @model.tt :conditions %></dt>
-  <dd><%= f.text_area :conditions, value: @item.conditions.join("\n"), style: "height: 100px;" %></dd>
+<%= f.ss_field_set :conditions, type: :text_area, tt: true, value: @item.conditions.join("\n"), style: "height: 100px;" %>
 
-  <dt><%= @model.t :sort %><%= @model.tt :sort %></dt>
-  <dd><%= f.select :sort, @item.sort_options, include_blank: " " %></dd>
+<%= f.ss_select_set :sort, tt: true, include_blank: true %>
 
-  <dt><%= @model.t :limit %><%= @model.tt :limit %></dt>
-  <dd><%= f.number_field :limit %></dd>
+<%= f.ss_field_set :limit, tt: true %>
 
-  <dt><%= @model.t :upper_html %><%= @model.tt :upper_html %></dt>
-  <dd><%= f.text_area :upper_html, class: :html %></dd>
+<%= f.ss_field_set :upper_html, type: :text_area, tt: true, class: "html", rows: 6 %>
 
-  <dt><%= @model.t :loop_html %><%= @model.tt :loop_html %></dt>
-  <dd><%= f.select :loop_setting_id, ancestral_loop_settings, include_blank: t('cms.input_directly') %></dd>
-  <dd><%= f.text_area :loop_html, class: :html, style: "height: 100px;" %></dd>
+<%= f.ss_field_set :loop_html, tt: true do %>
+  <%= f.select :loop_setting_id, ancestral_loop_settings, include_blank: t('cms.input_directly') %>
+  <%= f.text_area :loop_html, class: "html", rows: 6 %>
+<% end %>
 
-  <dt><%= @model.t :lower_html %><%= @model.tt :lower_html %></dt>
-  <dd><%= f.text_area :lower_html, class: :html %></dd>
+<%= f.ss_field_set :lower_html, type: :text_area, tt: true, class: "html", rows: 6 %>
 
-  <dt><%= @model.t :new_days %><%= @model.tt :new_days %></dt>
-  <dd class="short">
+<%= f.ss_field_set :new_days, tt: true do %>
+  <div class="short">
     <div class="input-group" style="width: 12em;">
       <%= f.number_field :new_days %><span class="input-group-append"><%= t "datetime.prompts.day" %></span>
     </div>
-  </dd>
-</dl>
+  </div>
+<% end %>
