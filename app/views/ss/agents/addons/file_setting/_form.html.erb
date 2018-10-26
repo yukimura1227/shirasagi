@@ -1,9 +1,10 @@
-<%= jquery do %>
-  SS_AddonTabs.hide(".mod-ss-file-setting");
-<% end %>
-<dl class="see mod-ss-file-setting">
-  <dt><%= @model.t :file_resizing %><%= @model.tt :file_resizing %></dt>
-  <dd class="short">
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
+
+<%= f.ss_field_set :file_resizing, tt: true do %>
+  <div class="narrow">
     <label class="width">
       <span class="prefix"><%= @item.t :file_resizing_width %></span>
       <%= f.number_field :in_file_resizing_width, value: @item.file_resizing[0] %>
@@ -12,8 +13,7 @@
       <span class="prefix"><%= @item.t :file_resizing_height %></span>
       <%= f.number_field :in_file_resizing_height, value: @item.file_resizing[1] %>
     </label>
-  </dd>
+  </div>
+<% end %>
 
-  <dt><%= @model.t :multibyte_filename_state %><%= @model.tt :multibyte_filename_state %></dt>
-  <dd><%= f.select :multibyte_filename_state, @item.multibyte_filename_state_options, include_blank: true %></dd>
-</dl>
+<%= f.ss_select_set :multibyte_filename_state, tt: true, include_blank: true %>

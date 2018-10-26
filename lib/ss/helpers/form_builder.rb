@@ -53,8 +53,8 @@ module SS::Helpers
           @template.output_buffer << @template.capture { yield }
         else
           type = options.delete(:type)
-          value = options[:value]
-          case guess_type(type, model, method, value)
+          # value = options[:value]
+          case guess_type(type, model, method, options.key?(:value) ? [ options[:value] ] : [])
           when :text
             @template.output_buffer << text_field(method, options)
           when :password
@@ -139,10 +139,11 @@ module SS::Helpers
       model.tt(method)
     end
 
-    def guess_type(type, model, method, value)
+    # rubocop:disable Style/ZeroLengthPredicate
+    def guess_type(type, model, method, optional_value)
       return type if type.present? && type != :auto
 
-      klass = value ? value.class : model.fields[method.to_s].type
+      klass = optional_value.length > 0 ? optional_value.first.class : model.fields[method.to_s].type
       if klass == Integer
         :number
       elsif klass == DateTime
@@ -151,5 +152,6 @@ module SS::Helpers
         :text
       end
     end
+    # rubocop:enable Style/ZeroLengthPredicate
   end
 end

@@ -1,7 +1,2 @@
-<dl class="see mod-ss-map-setting">
-  <dt><%= @model.t :map_api %></dt>
-  <dd><%= @item.label :map_api %></dd>
-
-  <dt><%= @model.t :map_api_key %></dt>
-  <dd><%= @item.map_api_key %></dd>
-</dl>
+<%= f.ss_field_set :map_api, value: @item.label(:map_api), disabled: true %>
+<%= f.ss_field_set :map_api_key, disabled: true %>

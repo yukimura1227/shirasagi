@@ -1,25 +1,11 @@
-<dl class="see">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.send :name %></dd>
-
-  <dt><%= @model.t :host %></dt>
-  <dd><%= @item.send :host %></dd>
-
-  <dt><%= @model.t :domains %></dt>
-  <dd><%= @item.send :domains %></dd>
-
-  <dt><%= @model.t :subdir %></dt>
-  <dd><%= @item.send :subdir %></dd>
-
-  <dt><%= @model.t :https %></dt>
-  <dd><%= @item.label :https %></dd>
-
-  <dt><%= @model.t :mypage_scheme %></dt>
-  <dd><%= @item.label :mypage_scheme %></dd>
-
-  <dt><%= @model.t :mypage_domain %></dt>
-  <dd><%= @item.send :mypage_domain %></dd>
-
-  <dt><%= t("ss.login_url") %></dt>
-  <dd><%= link_to cms_login_url, cms_login_url %></dd>
-</dl>
+<%= f.ss_field_set :name, disabled: true %>
+<%= f.ss_field_set :host, disabled: true %>
+<%= f.ss_field_set :domains, disabled: true %>
+<%= f.ss_field_set :subdir, disabled: true %>
+<%= f.ss_field_set :https, value: @item.label(:https), disabled: true %>
+<%= f.ss_field_set :mypage_scheme, value: @item.label(:mypage_scheme), disabled: true %>
+<%= f.ss_field_set :login_url, label: t("ss.login_url"), disabled: true do %>
+  <div id="item_login_url" class="form-control">
+    <%= link_to cms_login_url, cms_login_url %>
+  </div>
+<% end %>

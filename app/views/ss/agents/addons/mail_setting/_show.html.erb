@@ -1,10 +1,5 @@
-<dl class="see mod-ss-setting">
-  <dt><%= @model.t :sender_name %></dt>
-  <dd><%= @item.sender_name %></dd>
-
-  <dt><%= @model.t :sender_email %></dt>
-  <dd><%= @item.sender_email %></dd>
-
-  <dt><%= @model.t :mail_signature %></dt>
-  <dd><%= br @item.mail_signature %></dd>
-</dl>
+<%= f.ss_field_set :sender_name, disabled: true %>
+<%= f.ss_field_set :sender_email, disabled: true %>
+<%= f.ss_field_set :mail_signature, disabled: true do %>
+  <div class="form-control"><%= br @item.mail_signature %></div>
+<% end %>

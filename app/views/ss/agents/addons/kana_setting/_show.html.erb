@@ -1,4 +1,1 @@
-<dl class="see mod-ss-kana-setting">
-  <dt><%= @model.t :kana_format %></dt>
-  <dd><%= @item.label :kana_format %></dd>
-</dl>
+<%= f.ss_field_set :kana_format, value: @item.label(:kana_format), disabled: true %>

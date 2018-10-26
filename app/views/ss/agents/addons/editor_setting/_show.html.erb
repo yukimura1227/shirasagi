@@ -1,10 +1,3 @@
-<dl class="see mod-ss-editor-setting">
-  <dt><%= @model.t :color_button %></dt>
-  <dd><%= @item.label :color_button %></dd>
-
-  <dt><%= @model.t :editor_css_path %></dt>
-  <dd><%= @item.editor_css_path %></dd>
-
-  <dt><%= @model.t :syntax_check %></dt>
-  <dd><%= @item.label :syntax_check %></dd>
-</dl>
+<%= f.ss_field_set :color_button, value: @item.label(:color_button) %>
+<%= f.ss_field_set :editor_css_path %>
+<%= f.ss_field_set :syntax_check, value: @item.label(:syntax_check) %>

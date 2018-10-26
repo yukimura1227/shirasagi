@@ -1,14 +1,4 @@
-<dl class="see mod-ss-facebook-setting">
-  <dt><%= @model.t :facebook_app_id %></dt>
-  <dd><%= @item.facebook_app_id %></dd>
-
-  <dt><%= @model.t :facebook_page_url %></dt>
-  <dd><%= @item.facebook_page_url %></dd>
-
-  <dt><%= @model.t :opengraph_type %></dt>
-  <dd><%= @item.label :opengraph_type %></dd>
-
-  <dt><%= @model.t :opengraph_defaul_image_url %></dt>
-  <dd><%= @item.opengraph_defaul_image_url %></dd>
-  </dd>
-</dl>
+<%= f.ss_field_set :facebook_app_id, disabled: true %>
+<%= f.ss_field_set :facebook_page_url, disabled: true %>
+<%= f.ss_field_set :opengraph_type, value: @item.label(:opengraph_type), disabled: true %>
+<%= f.ss_field_set :opengraph_defaul_image_url, disabled: true %>

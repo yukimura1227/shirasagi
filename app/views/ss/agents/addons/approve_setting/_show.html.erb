@@ -1,7 +1,2 @@
-<dl class="see mod-ss-approve-setting">
-  <dt><%= @model.t :forced_update %></dt>
-  <dd><%= @item.label :forced_update %></dd>
-
-  <dt><%= @model.t :close_confirmation %></dt>
-  <dd><%= @item.label :close_confirmation %></dd>
-</dl>
+<%= f.ss_field_set :forced_update, value: @item.label(:forced_update), disabled: true %>
+<%= f.ss_field_set :close_confirmation, value: @item.label(:close_confirmation), disabled: true %>

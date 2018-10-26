@@ -490,9 +490,9 @@ ja:
         class: RDFクラス
         column_types: 列設定
       opendata/addon/site_setting:
-        dataset_workflow_route: データセット承認
-        app_workflow_route: アプリ承認
-        idea_workflow_route: アイデア承認
+        dataset_workflow_route_id: データセット承認
+        app_workflow_route_id: アプリ承認
+        idea_workflow_route_id: アイデア承認
         dataset_state: データセット
         app_state: アプリ
         idea_state: アイデア

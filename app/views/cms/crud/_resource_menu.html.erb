@@ -1,7 +1,7 @@
 <nav class="nav-menu">
   <% if params[:action] =~ /edit|update|delete/ %>
-    <%= link_to t('ss.links.back_to_show'), action: :show %>
+    <%= link_to(t('ss.links.back_to_show'), { action: :show }, { class: "btn btn-outline-secondary show" }) %>
   <% else %>
-    <%= link_to t('ss.links.edit'), action: :edit if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
+    <%= link_to(t('ss.links.edit'), { action: :edit }, { class: "btn btn-outline-secondary edit" }) if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
   <% end %>
 </nav>

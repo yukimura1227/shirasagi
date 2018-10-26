@@ -1,10 +1,7 @@
-<%= jquery do %>
-  SS_AddonTabs.hide(".mod-ss-approve-setting");
-<% end %>
-<dl class="see mod-ss-approve-setting">
-  <dt><%= @model.t :forced_update %><%= @model.tt :forced_update %></dt>
-  <dd><%= f.select :forced_update, @item.forced_update_options, include_blank: true %></dd>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:display_body] = "hide"
+%>
 
-  <dt><%= @model.t :close_confirmation %><%= @model.tt :close_confirmation %></dt>
-  <dd><%= f.select :close_confirmation, @item.close_confirmation_options, include_blank: true %></dd>
-</dl>
+<%= f.ss_select_set :forced_update, tt: true, include_blank: true %>
+<%= f.ss_select_set :close_confirmation, tt: true, include_blank: true %>

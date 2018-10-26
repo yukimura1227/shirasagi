@@ -1,15 +1,6 @@
-<dl class="see mod-cms-page-setting">
-  <dt><%= @model.t :auto_keywords %></dt>
-  <dd><%= @item.label :auto_keywords %></dd>
-
-  <% if @item.keywords.present? %>
-    <dt><%= @model.t :keywords %></dt>
-    <dd><%= @item.keywords %></dd>
-  <% end %>
-
-  <dt><%= @model.t :auto_description %></dt>
-  <dd><%= @item.label :auto_description %></dd>
-
-  <dt><%= @model.t :max_name_length %></dt>
-  <dd><%= @item.label :max_name_length %></dd>
-</dl>
+<%= f.ss_field_set :auto_keywords, value: @item.label(:auto_keywords), disabled: true %>
+<% if @item.keywords.present? %>
+  <%= f.ss_field_set :keywords, disabled: true %>
+<% end %>
+<%= f.ss_field_set :auto_description, value: @item.label(:auto_description), disabled: true %>
+<%= f.ss_field_set :max_name_length, value: @item.label(:max_name_length), disabled: true %>

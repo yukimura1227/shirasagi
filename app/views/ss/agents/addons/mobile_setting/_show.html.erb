@@ -1,13 +1,9 @@
-<dl class="see mod-mobile-setting">
-  <dt><%= @model.t :mobile_state %></dt>
-  <dd><%= @item.label :mobile_state %></dd>
+<%= f.ss_field_set :mobile_state, value: @item.label(:mobile_state), disabled: true %>
 
-  <dt><%= @model.t :mobile_size %></dt>
-  <dd><%= number_to_human_size(@item.mobile_size) %></dd>
+<%= f.ss_field_set :mobile_size, value: number_to_human_size(@item.mobile_size), disabled: true %>
 
-  <dt><%= @model.t :mobile_location %></dt>
-  <dd><%= @item.mobile_location %></dd>
+<%= f.ss_field_set :mobile_location, disabled: true %>
 
-  <dt><%= @model.t :mobile_css %></dt>
-  <dd><%= br(@item.mobile_css.join("\n")) %></dd>
-</dl>
+<%= f.ss_field_set :mobile_css, disabled: true do %>
+  <div id="item_mobile_css" class="form-control"><%= br(@item.mobile_css.join("\n")) %></div>
+<% end %>
