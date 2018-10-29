@@ -1,4 +1,4 @@
-<div class="d-flex flex-wrap align-item-center justify-content-between mb-0">
+<div class="d-flex flex-wrap align-item-center justify-content-between mb-3">
   <nav>
     <% if params[:action] =~ /index/ %>
       <% if @model.allowed?(:edit, @cur_user, site: @cur_site, node: @cur_node) %>
