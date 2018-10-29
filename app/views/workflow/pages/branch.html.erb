@@ -1,7 +1,8 @@
+<% caption ||= "" %>
 <table class="branches table table-striped">
   <thead>
     <tr>
-      <th><%= @model.t :name %></th>
+      <th><%= caption.presence || @model.t(:name) %></th>
       <th class="datetime"><%= @model.t :updated %></th>
     </tr>
   </thead>
