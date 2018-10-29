@@ -1,3 +1,5 @@
+<% @content_navi = proc { render file: "cms/nodes/_content_navi" } %>
+
 <% @table_def ||= define_ss_table do |tbl| %>
   <% tbl.column_checkbox %>
 

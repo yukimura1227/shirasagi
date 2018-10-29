@@ -1,3 +1,5 @@
+<% @content_navi = proc { render file: "cms/nodes/_content_navi" } %>
+
 <% @index_title = proc do |item| %>
   <% link = item.respond_to?(:view_route) ? contents_path(item) : { action: :show, id: item } %>
   <%= link_to item.name, link, class: "title" %>
