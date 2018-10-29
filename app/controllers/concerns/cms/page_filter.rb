@@ -5,6 +5,7 @@ module Cms::PageFilter
   included do
     before_action :set_item, only: [:show, :edit, :update, :delete, :destroy, :move, :copy, :contains_urls]
     before_action :set_contains_urls_items, only: [:contains_urls, :edit, :delete]
+    before_action :set_tree_navi, only: [:index]
   end
 
   private

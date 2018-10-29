@@ -50,7 +50,7 @@
 
     <div id="wrap">
       <div class="wrap d-flex flex-wrap">
-        <% if @content_navi %><% content_navi.call %><% end %>
+        <% if @content_navi %><%= @content_navi.call %><% end %>
         <article id="main">
           <% if @search %><% @search.call %><% end %>
           <div class="wrap d-flex">
