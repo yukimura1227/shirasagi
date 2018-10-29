@@ -445,8 +445,30 @@ td {
       width: 100%;
       &.is-fixed {
         position: fixed;
+        bottom: 0;
+        overflow-y: scroll;
         @include media-breakpoint-down(sm) {
           position: static;
+        }
+        .nav {
+          margin-bottom: 5rem;
+        }
+        .col {
+          position: fixed;
+          bottom: 0;
+          right: 0;
+          width: 359px;
+          padding: 15px;
+          border-top: 1px solid $gray3;
+          background: $white;
+          @include media-breakpoint-down(sm) {
+            position: static;
+            border-top: none;
+            text-align: center;
+          }
+          button {
+            margin-bottom: 0;
+          }
         }
       }
     }
@@ -1140,9 +1162,6 @@ dl.mod-cms-parent_crumbs {
 // -------------------------------------------------------------------------------------------------
 // content-search
 .content-search {
-  * {
-    margin: 0 1rem 0 0;
-  }
   .card-body {
     margin-right: 0;
   }
