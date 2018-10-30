@@ -1,13 +1,19 @@
-<dl class="see workflow-basic">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.name %></dd>
+<%= f.ss_field_set :name, disabled: true %>
 
-  <dt><%= @model.t :pull_up %></dt>
-  <dd><%= @item.label :pull_up %></dd>
+<%= f.ss_field_set :pull_up, value: @item.label(:pull_up), disabled: true %>
 
-  <dt><%= @model.t :on_remand %></dt>
-  <dd><%= @item.label :on_remand %></dd>
+<%= f.ss_field_set :on_remand, value: @item.label(:on_remand), disabled: true %>
 
-  <dt><%= @model.t :group_ids %></dt>
-  <dd><%= br @item.groups.order_by(name: 1).map{|c| c.name }.join("\n") %></dd>
-</dl>
+<%= f.ss_field_set :group_ids, disabled: true do %>
+  <div id="item_group_ids" class="table-responsive">
+    <table class="table table-striped">
+      <tbody>
+        <% @item.groups.order_by(name: 1).pluck(:name).each do |group_name| %>
+        <tr>
+          <td><%= group_name %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

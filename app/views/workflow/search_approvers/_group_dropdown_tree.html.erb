@@ -1,33 +1,49 @@
-<%= jquery do %>
-  SS_TreeUI.render("form.search .index.groups");
-  SS_Dropdown.render();
+<%= f.ss_field_set :group, label: t("cms.group") do %>
+  <div class="btn-group">
+    <button type="button" id="s_group" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <%= @group.try(:name) %>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="s_group">
+      <% @groups.each do |item| %>
+        <%= link_to item.trailing_name, "#", class: "dropdown-item select-group depth-#{item.depth} #{item.id == @group.id ? "active" : nil}", data: { id: item.id, depth: item.depth } %>
+      <% end %>
+    </div>
+  </div>
+  <%= hidden_field_tag("s[group]", @group.try(:id), id: nil) %>
+<% end %>
 
-  $("form.search .index.groups .select-group").on("click", function(e) {
-    $("#ajax-box #s_group").val($(e.target).data("id"));
-    SS_SearchUI.selectItems()
-    $("#ajax-box form.search").submit()
+<style>
+  form.search .depth-1 {
+    padding-left: 3rem;
+  }
+  form.search .depth-2 {
+    padding-left: 4.5rem;
+  }
+  form.search .depth-3 {
+    padding-left: 6rem;
+  }
+  form.search .depth-4 {
+    padding-left: 7.5rem;
+  }
+  form.search .depth-5 {
+    padding-left: 9rem;
+  }
+  form.search .depth-6 {
+    padding-left: 10.5rem;
+  }
+  form.search .depth-7 {
+    padding-left: 12rem;
+  }
+</style>
+
+<%= jquery do %>
+  $("#ajax-box form.search .select-group").on("click", function(e) {
+    var id = $(e.target).data("id");
+    $("#ajax-box form.search input[name='s[group]']").val(id);
+    $("#ajax-box form.search").submit();
 
     e.preventDefault();
     e.stopPropagation();
     return false;
   });
 <% end %>
-
-<dt><%= t "cms.group" %></dt>
-<dd>
-  <button class="ss-dropdown btn" type="button"><%= @group.try(:name) %> <span class="caret">&#x25BC;</span></button>
-  <%= hidden_field_tag("s[group]", @group.try(:id)) %>
-  <div class="ss-dropdown-container">
-    <table class="index groups">
-      <tbody>
-      <% @groups.each do |item| %>
-        <tr data-depth="<%= item.depth %>" class="toggle">
-          <td class="expandable">
-            <%= link_to item.trailing_name, "#", class: "select-group", data: { id: item.id } %>
-          </td>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
-  </div>
-</dd>

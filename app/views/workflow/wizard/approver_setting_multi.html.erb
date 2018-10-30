@@ -1,69 +1,43 @@
-<% use_agent = @ss_mode == :gws && @item.agent_enabled? && @cur_user.gws_role_permit_any?(@cur_site, :agent_all_gws_workflow_files, :agent_private_gws_workflow_files) %>
-
-<% if use_agent %>
-  <%= jquery do %>
-    $('input[name=agent_type]').on('change', function() {
-      var val = $(this).val();
-      if (val === "myself") {
-        $("dd.agent-type-agent").hide();
-      } else {
-        $("dd.agent-type-agent").show();
-      }
-    });
-
-    SS.renderAjaxBox();
-  <% end %>
+<%= ss_field_tag_set :route, @route.name, label: t("workflow.route"), disabled: true %>
+<%= ss_field_tag_set :workflow_pull_up, nil, label: @model.t(:workflow_pull_up), disabled: true do %>
+  <%= text_field_tag :workflow_pull_up, @route.label(:pull_up), disabled: true, name: nil, id: nil %>
+  <%= hidden_field :workflow, :on_remand, value: @route.on_remand %>
 <% end %>
+<%= ss_field_tag_set :workflow_on_remand, nil, label: @model.t(:workflow_on_remand), disabled: true do %>
+  <%= text_field_tag :workflow_pull_up, @route.label(:on_remand), disabled: true, name: nil, id: nil %>
+  <%= hidden_field :workflow, :on_remand, value: @route.on_remand %>
+<% end %>
+<%= render file: "workflow/wizard/_approver_agent" %>
+<%= ss_field_tag_set("workflow_comment", @item.workflow_comment, type: :text_area, label: @model.t(:workflow_comment), tt: @model.tt(:workflow_comment), class: "form-control") %>
 
-<dl class="see request-setting">
-  <dt><%= t("workflow.route") %></dt>
-  <dd><%= @route.name %></dd>
-  <dt><%= @model.t :workflow_pull_up %></dt>
-  <dd><%= @route.label :pull_up %><%= hidden_field :workflow, :pull_up, value: @route.pull_up %></dd>
-  <dt><%= @model.t :workflow_on_remand %></dt>
-  <dd><%= @route.label :on_remand %><%= hidden_field :workflow, :on_remand, value: @route.on_remand %></dd>
-  <% if use_agent %>
-    <dt><%= @model.t :workflow_user_id %><%= @model.tt :workflow_user_id %></dt>
-    <dd>
-      <label><%= radio_button_tag("agent_type", "myself", true) %> <%= t("gws/workflow.agent_type.myself") %></label>
-      <label><%= radio_button_tag("agent_type", "agent", false) %> <%= t("gws/workflow.agent_type.agent") %></label>
-    </dd>
-    <dd class="agent-type-agent" style="display: none;">
-      <%= hidden_field_tag "workflow_delegatees", "", class: "hidden-ids", id: nil %>
-      <%= link_to t("gws/workflow.search_delegatees.index"), gws_workflow_apis_delegatees_path(single: 1), class: "btn ajax-box" %>
-    </dd>
-    <dd class="agent-type-agent" style="display: none;">
-      <table class="index ajax-selected" style="display: none;">
-        <thead><tr><th class="name"><%= Gws::User.t :name %></th><th class="deselect"></th></tr></thead>
+<% @route.levels.each do |level| %>
+  <%= ss_field_tag_set("level", nil, label: @route.class.t(:level, level: level)) do %>
+    <%= text_field_tag :requried_count, @route.required_count_label_at(level), disabled: true, name: nil, id: nil %>
+    <%= hidden_field_tag "workflow_required_counts", @route.required_count_at(level) %>
+    <%= hidden_field_tag "workflow_approver_attachment_uses", @route.approver_attachment_use_at(level) %>
+  <% end %>
+
+  <%= ss_field_tag_set(:approvers, nil, label: @route.class.t(:approvers), disabled: true) do %>
+    <%
+      users = @route.approver_users_at(level)
+      users = users.select(&:present?).select { |user| @item.allowed?(:approve, user, site: @cur_site) && user.enabled? }
+    %>
+    <div id="item_group_ids" class="table-responsive">
+      <table class="index table table-striped">
         <tbody>
+        <% users.each do |user| %>
+          <td>
+            <%= user.long_name %>
+            <%= hidden_field_tag "workflow_approvers", "#{level},#{user.id},#{@route.approver_user_editable?(level, user) ? '1' : ''},pending," %>
+          </td>
+          <td>
+            <%= user.email %>
+          </td>
+        <% end %>
         </tbody>
       </table>
-    </dd>
+    </div>
   <% end %>
-  <dt><%= @model.t :workflow_comment %><%= @model.tt :workflow_comment %></dt>
-  <dd><%= text_area :workflow, :comment, value: @item.workflow_comment %></dd>
-</dl>
-<% @route.levels.each do |level| %>
-  <dl class="see request-setting">
-    <dt><%= @route.class.t :level, level: level %></dt>
-    <dd>
-      <%= hidden_field_tag "workflow_required_counts", @route.required_count_at(level) %>
-      <%= @route.required_count_label_at(level) %>
-      <%= hidden_field_tag "workflow_approver_attachment_uses", @route.approver_attachment_use_at(level) %>
-    </dd>
-    <dd>
-      <%
-        users = @route.approver_users_at(level)
-        users = users.select(&:present?).select { |user| @item.allowed?(:approve, user, site: @cur_site) && user.enabled? }
-        names = users.map(&:long_name)
-        emails = users.map(&:email)
-      %>
-      <% users.each do |user| %>
-        <%= hidden_field_tag "workflow_approvers", "#{level},#{user.id},#{@route.approver_user_editable?(level, user) ? '1' : ''},pending," %>
-      <% end %>
-      <%= br names.zip(emails).join("\n") %>
-    </dd>
-  </dl>
 <% end %>
 <% if @ss_mode == :gws && @route.circulations.present? %>
   <% 1.upto(@route.class::MAX_CIRCULATIONS).each do |level| %>

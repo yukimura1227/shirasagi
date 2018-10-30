@@ -1,2 +1,3 @@
-<dt><%= t "cms.group" %></dt>
-<dd><%= select_tag("s[group]", options_for_select(@groups.to_options, @group.try(:id))) %></dd>
+<%= f.ss_field_set :group, label: t("cms.group") do %>
+  <%= select_tag("s[group]", options_for_select(@groups.to_options, @group.try(:id))) %>
+<% end %>

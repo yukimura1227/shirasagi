@@ -20,13 +20,13 @@ class Workflow::PagesController < ApplicationController
     { cur_user: @cur_user, cur_site: @cur_site, cur_node: false }
   end
 
-  def request_approval
+  def request_approval(url)
     current_level = @item.workflow_current_level
     current_workflow_approvers = @item.workflow_pull_up_approvers_at(current_level)
     Workflow::Mailer.send_request_mails(
       f_uid: @item.workflow_user_id, t_uids: current_workflow_approvers.map { |approver| approver[:user_id] },
       site: @cur_site, page: @item,
-      url: params[:url], comment: @item.workflow_comment
+      url: url, comment: @item.workflow_comment
     )
 
     @item.set_workflow_approver_state_to_request
@@ -34,12 +34,12 @@ class Workflow::PagesController < ApplicationController
     @item.save
   end
 
-  def workflow_alert
+  def workflow_alert(workflow_approvers = nil)
     email_blank_users = []
     target_user = nil
     email_blank_users.push(@cur_user.name) if @cur_user.email.blank?
-    if params[:workflow_approvers].present?
-      params[:workflow_approvers].each do |workflow_approver|
+    if workflow_approvers.present?
+      workflow_approvers.each do |workflow_approver|
         element = workflow_approver.split(",")
         target_user = SS::User.find(element[1]) rescue nil
         if target_user
@@ -77,8 +77,13 @@ class Workflow::PagesController < ApplicationController
   def request_update
     raise "403" unless @item.allowed?(:edit, @cur_user)
 
-    if params[:forced_update_option] == "false"
-      if message = workflow_alert
+    safe_params = params.require(:item).permit(
+      :workflow_comment, :workflow_pull_up, :workflow_on_remand, :forced_update_option, :url,
+      workflow_approvers: [], workflow_required_counts: [], workflow_circulations: []
+    )
+
+    if safe_params[:forced_update_option] == "false"
+      if message = workflow_alert(safe_params[:workflow_approvers])
         render json: { workflow_alert: message }
         return
       end
@@ -88,16 +93,16 @@ class Workflow::PagesController < ApplicationController
     @item.approved = nil
     @item.workflow_user_id = @cur_user.id
     @item.workflow_state = @model::WORKFLOW_STATE_REQUEST
-    @item.workflow_comment = params[:workflow_comment]
-    @item.workflow_pull_up = params[:workflow_pull_up].present? ? params[:workflow_pull_up] : 'disabled'
-    @item.workflow_on_remand = params[:workflow_on_remand]
-    @item.workflow_approvers = params[:workflow_approvers]
-    @item.workflow_required_counts = params[:workflow_required_counts]
+    @item.workflow_comment = safe_params[:workflow_comment]
+    @item.workflow_pull_up = safe_params[:workflow_pull_up].present? ? safe_params[:workflow_pull_up] : 'disabled'
+    @item.workflow_on_remand = safe_params[:workflow_on_remand]
+    @item.workflow_approvers = safe_params[:workflow_approvers]
+    @item.workflow_required_counts = safe_params[:workflow_required_counts]
     @item.workflow_current_circulation_level = 0
-    @item.workflow_circulations = params[:workflow_circulations]
+    @item.workflow_circulations = safe_params[:workflow_circulations]
 
     if @item.save
-      request_approval
+      request_approval(safe_params[:url])
       render json: { workflow_state: @item.workflow_state }
     else
       render json: @item.errors.full_messages, status: :unprocessable_entity
@@ -107,11 +112,13 @@ class Workflow::PagesController < ApplicationController
   def restart_update
     raise "403" unless @item.allowed?(:edit, @cur_user)
 
+    safe_params = params.require(:item).permit(:workflow_comment, :url)
+
     @item.skip_history_backup = true if @item.respond_to?(:skip_history_backup)
     @item.approved = nil
     @item.workflow_user_id = @cur_user.id
     @item.workflow_state = @model::WORKFLOW_STATE_REQUEST
-    @item.workflow_comment = params[:workflow_comment]
+    @item.workflow_comment = safe_params[:workflow_comment]
     copy = @item.workflow_approvers.to_a
     copy.each do |approver|
       approver[:state] = @model::WORKFLOW_STATE_PENDING
@@ -127,7 +134,7 @@ class Workflow::PagesController < ApplicationController
     @item.workflow_circulations = Workflow::Extensions::WorkflowCirculations.new(copy)
 
     if @item.save
-      request_approval
+      request_approval(safe_params[:url])
       render json: { workflow_state: @item.workflow_state }
     else
       render json: @item.errors.full_messages, status: :unprocessable_entity
@@ -137,7 +144,11 @@ class Workflow::PagesController < ApplicationController
   def approve_update
     raise "403" unless @item.allowed?(:approve, @cur_user)
 
-    if params[:forced_update_option] == "false"
+    safe_params = params.require(:item).permit(
+      :forced_update_option, :workflow_comment, :remand_comment, :url
+    )
+
+    if safe_params[:forced_update_option] == "false"
       if message = workflow_alert
         render json: { workflow_alert: message }
         return
@@ -146,9 +157,9 @@ class Workflow::PagesController < ApplicationController
 
     save_level = @item.workflow_current_level
     if params[:action] == 'pull_up_update'
-      @item.pull_up_workflow_approver_state(@cur_user, comment: params[:remand_comment])
+      @item.pull_up_workflow_approver_state(@cur_user, comment: safe_params[:workflow_comment] || safe_params[:remand_comment])
     else
-      @item.approve_workflow_approver_state(@cur_user, comment: params[:remand_comment])
+      @item.approve_workflow_approver_state(@cur_user, comment: safe_params[:workflow_comment] || safe_params[:remand_comment])
     end
 
     @item.skip_history_backup = true if @item.respond_to?(:skip_history_backup)
@@ -175,17 +186,17 @@ class Workflow::PagesController < ApplicationController
     current_level = @item.workflow_current_level
     if save_level != current_level
       # escalate workflow
-      request_approval
+      request_approval(safe_params[:url])
     end
 
     if @item.workflow_state == @model::WORKFLOW_STATE_APPROVE
       # finished workflow
-      url = params[:url].to_s
+      url = safe_params[:url].to_s
       url.sub!(/#{@item.id}$/, @item.master.id.to_s) if @item.try(:branch?) && @item.state == "public"
       Workflow::Mailer.send_approve_mails(
         f_uid: @cur_user._id, t_uids: [ @item.workflow_user_id ],
         site: @cur_site, page: @item,
-        url: url, comment: params[:remand_comment]
+        url: url, comment: safe_params[:workflow_comment] || safe_params[:remand_comment]
       )
 
       @item.delete if @item.try(:branch?) && @item.state == "public"
@@ -199,14 +210,18 @@ class Workflow::PagesController < ApplicationController
   def remand_update
     raise "403" unless @item.allowed?(:approve, @cur_user)
 
-    if params[:forced_update_option] == "false"
+    safe_params = params.require(:item).permit(
+      :forced_update_option, :workflow_comment, :remand_comment, :url
+    )
+
+    if safe_params[:forced_update_option] == "false"
       if message = workflow_alert
         render json: { workflow_alert: message }
         return
       end
     end
 
-    @item.remand_workflow_approver_state(@cur_user, params[:remand_comment])
+    @item.remand_workflow_approver_state(@cur_user, safe_params[:workflow_comment] || safe_params[:remand_comment])
     @item.skip_history_backup = true if @item.respond_to?(:skip_history_backup)
     if !@item.save
       render json: @item.errors.full_messages, status: :unprocessable_entity
@@ -225,7 +240,7 @@ class Workflow::PagesController < ApplicationController
       Workflow::Mailer.send_remand_mails(
         f_uid: @cur_user._id, t_uids: recipients,
         site: @cur_site, page: @item,
-        url: params[:url], comment: params[:remand_comment]
+        url: safe_params[:url], comment: safe_params[:workflow_comment] || safe_params[:remand_comment]
       )
     end
     render json: { workflow_state: @item.workflow_state }

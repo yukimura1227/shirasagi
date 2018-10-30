@@ -1,24 +1,22 @@
-<% if @ss_mode == :cms %>
-  <% route_options = Workflow::Route.site(@cur_site).route_options(@cur_user, item: @item) %>
-<% else %>
-  <% route_options = Workflow::Route.route_options(@cur_user, item: @item) %>
-<% end %>
+<%
+  if @ss_mode == :cms
+    route_options = Workflow::Route.site(@cur_site).route_options(@cur_user, item: @item)
+  else
+    route_options = Workflow::Route.route_options(@cur_user, item: @item)
+  end
+%>
 <% if route_options.present? %>
-<div class="see">
-  <div class="col12 mb-3">
-    <label><%= t("workflow.request") %><%= @model.tt :workflow_routes %></label>
-    <div class="input-group">
-      <% if @ss_mode == :cms %>
+  <div class="see workflow-wizard">
+    <div class="col12 mb-3">
+      <label><%= t("workflow.request") %><%= @model.tt :workflow_routes %></label>
+      <div class="input-group">
         <%= select_tag :workflow_route, options_for_select(route_options) %>
-      <% else %>
-        <%= select_tag :workflow_route, options_for_select(route_options) %>
-      <% end %>
-      <div class="input-group-append">
-        <%= link_to t("workflow.buttons.select"), "#", class: "workflow-route-start btn btn-outline-secondary" %>
+        <div class="input-group-append">
+          <%= link_to t("workflow.buttons.select"), "#", class: "workflow-route-start btn btn-outline-secondary" %>
+        </div>
       </div>
     </div>
   </div>
-</div>
 <% else %>
-<h2><%= t("workflow.empty_route_options") %></h2>
+  <h2><%= t("workflow.empty_route_options") %></h2>
 <% end %>
