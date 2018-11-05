@@ -46,8 +46,6 @@ describe "webapi", dbscope: :example, type: :request do
         expect(json["filename"]).to eq page.filename
         expect(json["depth"]).to eq page.depth
         expect(json["layout_id"]).to eq page.layout_id
-        expect(json["body_layout_id"]).to eq page.body_layout_id
-        expect(json["body_parts"]).to eq page.body_parts
         expect(json["order"]).to eq page.order
         expect(json["state"]).to eq page.state
 
@@ -71,9 +69,7 @@ describe "webapi", dbscope: :example, type: :request do
         params = {
           item: {
             name: "更新タイトル",
-            body_parts: %w(<div>part0</div> <div>part1</div> <div>part2</div>),
             layout_id: 1,
-            body_layout_id: 1,
             release_date: "2015/11/13 11:00:00",
             close_date: "2015/11/13 12:00:00"
           }
@@ -84,7 +80,6 @@ describe "webapi", dbscope: :example, type: :request do
         updated_page = Cms::Page.find(page.id)
 
         expect(updated_page.name).to eq params[:item][:name]
-        expect(updated_page.body_parts).to eq params[:item][:body_parts]
         expect(updated_page.layout_id).to eq params[:item][:layout_id]
         expect("ready").to eq updated_page.state
 

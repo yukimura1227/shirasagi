@@ -10,7 +10,6 @@ describe "webapi", dbscope: :example, type: :request do
   let!(:node) { create(:article_node_page) }
   let!(:item) { create(:article_page, cur_node: node) }
   let!(:layout) { create(:cms_layout) }
-  let!(:body_layout) { create(:cms_body_layout) }
 
   ## paths
   let!(:login_path) { sns_login_path(format: :json) }
@@ -52,9 +51,7 @@ describe "webapi", dbscope: :example, type: :request do
         it "200 with page id" do
           params = { preview_item: {
             id: item.id,
-            layout_id: layout.id,
-            body_layout_id: body_layout.id,
-            body_parts: %w(パーツ１ パーツ２ パーツ３),
+            layout_id: layout.id
           } }
 
           post form_preview_path, params: params

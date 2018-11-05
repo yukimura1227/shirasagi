@@ -92,7 +92,6 @@ SS::Application.routes.draw do
 
     resources :pages, concerns: [:deletion, :copy, :move, :command, :lock, :contains_urls]
     resources :layouts, concerns: :deletion
-    resources :body_layouts, concerns: :deletion
     resources :editor_templates, concerns: [:deletion, :template]
     resources :loop_settings, concerns: :deletion
     resources :command_settings, concerns: :deletion do

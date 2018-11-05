@@ -5,10 +5,6 @@ module Sys::SiteImport::Contents
     @cms_layouts_map = import_documents "cms_layouts", Cms::Layout, %w(site_id filename)
   end
 
-  def import_cms_body_layouts
-    @cms_body_layouts_map = import_documents "cms_body_layouts", Cms::BodyLayout
-  end
-
   def import_cms_nodes
     @cms_nodes_map = import_documents "cms_nodes", Cms::Node, %w(site_id filename) do |item|
       item[:opendata_site_ids] = [] if item[:opendata_site_ids].present?

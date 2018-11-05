@@ -1414,9 +1414,6 @@ this.Form_Preview = (function () {
         if ("item[html]" === v["name"]) {
           continue;
         }
-        if ("item[body_parts][]" === v["name"]) {
-          continue;
-        }
         form.append($("<input/>", {
           name: v["name"].replace(/^item\[/, "preview_item["),
           value: v["value"],

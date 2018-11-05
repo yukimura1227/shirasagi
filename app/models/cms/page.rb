@@ -7,7 +7,6 @@ class Cms::Page
   include Cms::Addon::SnsPoster
   include Gravatar::Addon::Gravatar
   include Cms::Addon::Body
-  include Cms::Addon::BodyPart
   include Cms::Addon::File
   include Cms::Addon::Form::Page
   include Category::Addon::Category

@@ -278,9 +278,6 @@ ja:
     edit_cms_members: メンバーの管理
     edit_cms_editor_templates: テンプレートの管理
     edit_cms_loop_settings: ループHTMLの管理
-    read_cms_body_layouts: 本文レイアウトの閲覧
-    edit_cms_body_layouts: 本文レイアウトの編集
-    delete_cms_body_layouts: 本文レイアウトの削除
     read_cms_commands: コマンドの閲覧
     edit_cms_commands: コマンドの編集
     delete_cms_commands: コマンドの削除
@@ -380,7 +377,6 @@ ja:
       cms/sns_poster: SNS自動投稿設定
       cms/node_auto_post_setting: SNS自動投稿設定
       cms/captcha: 認証
-      cms/body_layout_html: HTML
       cms/default_release_plan: 公開予約の既定値
       cms/page_search: 検索条件
       cms/high_contrast_mode: ハイコントラストモード
@@ -421,7 +417,6 @@ ja:
       cms/part/tabs: 新着タブ
       cms/part/crumb: パンくずリスト
       cms/layout: レイアウト
-      cms/body_layout: レイアウト
       cms/workflow/route: 承認経路
       cms/role: ロール
       cms/editor_template: テンプレート
@@ -482,15 +477,11 @@ ja:
         name: レイアウト名
       cms/addon/layout_html:
         html: HTML
-      cms/body_layout:
-        name: 本文レイアウト名
-        parts: パーツ名
       cms/page:
         html: 本文
       cms/reference/layout:
         layout: レイアウト
         layout_id: レイアウト
-        body_layout_id: 本文レイアウト
       cms/reference/page_layout:
         page_layout_id: ページレイアウト
       cms/site:
@@ -1228,14 +1219,6 @@ ja:
         - レイアウトのファイル名を入力します。
         - 半角英数字で入力してください。
         - .htmlなどの拡張子の記述は不要です。
-
-    cms/body_layout:
-      name:
-        - 本文レイアウト名を入力します。
-        - 日本語での入力が可能です。
-      parts:
-        - 本文レイアウトにて展開するパーツ名を入力します。
-        - 複数のパーツ名を改行区切りで記述してください。
 
     cms/editor_template:
       name:

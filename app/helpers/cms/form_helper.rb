@@ -18,14 +18,6 @@ module Cms::FormHelper
     items
   end
 
-  def ancestral_body_layouts
-    items = []
-    Cms::BodyLayout.site(@cur_site).sort(name: 1).each do |item|
-      items << [item.name, item.id] if item.parts.present?
-    end
-    items
-  end
-
   def ancestral_loop_settings
     items = []
     Cms::LoopSetting.site(@cur_site).sort(order: 1, name: 1).each do |item|

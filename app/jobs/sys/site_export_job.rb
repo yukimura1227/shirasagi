@@ -25,7 +25,6 @@ class Sys::SiteExportJob < SS::ApplicationJob
     invoke :export_cms_forms
     invoke :export_cms_columns
     invoke :export_cms_layouts
-    invoke :export_cms_body_layouts
     invoke :export_cms_nodes
     invoke :export_cms_parts
     invoke :export_cms_pages
@@ -148,10 +147,6 @@ class Sys::SiteExportJob < SS::ApplicationJob
 
   def export_cms_layouts
     export_documents "cms_layouts", Cms::Layout
-  end
-
-  def export_cms_body_layouts
-    export_documents "cms_body_layouts", Cms::BodyLayout
   end
 
   def export_cms_nodes

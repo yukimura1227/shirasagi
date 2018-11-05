@@ -48,7 +48,6 @@ module Service::Quota
     size = [
       sites,
       Chorg::Revision.any_in(site_id: site_ids),
-      Cms::BodyLayout.any_in(site_id: site_ids),
       Cms::EditorTemplate.any_in(site_id: site_ids),
       Cms::Layout.any_in(site_id: site_ids),
       Cms::LoopSetting.any_in(site_id: site_ids),

@@ -98,11 +98,7 @@ class Opendata::CmsIntegration::AssocJob < Cms::ApplicationJob
   end
 
   def get_page_html
-    if @cur_page.body_layout.present?
-      @page_html ||= @cur_page.body_parts.join
-    else
-      @page_html ||= @cur_page.html
-    end
+    @page_html ||= @cur_page.html
   end
 
   def get_associated_dataset

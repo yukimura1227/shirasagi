@@ -385,9 +385,9 @@ module Cms::Addon
 
     def headers
       %w(
-        filename name index_name layout body_layout_id order
+        filename name index_name layout order
         keywords description summary_html
-        html body_part
+        html
         categories
         event_name event_dates
         related_pages
@@ -406,7 +406,6 @@ module Cms::Addon
         item.name,
         item.index_name,
         Cms::Layout.where(_id: item.layout_id).pluck(:name).first,
-        Cms::BodyLayout.where(_id: item.body_layout_id).pluck(:name).first,
         item.order,
 
         # meta
@@ -415,7 +414,6 @@ module Cms::Addon
         item.summary_html,
 
         item.html,
-        item.body_parts.map{ |body| body.gsub("\t", '    ') }.join("\t"),
 
         # category
         category_name_tree(item).join("\n"),
