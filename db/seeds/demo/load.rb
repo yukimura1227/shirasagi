@@ -230,18 +230,29 @@ end
 form = save_form(name: '観光情報', order: 10, state: 'public', filename: '1.html')
 
 form_columns = [
-  save_column(:file_upload, form: form, name: 'メイン画像', order: 10, required: 'required', tooltips: '画像ファイルをアップロードしてください。', html_tag: 'img'),
-  save_column(:text_area, form: form, name: '説明文', order: 20, required: 'required', tooltips: '説明文を入力してください。'),
-  save_column(:text, form: form, name: '所在地', order: 30, required: 'optional', tooltips: '住所を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: 'アクセス', order: 40, required: 'optional', tooltips: 'アクセス情報を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: '営業時間', order: 50, required: 'optional', tooltips: '営業時間を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: '休業日', order: 60, required: 'optional', tooltips: '休業日を入力してください。', input_type: 'text'),
+  save_column(:file_upload, form: form, name: 'メイン画像', order: 10, required: 'required',
+              tooltips: '画像ファイルをアップロードしてください。', html_tag: 'img'),
+  save_column(:text_area, form: form, name: '説明文', order: 20, required: 'required',
+              tooltips: '説明文を入力してください。'),
+  save_column(:text, form: form, name: '所在地', order: 30, required: 'optional',
+              tooltips: '住所を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: 'アクセス', order: 40, required: 'optional',
+              tooltips: 'アクセス情報を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: '営業時間', order: 50, required: 'optional',
+              tooltips: '営業時間を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: '休業日', order: 60, required: 'optional',
+              tooltips: '休業日を入力してください。', input_type: 'text'),
   save_column(:text, form: form, name: '料金', order: 70, required: 'optional', input_type: 'text'),
-  save_column(:text, form: form, name: '電話番号', order: 80, required: 'optional', tooltips: '電話番号を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: 'E-mail', order: 90, required: 'optional', tooltips: 'メールアドレスを入力してください。', input_type: 'email'),
-  save_column(:url, form: form, name: 'ホームページ', order: 100, required: 'optional', tooltips: 'URLを入力してください。', html_tag: 'a'),
-  save_column(:file_upload, form: form, name: '写真1', order: 110, required: 'optional', tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
-  save_column(:file_upload, form: form, name: '写真2', order: 120, required: 'optional', tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
+  save_column(:text, form: form, name: '電話番号', order: 80, required: 'optional',
+              tooltips: '電話番号を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: 'E-mail', order: 90, required: 'optional',
+              tooltips: 'メールアドレスを入力してください。', input_type: 'email'),
+  save_column(:url, form: form, name: 'ホームページ', order: 100, required: 'optional',
+              tooltips: 'URLを入力してください。', html_tag: 'a'),
+  save_column(:file_upload, form: form, name: '写真1', order: 110, required: 'optional',
+              tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
+  save_column(:file_upload, form: form, name: '写真2', order: 120, required: 'optional',
+              tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
 ]
 
 ## -------------------------------------
@@ -1057,9 +1068,12 @@ save_page route: "event/page", filename: "calendar/page28.html", name: "住民�
   content: "○○○○○○○○○○○○○○○○○○○○", related_url: link_url,
   group_ids: [g_seisaku.id]
 
-file_7 = save_ss_files "ss_files/key_visual/keyvisual01.jpg", filename: "keyvisual01.jpg", name: "keyvisual01.jpg", model: "ss/temp_file"
-file_8 = save_ss_files "ss_files/key_visual/keyvisual02.jpg", filename: "keyvisual02.jpg", name: "keyvisual02.jpg", model: "ss/temp_file"
-file_9 = save_ss_files "ss_files/key_visual/keyvisual03.jpg", filename: "keyvisual03.jpg", name: "keyvisual03.jpg", model: "ss/temp_file"
+file_7 = save_ss_files "ss_files/key_visual/keyvisual01.jpg",
+                       filename: "keyvisual01.jpg", name: "keyvisual01.jpg", model: "ss/temp_file"
+file_8 = save_ss_files "ss_files/key_visual/keyvisual02.jpg",
+                       filename: "keyvisual02.jpg", name: "keyvisual02.jpg", model: "ss/temp_file"
+file_9 = save_ss_files "ss_files/key_visual/keyvisual03.jpg",
+                       filename: "keyvisual03.jpg", name: "keyvisual03.jpg", model: "ss/temp_file"
 
 save_page route: "article/page", filename: "docs/page29.html", name: "シラサギ博物館",
   layout_id: layouts["pages"].id, form_id: form.id, category_ids: [categories["kanko/geijyutsu"].id],
