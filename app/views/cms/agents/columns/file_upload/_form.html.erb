@@ -1,7 +1,2 @@
-<dl class="see mod-cms-column-file-upload">
-  <dt><%= @model.t :html_tag %><%= @model.tt :html_tag %></dt>
-  <dd><%= f.select :html_tag, @item.html_tag_options %></dd>
-
-  <dt><%= @model.t :html_additional_attr %><%= @model.tt :html_additional_attr %></dt>
-  <dd><%= f.text_field :html_additional_attr %></dd>
-</dl>
+<%= f.ss_select_set :html_tag, tt: true %>
+<%= f.ss_field_set :html_additional_attr, tt: true %>

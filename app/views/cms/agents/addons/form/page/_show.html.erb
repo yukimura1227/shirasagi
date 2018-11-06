@@ -1,16 +1,17 @@
-<% return if @item.form.blank? %>
+<%
+  return if @item.form.blank?
 
-<% @item.column_values.order_by(order: 1).each do |column_value| %>
-  <% column = @item.form.columns.find(column_value.column_id) rescue nil %>
-  <% if column && column.column_show_path %>
-    <%= render file: column.column_show_path, locals: { column: column, value: column_value } %>
-  <% else %>
-    <%= ss_field_tag_set("item[column_values][#{column_value.id}]", label: column_value.name) do %>
-      <%= br [ column_value.value.presence ].compact.flatten.join(', ') %>
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:head] = @item.form.name
+%>
+
+<%= f.fields_for(:column_values) do |g| %>
+  <% @item.column_values.order_by(order: 1).each do |column_value| %>
+    <% column = @item.form.columns.find(column_value.column_id) rescue nil %>
+    <% if column && column.column_show_path %>
+      <%= render file: column.column_show_path, locals: { f: g, column: column, value: column_value } %>
+    <% else %>
+      <%= g.ss_field_set(column_value.id.to_s, label: column_value.name, value: [ column_value.value.presence ].compact.flatten.join(', '), disabled: true) %>
     <% end %>
   <% end %>
-<% end %>
-
-<%= jquery do %>
-  $('#addon-cms-agents-addons-form-page .addon-head h2').text(<%== @item.form.name.to_json %>);
 <% end %>

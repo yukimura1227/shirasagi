@@ -1,12 +1,11 @@
 <% value ||= nil %>
-<%= render file: 'cms/agents/columns/main/_common_label', locals: { column: column } %>
-<dd>
+<%= f.ss_field_set column.id.to_s, column.form_options.merge(label: column.name, tt: column.tooltips.presence) do %>
   <div class="input-group radio-button-column">
     <% column.select_options.each do |val| %>
       <label>
-        <%= radio_button_tag("#{object_name}[#{column.id}]", val, value.try(:value) == val, column.form_options) %>
+        <%= radio_button_tag("#{object_name}[#{column.id}]", val, value.try(:value) == val, column.form_options.merge(id: nil)) %>
         <%= val %>
       </label>
     <% end %>
   </div>
-</dd>
+<% end %>

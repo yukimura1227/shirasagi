@@ -1,38 +1,34 @@
-<dl class="see">
-  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
-  <dd><%= f.text_field :name %></dd>
+<%= f.ss_field_set :name, tt: true %>
 
-  <dt><%= @model.t :order %><%= @model.tt :order %></dt>
-  <dd><%= f.number_field :order %></dd>
+<%= f.ss_field_set :order, tt: true %>
 
-  <dt><%= @model.t :state %><%= @model.tt :state %></dt>
-  <dd><%= f.select :state, @item.state_options %></dd>
+<%= f.ss_select_set :state, tt: true %>
 
-  <dt><%= @model.t :column_ids %></dt>
-  <dd>
-    <% if @item.columns.present? %>
-    <table class="index">
-      <thead>
-      <tr>
-        <th class="order"><%= Cms::Column::Base.t :order %></th>
-        <th class="name"><%= Cms::Column::Base.t :name %></th>
-        <th class="name"><%= Cms::Column::Base.t :route %></th>
-        <th class="required"><%= Cms::Column::Base.t :required %></th>
-        <th class="datetime"><%= Cms::Column::Base.t :updated %></th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @item.columns.order_by(order: 1).each do |column| %>
-      <tr data-id="<%= column.id %>">
-        <td><%= column.order %></td>
-        <td><%= column.name %> </td>
-        <td><%= column.class.model_name.human %> </td>
-        <td><%= column.label :required %></td>
-        <td><%= I18n.l(column.updated) %></td>
-      </tr>
-      <% end %>
-      </tbody>
-    </table>
-    <% end %>
-  </dd>
-</dl>
+<% if @item.columns.present? %>
+  <%= f.ss_field_set :column_ids do %>
+    <div class="table-responsive">
+      <table class="index table table-striped">
+        <thead>
+        <tr>
+          <th class="order"><%= Cms::Column::Base.t :order %></th>
+          <th class="name"><%= Cms::Column::Base.t :name %></th>
+          <th class="name"><%= Cms::Column::Base.t :route %></th>
+          <th class="required"><%= Cms::Column::Base.t :required %></th>
+          <th class="datetime"><%= Cms::Column::Base.t :updated %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @item.columns.order_by(order: 1).each do |column| %>
+        <tr data-id="<%= column.id %>">
+          <td><%= column.order %></td>
+          <td><%= column.name %> </td>
+          <td><%= column.class.model_name.human %> </td>
+          <td><%= column.label :required %></td>
+          <td><%= I18n.l(column.updated) %></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,2 @@
+<% value ||= nil %>
+<%= f.ss_field_set column.id.to_s, column.form_options.merge(type: :text_area, label: column.name, disabled: true, value: value.try(:value)) %>

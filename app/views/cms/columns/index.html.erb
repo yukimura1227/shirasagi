@@ -1,13 +1,47 @@
-<% @tap_menu = proc do |item| %>
-  <%= link_to t('ss.links.show'), action: :show, id: item if @cur_form.allowed?(:read, @cur_user, site: @cur_site) %>
-  <%= link_to t('ss.links.edit'), action: :edit, id: item if @cur_form.allowed?(:edit, @cur_user, site: @cur_site) %>
-  <%= link_to t('ss.links.delete'), action: :delete, id: item if @cur_form.allowed?(:delete, @cur_user, site: @cur_site) %>
-<% end %>
 <% @index_meta = proc do |item| %>
   <span class="datetime"><%= item.updated.strftime("%Y/%m/%d %H:%M") %></span>
   <span class="order"><%= item.order %></span>
   <span class="class"><%= item.class.model_name.human %></span>
   <span class="required"><%= item.label :required %></span>
+<% end %>
+
+<% @table_def ||= define_ss_table do |tbl| %>
+  <% tbl.column_checkbox %>
+
+  <% tbl.column(class: "title") do %>
+    <% tbl.th t("mongoid.attributes.cms/content.name") %>
+    <% tbl.td do |item| %>
+      <% if @index_title %>
+        <% @index_title.call item %>
+      <% else %>
+        <% title = item.try(:name) || item.try(:title) || item.try(:filename) || "##{item.id}" %>
+        <%= link_to title, {action: :show, id: item} %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% tbl.column(class: "order") do %>
+    <% tbl.th @model.t(:order) %>
+    <% tbl.td do |item| %><%= item.order %><% end %>
+  <% end %>
+
+  <% tbl.column(class: "class") do %>
+    <% tbl.th @model.t(:route) %>
+    <% tbl.td do |item| %><%= item.class.model_name.human %><% end %>
+  <% end %>
+
+  <% tbl.column(class: "required") do %>
+    <% tbl.th @model.t(:required) %>
+    <% tbl.td do |item| %><%= item.label :required %><% end %>
+  <% end %>
+
+  <% tbl.column_updated %>
+
+  <% tbl.tap_menu do |item| %>
+    <%= link_to(t('ss.links.show'), { action: :show, id: item }, { class: "dropdown-item" }) if @cur_form.allowed?(:read, @cur_user, site: @cur_site) %>
+    <%= link_to(t('ss.links.edit'), { action: :edit, id: item }, { class: "dropdown-item" }) if @cur_form.allowed?(:edit, @cur_user, site: @cur_site) %>
+    <%= link_to(t('ss.links.delete'), { action: :delete, id: item }, { class: "dropdown-item" }) if @cur_form.allowed?(:delete, @cur_user, site: @cur_site) %>
+  <% end %>
 <% end %>
 
 <%= render file: 'cms/crud/index' %>

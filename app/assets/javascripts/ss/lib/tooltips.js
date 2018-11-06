@@ -10,7 +10,7 @@ SS_Tooltips.prototype.findClosestPopup = function($el) {
 SS_Tooltips.prototype.render = function() {
   var _this = this;
 
-  $(this.selector).on('click', '.ss-tooltip-toggle', function(ev) {
+  $(document).on('click', this.selector + ' .ss-tooltip-toggle', function(ev) {
     ev.preventDefault();
     ev.stopPropagation();
 

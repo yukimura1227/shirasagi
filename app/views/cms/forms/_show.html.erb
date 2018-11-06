@@ -1,18 +1,20 @@
-<dl class="see">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.name %></dd>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:disabled] = false
+%>
 
-  <dt><%= @model.t :order %></dt>
-  <dd><%= @item.order %></dd>
+<%= f.ss_field_set :name, disabled: true %>
 
-  <dt><%= @model.t :state %></dt>
-  <dd><%= @item.label :state %></dd>
+<%= f.ss_field_set :order, disabled: true %>
 
-  <dt><%= @model.t :column_ids %></dt>
-  <dd><%= link_to(t('cms.buttons.manage_columns'), cms_form_columns_path(form_id: @item), class: :btn) %></dd>
-  <dd>
-    <% if @item.columns.present? %>
-    <table class="index">
+<%= f.ss_field_set :state, value: @item.label(:state), disabled: true %>
+
+<%= f.ss_field_set :column_ids do %>
+  <div><%= link_to(t('cms.buttons.manage_columns'), cms_form_columns_path(form_id: @item), class: :btn) %></div>
+
+  <% if @item.columns.present? %>
+  <div class="table-responsive">
+    <table class="table table-striped index">
       <thead>
       <tr>
         <th class="order"><%= Cms::Column::Base.t :order %></th>
@@ -34,6 +36,6 @@
       <% end %>
       </tbody>
     </table>
-    <% end %>
-  </dd>
-</dl>
+  </div>
+  <% end %>
+<% end %>

@@ -1,6 +1,7 @@
-<% buf = render(file: @item.show_file) if @item.show_file %>
-<% return if buf.blank? %>
-<div class="addon-view mb-5" id="column-<%= @model.name.underscore.gsub('/', '-') %>">
-  <h2 class="h4"><%= @model.model_name.human %></h2>
-  <%= buf %>
-</div>
+<%
+  return if !@item.show_file
+
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:head] = @model.model_name.human
+%>
+<%= render(file: @item.show_file, locals: { f: f }) %>

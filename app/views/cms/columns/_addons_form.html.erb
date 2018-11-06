@@ -1,0 +1,9 @@
+<% addon_options = { id: "column-view" } %>
+<% buf = render file: "_column_form", locals: { f: f, addon: addon_options } %>
+<% if buf.present? %>
+  <%= render "ss/crud/addon_form", addon: addon_options do %>
+    <%= buf %>
+  <% end %>
+<% end %>
+
+<%= render file: "ss/crud/_addons_form", locals: { f: f, addons: addons } %>

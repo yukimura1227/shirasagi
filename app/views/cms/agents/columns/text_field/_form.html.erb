@@ -1,4 +1,1 @@
-<dl class="see column-cms-text_field">
-  <dt><%= @model.t :input_type %><%= @model.tt :input_type %></dt>
-  <dd><%= f.select :input_type, @item.input_type_options %></dd>
-</dl>
+<%= f.ss_select_set :input_type, tt: true %>

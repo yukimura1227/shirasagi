@@ -69,14 +69,22 @@ Cms_TemplateForm.prototype = {
     this.$formPageBody.html('<p>' + msg + '</p>');
   },
   activateForm: function() {
-    this.$formPage.show();
-    $('#addon-cms-agents-addons-body').hide();
-    $('#addon-cms-agents-addons-file').hide();
+    this.$formPage.removeClass('hide');
+    $('#addon-cms-agents-addons-body').addClass('hide');
+    $('#addon-cms-agents-addons-file').addClass('hide');
+
+    if (SS_AddonNavi.instance) {
+      SS_AddonNavi.instance.reload();
+    }
   },
   deactivateForm: function() {
     this.$formPageBody.html('');
-    this.$formPage.hide();
-    $('#addon-cms-agents-addons-body').show();
-    $('#addon-cms-agents-addons-file').show();
+    this.$formPage.addClass('hide');
+    $('#addon-cms-agents-addons-body').removeClass('hide');
+    $('#addon-cms-agents-addons-file').removeClass('hide');
+
+    if (SS_AddonNavi.instance) {
+      SS_AddonNavi.instance.reload();
+    }
   }
 };

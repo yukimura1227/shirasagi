@@ -1,12 +1,11 @@
 <% value ||= [] %>
-<%= render file: 'cms/agents/columns/main/_common_label', locals: { column: column } %>
-<dd>
+<%= f.ss_field_set column.id.to_s, column.form_options.merge(label: column.name, tt: column.tooltips.presence) do %>
   <div class="input-group check-box-column">
     <% column.select_options.each do |val| %>
       <label>
-        <%= check_box_tag("#{object_name}[#{column.id}][]", val, value.try(:values).try(:include?, val), column.form_options) %>
+        <%= check_box_tag("#{object_name}[#{column.id}][]", val, value.try(:values).try(:include?, val), column.form_options.merge(id: nil)) %>
         <%= val %>
       </label>
     <% end %>
   </div>
-</dd>
+<% end %>

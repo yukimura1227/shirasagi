@@ -1,6 +1,3 @@
-<%= code_editor ".mod-cms-html-form textarea", mode: :html %>
+<%= code_editor "#addon-cms-agents-addons-layout_html textarea", mode: :html %>
 
-<dl class="see mod-cms-html-form">
-  <dt><%= @model.t :html %><%= @model.tt :html %></dt>
-  <dd class="wide"><%= f.text_area :html, style: "height: 400px" %></dd>
-</dl>
+<%= f.ss_field_set :html, type: :text_area, style: "height: 400px", tt: true %>

@@ -1,4 +1,13 @@
-<div>
-  <h2 class="h4"><%= @item.name %></h2>
-  <%= render file: '_form.html.erb' %>
-</div>
+<% html = capture do %>
+  <%= form_for :item, url: "#", html: { id: "item-form", method: :get, enforce_utf8: false, authenticity_token: false } do |f| %>
+    <%
+      addon_options = {}
+      addon_options[:head] = @item.name
+    %>
+    <%= render "ss/crud/addon_form", addon: addon_options do %>
+      <%= render file: "_form", locals: { f: f } %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= html.sub(/<form.*?>/, '').sub(/<\/form>/, '').html_safe %>

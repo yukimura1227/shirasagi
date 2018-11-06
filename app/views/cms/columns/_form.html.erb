@@ -1,13 +1,9 @@
-<dl class="see">
-  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
-  <dd><%= f.text_field :name %></dd>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:head] = t("ss.basic_info")
+%>
 
-  <dt><%= @model.t :order %><%= @model.tt :order %></dt>
-  <dd><%= f.number_field :order %></dd>
-
-  <dt><%= @model.t :required %><%= @model.tt :required %></dt>
-  <dd><%= f.select :required, @item.required_options %></dd>
-
-  <dt><%= @model.t :tooltips %><%= @model.tt :tooltips %></dt>
-  <dd><%= f.text_area :tooltips %></dd>
-</dl>
+<%= f.ss_field_set :name, tt: true %>
+<%= f.ss_field_set :order, tt: true %>
+<%= f.ss_select_set :required, tt: true %>
+<%= f.ss_field_set :tooltips, type: :text_area, tt: true %>
