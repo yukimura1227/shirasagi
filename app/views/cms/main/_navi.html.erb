@@ -76,9 +76,6 @@
         <% if Cms::Tool.allowed?(:read, @cur_user, site: @cur_site) %>
           <%= link_to t("cms.source_cleaner_template"), cms_source_cleaner_templates_path, class: "dropdown-item" %>
         <% end %>
-        <% if Cms::BodyLayout.allowed?(:read, @cur_user, site: @cur_site) %>
-          <%= link_to t("cms.body_layout"), cms_body_layouts_path, class: "dropdown-item" %>
-        <% end %>
         <% if Cms::PageSearch.allowed?(:read, @cur_user, site: @cur_site) %>
           <%= link_to t("cms.page_search"), cms_page_searches_path, class: "dropdown-item" %>
         <% end %>

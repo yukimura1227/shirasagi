@@ -15,6 +15,8 @@ window.SS_AddonNavi = (function () {
       "btn-success": "btn-outline-success"
     };
 
+    this.clearNaviMenus();
+    this.clearNaviButtons();
     var renderedNaviMenus = this.renderNaviMenus();
     var renderedNaviButtons = this.renderNaviButtons();
     if (renderedNaviMenus || renderedNaviButtons) {
@@ -28,12 +30,31 @@ window.SS_AddonNavi = (function () {
 
   SS_AddonNavi.instance = null;
 
+  SS_AddonNavi.prototype.reload = function() {
+    var $nav = this.$el.find(".nav");
+    $nav.html('');
+
+    this.clearNaviMenus();
+    this.clearNaviButtons();
+    this.renderNaviMenus();
+    this.renderNaviButtons();
+  };
+
+  SS_AddonNavi.prototype.clearNaviMenus = function() {
+    var $nav = this.$el.find(".nav");
+    $nav.html('');
+  };
+
   SS_AddonNavi.prototype.renderNaviMenus = function() {
     var $nav = this.$el.find(".nav");
     var template = this.$el.find(".menu-template").html();
     var nameCount = 0;
     $(".addon-view").each(function() {
       var $this = $(this);
+      if ($this.hasClass('hide')) {
+        return;
+      }
+
       var id = $this.attr("id");
       var name = $this.find(".addon-head").text();
 
@@ -45,12 +66,21 @@ window.SS_AddonNavi = (function () {
     return nameCount > 0;
   };
 
+  SS_AddonNavi.prototype.clearNaviButtons = function() {
+    var $nav = this.$el.find(".col");
+    $nav.html('');
+  };
+
   SS_AddonNavi.prototype.renderNaviButtons = function() {
     var self = this;
     var $nav = this.$el.find(".col");
     var buttonCount = 0;
     $("form#item-form footer.send .btn").each(function() {
       var $this = $(this);
+      if ($this.hasClass('hide')) {
+        return;
+      }
+
       var name = $this.val() || $this.text();
       var isSubmit = false;
       if ($this.attr("type") === "submit") {

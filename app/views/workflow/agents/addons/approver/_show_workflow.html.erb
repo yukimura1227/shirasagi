@@ -1,0 +1,171 @@
+<% return if !@item.workflow_state? %>
+
+<%
+  if @item.workflow_member.present?
+    name = "#{@item.workflow_member.name}(#{t("workflow.member")})"
+  elsif @item.workflow_user.present?
+    name = "#{@item.workflow_user.long_name}(#{@item.workflow_user.email})"
+  else
+    name = t("workflow.user_deleted")
+  end
+%>
+<%= f.ss_field_set :workflow_user_id, disabled: true do %>
+  <%= f.text_field :workflow_user_id, value: name, disabled: true %>
+
+  <% agent = @item.workflow_agent %>
+  <% if agent.present? %>
+    <%= t(agent.email.blank? ? "agent_name" : "agent_name_with_email", scope: :workflow, long_name: agent.long_name, email: agent.email) %>
+  <% end %>
+<% end %>
+
+<% if @item.workflow_state.present? %>
+  <%= f.ss_field_set :workflow_state, disabled: true do %>
+    <div class="input-group">
+      <%= f.text_field :workflow_state, value: t("workflow.state.#{@item.workflow_state}"), disabled: true %>
+      <% if @item.workflow_requested? %>
+        <% if @ss_mode == :cms && @item.allowed?(:revoke, @cur_user, site: @cur_site) %>
+          <% link = link_to t('workflow.buttons.cancel'), { controller: '/workflow/pages', action: 'request_cancel' }, { class: "btn request-cancel", data: { ss_confirmation: t("workflow.confirm.request_cancel") } } %>
+        <% elsif @ss_mode == :gws && @item.allowed?(:edit, @cur_user, site: @cur_site) %>
+          <%= link = link_to(t('workflow.buttons.cancel'), { action: :request_cancel }, class: :btn) rescue nil %>
+        <% end %>
+
+        <% if link %>
+          <div class="input-group-append"><%= link %></div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
+
+<% if @item.workflow_comment.present? %>
+  <%= f.ss_field_set :workflow_comment, disabled: true do %>
+    <div><%= br @item.workflow_comment %></div>
+  <% end %>
+<% end %>
+
+<%= f.ss_field_set :workflow_pull_up, value: @item.label(:workflow_pull_up), disabled: true %>
+
+<%= f.ss_field_set :workflow_on_remand, value: @item.label(:workflow_on_remand), disabled: true %>
+
+<%= f.ss_field_set :workflow_approvers, disabled: true do %>
+  <% if @item.workflow_approvers.present? %>
+    <div class="table-responsive">
+      <table class="table table-striped index">
+        <tbody>
+        <% @item.workflow_approvers.group_by { |workflow_approver| workflow_approver[:level] }.each do |level, workflow_approvers| %>
+          <% workflow_approvers.each_with_index do |workflow_approver, index| %>
+          <% user_id = workflow_approver[:user_id] %>
+          <% user = SS::User.where(id: user_id).first %>
+          <% state = workflow_approver[:state] %>
+          <tr>
+            <% if index == 0 %>
+            <td rowspan="<%= workflow_approvers.count %>">
+              <%= t('mongoid.attributes.workflow/model/route.level', level: level) %>
+            </td>
+            <td rowspan="<%= workflow_approvers.count %>">
+              <% required_count = @item.workflow_required_counts[level - 1] %>
+              <% if required_count %>
+                <%= t('workflow.required_count_label.minimum', required_count: required_count) %>
+              <% else %>
+                <%= t('workflow.required_count_label.all') %>
+              <% end %>
+            </td>
+            <% end %>
+            <td>
+            <% if user %>
+              <%= "#{user.long_name}(#{user.email})" %>
+            <% else %>
+              <%= t("workflow.user_deleted") %>
+            <% end %>
+            <% if (state == 'request' || state == 'pending') && @item.allowed?(:reroute, @cur_user, site: @cur_site) %>
+              <%= link_to('#', class: 'workflow-reroute', data: { level: level, user_id: user_id }) do %>
+                <i class="material-icons" style="font-size: inherit">&#xE254;</i>
+              <% end %>
+            <% end %>
+            </td>
+            <td><%= t("workflow.state.#{state}") %></td>
+            <td>
+              <div class="approver-comment"><%= workflow_approver[:comment] %></div>
+              <% if @ss_mode == :gws && workflow_approver[:file_ids].present? %>
+                <div class="approver-files">
+                  <% SS::File.in(id: workflow_approver[:file_ids]).each do |file| %>
+                    <%= link_to file.url, { class: "approver-file", target: "_blank" } do %>
+                      <% if file.image? %>
+                        <%= image_tag(file.thumb_url, class: "thumb") %>
+                      <% else %>
+                        <span class="thumb ext icon-<%= file.extname %>">
+                          <i class="material-icons">&#xE24D;</i><br>
+                          <span class="ext-name"><%= file.extname %></span>
+                        </span>
+                      <% end %>
+                      <span class="name"><%= file.humanized_name %></span>
+                    <% end %>
+                  <% end %>
+                </div>
+              <% end %>
+            </td>
+          </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>
+
+<% if @ss_mode == :gws %>
+  <%= f.ss_field_set :workflow_circulations, disabled: true do %>
+    <% if @item.workflow_circulations.present? %>
+      <div class="table-responsive">
+        <table class="table table-striped index">
+          <tbody>
+            <% @item.workflow_circulations.group_by { |workflow_circulation| workflow_circulation[:level] }.each do |level, workflow_circulations| %>
+              <% workflow_circulations.each_with_index do |workflow_circulation, index| %>
+                <% user_id = workflow_circulation[:user_id] %>
+                <% user = SS::User.where(id: user_id).first %>
+                <% state = workflow_circulation[:state] %>
+                <tr>
+                  <% if index == 0 %>
+                    <td rowspan="<%= workflow_circulations.count %>">
+                      <%= t("workflow.circulation_step") %> <%= t('mongoid.attributes.workflow/model/route.level', level: level) %>
+                    </td>
+                  <% end %>
+                  <td>
+                  <% if user %>
+                    <%= "#{user.long_name}(#{user.email})" %>
+                  <% else %>
+                    <%= t("workflow.user_deleted") %>
+                  <% end %>
+                  </td>
+                  <td>
+                    <%= t("workflow.circulation_state.#{state}") %>
+                  </td>
+                  <td>
+                    <div class="approver-comment"><%= workflow_circulation[:comment] %></div>
+                    <% if @ss_mode == :gws && workflow_circulation[:file_ids].present? %>
+                      <div class="approver-files">
+                        <% SS::File.in(id: workflow_circulation[:file_ids]).each do |file| %>
+                          <%= link_to file.url, { class: "approver-file", target: "_blank" } do %>
+                            <% if file.image? %>
+                              <%= image_tag(file.thumb_url, class: "thumb") %>
+                            <% else %>
+                              <span class="thumb ext icon-<%= file.extname %>">
+                                <i class="material-icons">&#xE24D;</i><br>
+                                <span class="ext-name"><%= file.extname %></span>
+                              </span>
+                            <% end %>
+                            <span class="name"><%= file.humanized_name %></span>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

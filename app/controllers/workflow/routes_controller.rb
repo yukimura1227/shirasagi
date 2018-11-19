@@ -4,7 +4,7 @@ class Workflow::RoutesController < ApplicationController
 
   model Workflow::Route
 
-  navi_view "cms/main/conf_navi"
+  navi_view "cms/main/navi"
 
   private
 

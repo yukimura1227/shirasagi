@@ -32,7 +32,7 @@ module Workflow::Addon
     end
 
     def new_clone(attributes = {})
-      attributes = self.attributes.merge(attributes).select { |k| self.fields.keys.include?(k) }
+      attributes = self.attributes.merge(attributes).select { |k| self.fields.key?(k) }
       self.fields.select { |n, v| (v.options.dig(:metadata, :branch) == false) }.each do |n, v|
         attributes.delete(n)
       end
@@ -72,7 +72,7 @@ module Workflow::Addon
         ids = {}
         files.each do |f|
           attributes = Hash[f.attributes]
-          attributes.select!{ |k| f.fields.keys.include?(k) }
+          attributes.select!{ |k| f.fields.key?(k) }
 
           file = SS::File.new(attributes)
           file.id = nil
@@ -87,15 +87,6 @@ module Workflow::Addon
             html.gsub!("=\"#{f.url}\"", "=\"#{file.url}\"")
             html.gsub!("=\"#{f.thumb_url}\"", "=\"#{file.thumb_url}\"")
             self.html = html
-          end
-
-          if respond_to?(:body_parts) && body_parts.present?
-            self.body_parts = body_parts.map do |html|
-              html = html.to_s
-              html = html.gsub("=\"#{f.url}\"", "=\"#{file.url}\"")
-              html = html.gsub("=\"#{f.thumb_url}\"", "=\"#{file.thumb_url}\"")
-              html
-            end
           end
         end
         self.file_ids = ids.values
@@ -121,7 +112,7 @@ module Workflow::Addon
         attributes = Hash[in_branch.attributes]
         attributes.delete("_id")
         attributes.delete("filename")
-        attributes.select! { |k| self.fields.keys.include?(k) }
+        attributes.select! { |k| self.fields.key?(k) }
         self.fields.select { |n, v| (v.options.dig(:metadata, :branch) == false) }.each do |n, v|
           attributes.delete(n)
         end

@@ -5,8 +5,8 @@
   form_options['class'] = [ form_options['class'].presence ].flatten.compact
   form_options['class'] << 'file-id'
 %>
-<%= render file: 'cms/agents/columns/main/_common_label', locals: { column: column } %>
-<dd>
+
+<%= f.ss_field_set column.id.to_s, column.form_options.merge(label: column.name, tt: column.tooltips.presence) do %>
   <div class="input-group file-upload-column">
     <%= link_to(t('ss.links.upload'), cms_apis_temp_files_path, class: %w(ajax-box btn btn-file-upload), data: { column_id: column.id.to_s }) %>
     <span class="humanized-name column-<%= column.id %>"><%= file.try(:humanized_name) %></span>
@@ -15,4 +15,4 @@
       <i class="material-icons" style="font-size: 120%;">&#xE872;</i>
     <% end %>
   </div>
-</dd>
+<% end %>

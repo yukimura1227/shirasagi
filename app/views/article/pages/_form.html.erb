@@ -9,8 +9,6 @@
 
 <%= f.ss_select_set :layout_id, choices: ancestral_layouts(@item.parent), include_blank: true, tt: true %>
 
-<%= render file: 'cms/pages/_form_body_parts', locals: { f: f } %>
-
 <%= render file: 'cms/pages/_form_template_form', locals: { f: f } %>
 
 <%= f.ss_field_set :order, tt: true %>

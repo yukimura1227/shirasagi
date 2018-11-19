@@ -3,7 +3,7 @@ class Cms::FormsController < ApplicationController
   include Cms::CrudFilter
 
   model Cms::Form
-  navi_view "cms/main/conf_navi"
+  navi_view "cms/main/navi"
 
   private
 

@@ -22,10 +22,4 @@
   <% end %>
 <% end %>
 
-<% if @item.body_layout.present? %>
-  <%= f.ss_field_set :body_layout_id do %>
-    <%= f.text_field :body_layout_id, value: @item.body_layout.name %>
-  <% end %>
-<% end %>
-
 <%= f.ss_field_set :order %>

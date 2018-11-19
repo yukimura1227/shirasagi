@@ -1,0 +1,43 @@
+<%
+  return if @ss_mode != :gws
+  return if !@item.agent_enabled?
+  return if !@cur_user.gws_role_permit_any?(@cur_site, :agent_all_gws_workflow_files, :agent_private_gws_workflow_files)
+%>
+<%= jquery do %>
+  $('input[name=agent_type]').on('change', function() {
+    var val = $(this).val();
+    if (val === "myself") {
+      $(".agent-type-agent").addClass("hide");
+    } else {
+      $(".agent-type-agent").removeClass("hide");
+    }
+  });
+<% end %>
+
+<%= ss_field_tag_set(:workflow_user_id, nil, label: @model.t(:workflow_user_id), tt: @model.tt(:workflow_user_id)) do %>
+  <label><%= radio_button_tag("agent_type", "myself", true) %> <%= t("gws/workflow.agent_type.myself") %></label>
+  <label><%= radio_button_tag("agent_type", "agent", false) %> <%= t("gws/workflow.agent_type.agent") %></label>
+
+  <div class="agent-type-agent hide">
+    <%= link_to t("gws/workflow.search_delegatees.index"), gws_workflow_apis_delegatees_path(single: 1), class: "ajax-box btn btn-outline-secondary btn-sm" %>
+    <%= hidden_field_tag "workflow_delegatees", "", id: nil, class: "ajax-hidden-ids" %>
+
+    <% render_template = proc do |id, name| %>
+      <tr data-id="<%= id %>">
+        <td><%= hidden_field_tag "workflow_delegatees", id, id: nil %> <%= name %></td>
+        <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect" %></td>
+      </tr>
+    <% end %>
+
+    <div class="table-responsive">
+      <table class="index ajax-selected table table-striped hide">
+        <thead><tr><th class="name"><%= Gws::User.t :name %></th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script type="text/html" class="ajax-item-template">
+      <% render_template.call("#id", "#name") %>
+    </script>
+  </div>
+<% end %>

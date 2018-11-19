@@ -1,7 +1,2 @@
 <% value ||= nil %>
-<%= render file: 'cms/agents/columns/main/_common_label', locals: { column: column } %>
-<dd>
-  <div class="input-group date-field-column">
-    <%= text_field_tag("#{object_name}[#{column.id}]", tryb { value.try(:date).strftime('%Y/%m/%d') }, column.form_options) %>
-  </div>
-</dd>
+<%= f.ss_field_set column.id.to_s, column.form_options.merge(label: column.name, tt: column.tooltips.presence, value: tryb { value.try(:date).strftime('%Y/%m/%d') }) %>

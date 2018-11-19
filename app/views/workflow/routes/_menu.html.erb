@@ -1,16 +1,16 @@
 <nav class="nav-menu">
   <div>
     <% if params[:action] =~ /index/ %>
-      <%= link_to t('ss.links.new'), action: :new if @model.allowed?(:edit, @cur_user, site: @cur_site) %>
+      <%= link_to(t('ss.links.new'), { action: :new }, { class: "btn btn-outline-secondary new" }) if @model.allowed?(:edit, @cur_user, site: @cur_site) %>
     <% elsif params[:action] =~ /new|create/ %>
-      <%= link_to t('ss.links.back_to_index'), action: :index %>
+      <%= link_to(t('ss.links.back_to_index'), { action: :index }, { class: "btn btn-outline-secondary back-to-index" }) %>
     <% elsif params[:action] =~ /edit|update|delete/ %>
-      <%= link_to t('ss.links.back_to_show'), action: :show, id: @item if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
-      <%= link_to t('ss.links.back_to_index'), action: :index %>
+      <%= link_to(t('ss.links.back_to_show'), { action: :show, id: @item }, { class: "btn btn-outline-secondary back-to-show" }) if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
+      <%= link_to(t('ss.links.back_to_index'), { action: :index }, { class: "btn btn-outline-secondary back-to-index" }) %>
     <% else %>
-      <%= link_to t('ss.links.edit'), action: :edit, id: @item if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
-      <%= link_to t('ss.links.delete'), action: :delete, id: @item if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
-      <%= link_to t('ss.links.back_to_index'), action: :index %>
+      <%= link_to(t('ss.links.edit'), { action: :edit, id: @item }, { class: "btn btn-outline-secondary edit" }) if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
+      <%= link_to(t('ss.links.delete'), { action: :delete, id: @item }, { class: "btn btn-outline-secondary delete" }) if @item.allowed?(:edit, @cur_user, site: @cur_site) %>
+      <%= link_to(t('ss.links.back_to_index'), { action: :index }, { class: "btn btn-outline-secondary back-to-index" }) %>
     <% end %>
   </div>
 </nav>

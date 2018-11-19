@@ -30,9 +30,6 @@ module Cms
     Cms::Role.permission :edit_cms_members
     Cms::Role.permission :edit_cms_editor_templates
     Cms::Role.permission :edit_cms_loop_settings
-    Cms::Role.permission :read_cms_body_layouts
-    Cms::Role.permission :edit_cms_body_layouts
-    Cms::Role.permission :delete_cms_body_layouts
     Cms::Role.permission :read_cms_commands
     Cms::Role.permission :edit_cms_commands
     Cms::Role.permission :delete_cms_commands

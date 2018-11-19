@@ -42,9 +42,7 @@ class Cms::PreviewController < ApplicationController
     page.basename = page.basename.sub(/\..+?$/, "") + ".html"
 
     @cur_layout = Cms::Layout.site(@cur_site).where(id: page.layout_id).first
-    @cur_body_layout = Cms::BodyLayout.site(@cur_site).where(id: page.body_layout_id).first
     page.layout_id = nil if @cur_layout.nil?
-    page.body_layout_id = nil if @cur_body_layout.nil?
     @cur_node = Cms::Node.site(@cur_site).where(filename: /^#{path.sub(/\/$/, "")}/).first
     @cur_page = page
     @preview_page = page
@@ -223,13 +221,13 @@ class Cms::PreviewController < ApplicationController
     response.body = body
   end
 
-  def rescue_action(e = nil)
-    if e.to_s =~ /^\d+$/
-      status = e.to_s.to_i
+  def rescue_action(exception = nil)
+    if exception.to_s.numeric?
+      status = exception.to_s.to_i
       file = error_html_file(status)
       return ss_send_file(file, status: status, type: Fs.content_type(file), disposition: :inline)
     end
-    raise e
+    raise exception
   end
 
   def error_html_file(status)

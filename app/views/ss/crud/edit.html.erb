@@ -18,10 +18,11 @@
       addon_options[:id] = "addon-basic"
       addon_options[:head] = @addon_basic_name || t("ss.basic_info") if addons.size > 0
     %>
+    <% buf = render file: "_form", locals: { f: f, addon: addon_options } %>
     <%= render "ss/crud/addon_form", addon: addon_options do %>
-      <%= render file: "_form", locals: { f: f } %>
+      <%= buf %>
     <% end %>
-    <%= render file: "_addons_form", locals: { f: f, addons: addons } if addons.size > 0 %>
+    <%= render file: "_addons_form", locals: { f: f, addons: addons } %>
   </div>
 
   <footer class="send">

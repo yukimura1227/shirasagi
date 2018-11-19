@@ -36,7 +36,6 @@ class Sys::SiteImportJob < SS::ApplicationJob
     invoke :import_cms_columns
     invoke :import_cms_loop_settings
     invoke :import_cms_layouts
-    invoke :import_cms_body_layouts
     invoke :import_cms_nodes
     invoke :import_cms_parts
     invoke :import_cms_pages
@@ -112,7 +111,6 @@ class Sys::SiteImportJob < SS::ApplicationJob
     @cms_columns_map = {}
     @cms_loop_settings_map = {}
     @cms_layouts_map = {}
-    @cms_body_layouts_map = {}
     @cms_nodes_map = {}
     @cms_parts_map = {}
     @cms_pages_map = {}
@@ -140,7 +138,6 @@ class Sys::SiteImportJob < SS::ApplicationJob
       data[name] = @cms_layouts_map[data[name]] if data[name].present?
     end
 
-    data['body_layout_id'] = @cms_body_layouts_map[data['body_layout_id']] if data['body_layout_id'].present?
     data['contact_group_id'] = @cms_groups_map[data['contact_group_id']] if data['contact_group_id'].present?
     data['file_ids'] = convert_ids(@ss_files_map, data['file_ids']) if data['file_ids'].present?
 

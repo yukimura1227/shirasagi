@@ -1,88 +1,63 @@
 <%
 
 if params[:controller] =~ /^gws/
-  def approvers_path(*args); gws_workflow_search_approvers_path(*args); end
+  approvers_path = method(:gws_workflow_search_approvers_path)
 else
-  def approvers_path(*args); workflow_search_approvers_path(*args); end
+  approvers_path = method(:workflow_search_approvers_path)
 end
 
 %>
 
 <% 1.upto(@model::MAX_APPROVERS) do |level| %>
-<h1 class="workflow-level-header workflow-level-<%= level %>"><%= @model.t :level, level: level %></h1>
-<dl class="see workflow-approvers workflow-level-<%= level %>">
-  <dt><%= @model.t :required_counts %><%= @model.tt :required_counts %></dt>
-  <dd><%= select_tag "item[required_counts][]", options_for_select(@item.required_count_options, @item.required_count_at(level)), id: nil %></dd>
-  <dt><%= @model.t :approver_attachment_uses %><%= @model.tt :approver_attachment_uses %></dt>
-  <dd><%= select_tag "item[approver_attachment_uses][]", options_for_select(@item.approver_attachment_use_options, @item.approver_attachment_use_at(level)), id: nil, include_blank: true %></dd>
-  <dt><%= @model.t :approvers %><%= @model.tt :approvers %></dt>
-  <dd>
-    <%= f.hidden_field("approvers[]", value: "", class: "hidden-ids", id: nil) %>
-    <%= link_to t("workflow.search_approvers.index"), approvers_path(level: level), class: "ajax-box approvers" %>
-  </dd>
-  <dd>
-    <table class="index ajax-selected">
-      <thead>
-        <tr>
-          <th class="name"><%= @model.t :name %></th>
-          <th><%= t('ss.buttons.edit') %></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @item.approver_users_at(level).each do |user| %>
-          <% if user.present? %>
-            <tr data-id="<%= "#{level},#{user.id}" %>">
-              <td>
-                <%= hidden_field_tag("#{f.object_name}[approvers][][level]", level, id: nil) %>
-                <%= hidden_field_tag("#{f.object_name}[approvers][][user_id]", user.id, id: nil) %>
-                <%= user.long_name %>
-              </td>
-              <td>
-                <%= check_box_tag("#{f.object_name}[approvers][][editable]", 1, @item.approver_user_editable?(level, user), id: nil) %>
-              </td>
-              <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
+  <h3 class="workflow-level-header workflow-level-<%= level %>"><%= @model.t :level, level: level %></h3>
+
+  <%= f.ss_field_set :required_counts, tt: true do %>
+    <%= select_tag "#{f.object_name}[required_counts][]", options_for_select(@item.required_count_options, @item.required_count_at(level)), id: nil %>
+  <% end %>
+  <%= f.ss_field_set :approver_attachment_uses, tt: true do %>
+    <%= select_tag "#{f.object_name}[approver_attachment_uses][]", options_for_select(@item.approver_attachment_use_options, @item.approver_attachment_use_at(level)), id: nil, include_blank: true %>
+  <% end %>
+  <%= f.ss_field_set :approvers, tt: true do %>
+    <% render_template = proc do |level, user_id, user_long_name, editable| %>
+      <tr data-id="<%= "#{level},#{user_id}" %>">
+        <td>
+          <%= hidden_field_tag("#{f.object_name}[approvers][][level]", level, id: nil) %>
+          <%= hidden_field_tag("#{f.object_name}[approvers][][user_id]", user_id, id: nil) %>
+          <%= user_long_name %>
+        </td>
+        <td>
+          <%= check_box_tag("#{f.object_name}[approvers][][editable]", 1, editable, id: nil) %>
+        </td>
+        <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
+      </tr>
+    <% end %>
+
+    <div class="ajax-select">
+      <%= link_to t("workflow.search_approvers.index"), approvers_path.call(level: level), class: "ajax-box approvers btn btn-outline-secondary btn-sm" %>
+      <%= f.hidden_field("approvers[]", id: nil, value: "", class: "ajax-hidden-ids") %>
+
+      <div class="table-responsive">
+        <table class="index ajax-selected table table-striped">
+          <thead>
+            <tr>
+              <th class="name"><%= @model.t :name %></th>
+              <th><%= t('ss.buttons.edit') %></th>
+              <th></th>
             </tr>
-          <% end %>
-        <% end %>
-      </tbody>
-    </table>
-  </dd>
-</dl>
-<% end %>
+          </thead>
+          <tbody>
+            <% @item.approver_users_at(level).each do |user| %>
+              <% if user.present? %>
+                <% render_template.call(level, user.id, user.long_name, @item.approver_user_editable?(level, user)) %>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
 
-<%= jquery do %>
-  var approverSelector = function($item) {
-    var $dl = SS_SearchUI.anchorAjaxBox.closest("dl");
-    var level = $dl.data('level');
-
-    var data = $item.closest("[data-id]");
-    var levelAndId = data.data("id").split(',');
-    var level = levelAndId[0];
-    var id = levelAndId[1];
-    var name = data.data("name") || data.find(".select-item").text() || $item.text() || data.text();
-
-    // var $input = SS_SearchUI.anchorAjaxBox.closest("dl").find(".hidden-ids").clone(false);
-    // $input.val(id).removeClass("hidden-ids");
-
-    var $level = $('<input type="hidden" name="item[approvers][][level]">');
-    $level.val(level);
-
-    var $userId = $('<input type="hidden" name="item[approvers][][user_id]">');
-    $userId.val(id);
-
-    var $a = $('<a class="deselect btn" href="#"><%= I18n.t "ss.buttons.delete" %></a>');
-    $a.on("click", SS_SearchUI.deselect);
-
-    var $tr = $("<tr />").attr("data-id", levelAndId.join(','));
-    $tr.append($('<td />').append($level).append($userId).append(name));
-    $tr.append($('<td />').append('<input type="checkbox" name="item[approvers][][editable]" value="1">'));
-    $tr.append($('<td />').append($a));
-    SS_SearchUI.anchorAjaxBox.closest("dl").find(".ajax-selected tbody").prepend($tr);
-    SS_SearchUI.anchorAjaxBox.closest("dl").find(".ajax-selected").trigger("change");
-  };
-
-  $('a.ajax-box.approvers').data('on-select', function($item) {
-    approverSelector($item);
-  });
+      <script type="text/html" class="ajax-item-template">
+        <% render_template.call(level, "#userid", "#name", false) %>
+      </script>
+    </div>
+  <% end %>
 <% end %>

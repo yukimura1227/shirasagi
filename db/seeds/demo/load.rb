@@ -230,18 +230,29 @@ end
 form = save_form(name: '観光情報', order: 10, state: 'public', filename: '1.html')
 
 form_columns = [
-  save_column(:file_upload, form: form, name: 'メイン画像', order: 10, required: 'required', tooltips: '画像ファイルをアップロードしてください。', html_tag: 'img'),
-  save_column(:text_area, form: form, name: '説明文', order: 20, required: 'required', tooltips: '説明文を入力してください。'),
-  save_column(:text, form: form, name: '所在地', order: 30, required: 'optional', tooltips: '住所を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: 'アクセス', order: 40, required: 'optional', tooltips: 'アクセス情報を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: '営業時間', order: 50, required: 'optional', tooltips: '営業時間を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: '休業日', order: 60, required: 'optional', tooltips: '休業日を入力してください。', input_type: 'text'),
+  save_column(:file_upload, form: form, name: 'メイン画像', order: 10, required: 'required',
+              tooltips: '画像ファイルをアップロードしてください。', html_tag: 'img'),
+  save_column(:text_area, form: form, name: '説明文', order: 20, required: 'required',
+              tooltips: '説明文を入力してください。'),
+  save_column(:text, form: form, name: '所在地', order: 30, required: 'optional',
+              tooltips: '住所を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: 'アクセス', order: 40, required: 'optional',
+              tooltips: 'アクセス情報を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: '営業時間', order: 50, required: 'optional',
+              tooltips: '営業時間を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: '休業日', order: 60, required: 'optional',
+              tooltips: '休業日を入力してください。', input_type: 'text'),
   save_column(:text, form: form, name: '料金', order: 70, required: 'optional', input_type: 'text'),
-  save_column(:text, form: form, name: '電話番号', order: 80, required: 'optional', tooltips: '電話番号を入力してください。', input_type: 'text'),
-  save_column(:text, form: form, name: 'E-mail', order: 90, required: 'optional', tooltips: 'メールアドレスを入力してください。', input_type: 'email'),
-  save_column(:url, form: form, name: 'ホームページ', order: 100, required: 'optional', tooltips: 'URLを入力してください。', html_tag: 'a'),
-  save_column(:file_upload, form: form, name: '写真1', order: 110, required: 'optional', tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
-  save_column(:file_upload, form: form, name: '写真2', order: 120, required: 'optional', tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
+  save_column(:text, form: form, name: '電話番号', order: 80, required: 'optional',
+              tooltips: '電話番号を入力してください。', input_type: 'text'),
+  save_column(:text, form: form, name: 'E-mail', order: 90, required: 'optional',
+              tooltips: 'メールアドレスを入力してください。', input_type: 'email'),
+  save_column(:url, form: form, name: 'ホームページ', order: 100, required: 'optional',
+              tooltips: 'URLを入力してください。', html_tag: 'a'),
+  save_column(:file_upload, form: form, name: '写真1', order: 110, required: 'optional',
+              tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
+  save_column(:file_upload, form: form, name: '写真2', order: 120, required: 'optional',
+              tooltips: '写真をアップロードしてください。', html_tag: 'a+img'),
 ]
 
 ## -------------------------------------
@@ -856,7 +867,8 @@ def save_page(data)
 end
 
 ## -------------------------------------
-puts "# body_layouts"
+puts "# articles"
+
 contact_group = SS::Group.where(name: "シラサギ市/企画政策部/政策課").first
 contact_group_id = contact_group.id rescue nil
 contact_email = contact_group_id ? "kikakuseisaku@example.jp" : nil
@@ -864,28 +876,6 @@ contact_tel = contact_group_id ? "000-000-0000" : nil
 contact_fax = contact_group_id ? "000-000-0000" : nil
 contact_link_url = contact_group_id ? link_url : nil
 contact_link_name = contact_group_id ? link_url : nil
-
-def save_body_layouts(data)
-  puts data[:name]
-  cond = { site_id: data[:site_id], node_id: data[:node_id], name: data[:name], poster: data[:poster] }
-  item = Cms::BodyLayout.where(cond).first || Cms::BodyLayout.new
-  item.attributes = data
-  item.save
-
-  item
-end
-
-body_layout_html = File.read("body_layouts/layout.layout.html") rescue nil
-body_layout = save_body_layouts name: "本文レイアウト",
-  html: body_layout_html,
-  parts: %W(本文1 本文2 本文3),
-  site_id: @site.id
-#save_page route: "article/page", filename: "docs/body_layout.html", name: "本文レイアウト",
-#  layout_id: layouts["pages"].id, body_layout_id: body_layout.id, body_parts: %W(本文1 本文2 本文3),
-#  contact_group_id: contact_group_id, contact_email: contact_email, contact_tel: contact_tel, contact_fax: contact_fax
-
-## -------------------------------------
-puts "# articles"
 
 save_page route: "article/page", filename: "docs/page1.html", name: "インフルエンザによる学級閉鎖状況",
   layout_id: layouts["pages"].id, category_ids: [categories["attention"].id],
@@ -1078,9 +1068,12 @@ save_page route: "event/page", filename: "calendar/page28.html", name: "住民�
   content: "○○○○○○○○○○○○○○○○○○○○", related_url: link_url,
   group_ids: [g_seisaku.id]
 
-file_7 = save_ss_files "ss_files/key_visual/keyvisual01.jpg", filename: "keyvisual01.jpg", name: "keyvisual01.jpg", model: "ss/temp_file"
-file_8 = save_ss_files "ss_files/key_visual/keyvisual02.jpg", filename: "keyvisual02.jpg", name: "keyvisual02.jpg", model: "ss/temp_file"
-file_9 = save_ss_files "ss_files/key_visual/keyvisual03.jpg", filename: "keyvisual03.jpg", name: "keyvisual03.jpg", model: "ss/temp_file"
+file_7 = save_ss_files "ss_files/key_visual/keyvisual01.jpg",
+                       filename: "keyvisual01.jpg", name: "keyvisual01.jpg", model: "ss/temp_file"
+file_8 = save_ss_files "ss_files/key_visual/keyvisual02.jpg",
+                       filename: "keyvisual02.jpg", name: "keyvisual02.jpg", model: "ss/temp_file"
+file_9 = save_ss_files "ss_files/key_visual/keyvisual03.jpg",
+                       filename: "keyvisual03.jpg", name: "keyvisual03.jpg", model: "ss/temp_file"
 
 save_page route: "article/page", filename: "docs/page29.html", name: "シラサギ博物館",
   layout_id: layouts["pages"].id, form_id: form.id, category_ids: [categories["kanko/geijyutsu"].id],

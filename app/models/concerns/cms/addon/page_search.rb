@@ -263,7 +263,7 @@ module Cms::Addon
     def search_sort_hash
       return { filename: 1 } if search_sort.blank?
       h = {}
-      search_sort.split(" ").each_slice(2) { |k, v| h[k] = (v =~ /-1$/ ? -1 : 1) }
+      search_sort.split(" ").each_slice(2) { |k, v| h[k] = (v.end_with?("-1") ? -1 : 1) }
       h
     end
 
@@ -332,7 +332,7 @@ module Cms::Addon
       when 'request'
         {
           workflow_state: "request",
-          workflow_user_id: @cur_user._id,
+          workflow_user_id: @cur_user._id
         }
       when 'approve'
         {
@@ -344,7 +344,7 @@ module Cms::Addon
       when 'remand'
         {
           workflow_state: "remand",
-          workflow_user_id: @cur_user._id,
+          workflow_user_id: @cur_user._id
         }
       else
         {}
@@ -385,9 +385,9 @@ module Cms::Addon
 
     def headers
       %w(
-        filename name index_name layout body_layout_id order
+        filename name index_name layout order
         keywords description summary_html
-        html body_part
+        html
         categories
         event_name event_dates
         related_pages
@@ -406,7 +406,6 @@ module Cms::Addon
         item.name,
         item.index_name,
         Cms::Layout.where(_id: item.layout_id).pluck(:name).first,
-        Cms::BodyLayout.where(_id: item.body_layout_id).pluck(:name).first,
         item.order,
 
         # meta
@@ -415,7 +414,6 @@ module Cms::Addon
         item.summary_html,
 
         item.html,
-        item.body_parts.map{ |body| body.gsub("\t", '    ') }.join("\t"),
 
         # category
         category_name_tree(item).join("\n"),

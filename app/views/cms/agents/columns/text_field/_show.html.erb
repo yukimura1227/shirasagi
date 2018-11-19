@@ -1,4 +1,1 @@
-<dl class="see column-cms-text_field">
-  <dt><%= @model.t :input_type %></dt>
-  <dd><%= @item.label :input_type %></dd>
-</dl>
+<%= f.ss_field_set :input_type, value: @item.label(:input_type), disabled: true %>

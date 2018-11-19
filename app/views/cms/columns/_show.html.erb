@@ -1,16 +1,18 @@
-<dl class="see">
-  <dt><%= @model.t :route %></dt>
-  <dd><%= @item.class.model_name.human %></dd>
+<%
+  addon ||= local_assigns.fetch(:addon, {})
+  addon[:head] = t("ss.basic_info")
+%>
 
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.name %></dd>
+<%= f.ss_field_set :route, value: @item.class.model_name.human, disabled: true %>
 
-  <dt><%= @model.t :order %></dt>
-  <dd><%= @item.order %></dd>
+<%= f.ss_field_set :name, disabled: true %>
 
-  <dt><%= @model.t :required %></dt>
-  <dd><%= @item.label :required %></dd>
+<%= f.ss_field_set :order, disabled: true %>
 
-  <dt><%= @model.t :tooltips %></dt>
-  <dd><%= br @item.tooltips %></dd>
-</dl>
+<%= f.ss_field_set :required, value: @item.label(:required), disabled: true %>
+
+<%= f.ss_field_set :tooltips, disabled: true do %>
+  <div>
+    <%= br @item.tooltips %>
+  </div>
+<% end %>

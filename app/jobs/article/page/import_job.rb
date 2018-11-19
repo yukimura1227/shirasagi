@@ -76,11 +76,9 @@ class Article::Page::ImportJob < Cms::ApplicationJob
   def set_page_attributes(row, item)
     # basic
     layout = Cms::Layout.site(site).where(name: value(row, :layout)).first
-    body_layout_id = Cms::BodyLayout.site(site).where(name: value(row, :body_layout_id)).pluck(:_id).first
     item.name = value(row, :name)
     item.index_name = value(row, :index_name)
     item.layout = layout
-    item.body_layout_id = body_layout_id
     item.order = value(row, :order)
 
     # meta
@@ -90,7 +88,6 @@ class Article::Page::ImportJob < Cms::ApplicationJob
 
     # body
     item.html = value(row, :html)
-    item.body_parts = value(row, :body_part).split("\t")
 
     # category
     category_name_tree = ary_value(row, :categories)
@@ -137,6 +134,6 @@ class Article::Page::ImportJob < Cms::ApplicationJob
 
     # state
     state = label_value(item, row, :state)
-    item.state = state ? state : "public"
+    item.state = state || "public"
   end
 end

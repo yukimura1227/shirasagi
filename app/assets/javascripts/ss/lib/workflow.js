@@ -10,19 +10,19 @@ SS_Workflow = function (el, options) {
     return false;
   });
 
-  $(document).on("click", ".mod-workflow-approve .update-item", function (e) {
+  $(document).on("click", "#workflow-approval .update-item", function (e) {
     pThis.updateItem($(this));
     e.preventDefault();
     return false;
   });
 
-  $(document).on("click", ".mod-workflow-view .request-cancel", function (e) {
+  $(document).on("click", ".mod-workflow .request-cancel", function (e) {
     pThis.cancelRequest($(this));
     e.preventDefault();
     return false;
   });
 
-  this.$el.find(".mod-workflow-approve").insertBefore("#addon-basic");
+  this.$el.find("#workflow-approval").insertBefore("#addon-basic");
 
   this.$el.find(".toggle-label").on("click", function (e) {
     pThis.$el.find(".request-setting").slideToggle();
@@ -35,7 +35,7 @@ SS_Workflow = function (el, options) {
   });
 
   this.$el.on("click", ".workflow-route-start", function (e) {
-    var routeId = $(this).siblings('#workflow_route:first').val();
+    var routeId = $(this).closest(".workflow-wizard").find("#workflow_route").val();
     pThis.loadRoute(routeId);
     e.preventDefault();
     return false;
@@ -57,13 +57,13 @@ SS_Workflow = function (el, options) {
     return false;
   });
 
-  $('.mod-workflow-approve .btn-file-upload').data('on-select', function($item) {
+  $('#workflow-approval .btn-file-upload').data('on-select', function($item) {
     $.colorbox.close();
     pThis.onUploadFileSelected($item);
   });
 
   this.tempFile = new SS_Addon_TempFile(
-    $(".mod-workflow-approve .upload-drop-area"), this.options.user_id,
+    $("#workflow-approval .upload-drop-area"), this.options.user_id,
     { select: function(files, dropArea) { pThis.onDropFile(files, dropArea); } }
   );
 };
@@ -176,20 +176,22 @@ SS_Workflow.prototype = {
       url: uri,
       async: false,
       data: {
-        workflow_comment: workflow_comment,
-        workflow_pull_up: workflow_pull_up,
-        workflow_on_remand: workflow_on_remand,
-        workflow_approvers: approvers,
-        workflow_required_counts: required_counts,
-        workflow_approver_attachment_uses: this.collectApproverAttachmentUses(),
-        remand_comment: remand_comment,
-        url: this.options.request_url,
-        forced_update_option: forced_update_option,
-        workflow_circulations: circulations,
-        workflow_circulation_attachment_uses: this.collectCirculationAttachmentUses(),
-        workflow_file_ids: workflow_file_ids,
-        workflow_agent_type: this.agentType(),
-        workflow_users: this.collectDelegatees()
+        item: {
+          workflow_comment: workflow_comment,
+          workflow_pull_up: workflow_pull_up,
+          workflow_on_remand: workflow_on_remand,
+          workflow_approvers: approvers,
+          workflow_required_counts: required_counts,
+          workflow_approver_attachment_uses: this.collectApproverAttachmentUses(),
+          remand_comment: remand_comment,
+          url: this.options.request_url,
+          forced_update_option: forced_update_option,
+          workflow_circulations: circulations,
+          workflow_circulation_attachment_uses: this.collectCirculationAttachmentUses(),
+          workflow_file_ids: workflow_file_ids,
+          workflow_agent_type: this.agentType(),
+          workflow_users: this.collectDelegatees()
+        }
       },
       success: function (data) {
         if (data["workflow_alert"]) {

@@ -14,7 +14,7 @@
   <%= f.ss_field_set :form_id, tt: true do %>
     <div class="input-group">
       <%= f.select(:form_id, options_from_collection_for_select(ancestral_forms, :id, :name, selected: cur_form.try(:id)), { include_blank: true }) %>
-      <div class="input-group-append"><%= button_tag(t('ss.buttons.change'), type: :button, class: %w(btn btn-outline-secondary)) %></div>
+      <div class="input-group-append"><%= button_tag(t('ss.buttons.change'), type: :button, class: %w(btn btn-outline-secondary btn-form-change)) %></div>
     </div>
   <% end %>
 

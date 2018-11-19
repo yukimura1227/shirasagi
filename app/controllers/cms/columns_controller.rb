@@ -4,7 +4,7 @@ class Cms::ColumnsController < ApplicationController
 
   model Cms::Column::Base
 
-  navi_view 'cms/main/conf_navi'
+  navi_view "cms/main/navi"
 
   helper_method :column_type_options
 

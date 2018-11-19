@@ -82,6 +82,17 @@ this.SS_SearchUI = (function () {
 
     SS_SearchUI.anchorAjaxBox = $.colorbox.element();
     SS_SearchUI.searchUI = SS_SearchUI.anchorAjaxBox.data("searchUI");
+    if (! SS_SearchUI.searchUI) {
+      var el = SS_SearchUI.anchorAjaxBox.closest(".ajax-select");
+      if (el.length > 0) {
+        var searchUI = SS_SearchUI.searchUI = new SS_SearchUI(el);
+        SS_SearchUI.anchorAjaxBox.data("searchUI", searchUI);
+      }
+    }
+    if (! SS_SearchUI.searchUI) {
+      SS_SearchUI.anchorAjaxBox = null;
+      throw 'Unsupported modal. you must define <div class=".ajax-select"> as modal root';
+    }
 
     var submit_on_changes;
     if (options && options.submit_on_changes) {

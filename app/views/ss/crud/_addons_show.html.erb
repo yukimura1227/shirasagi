@@ -1,3 +1,5 @@
+<% return if addons.blank? %>
+
 <% css_classes ||= [] %>
 <% css_classes = Array(css_classes).flatten.compact %>
 <% addons.each do |addon| %>

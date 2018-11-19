@@ -1,9 +1,0 @@
-<% if @item.respond_to?(:body_parts) && Cms::BodyLayout.site(@cur_site).present? %>
-  <% if Cms::BodyLayout.allowed?(:edit, @cur_user, site: @cur_site) %>
-    <%= f.ss_select_set :body_layout_id, choices: ancestral_body_layouts, include_blank: true, tt: true %>
-  <% elsif @item.body_layout %>
-    <%= f.ss_field_set :body_layout_id, include_blank: true, tt: true do %>
-      <%= @item.body_layout.name %><%= f.hidden_field :body_layout_id %>
-    <% end %>
-  <% end %>
-<% end %>

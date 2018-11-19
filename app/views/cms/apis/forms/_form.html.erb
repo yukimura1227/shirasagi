@@ -3,17 +3,14 @@ def find_column_value(column)
   return nil unless @target
   @target.column_values.where(column_id: column.id).first
 end
-
-f = OpenStruct.new
-f.object_name = 'item'
 %>
 
-<dl class="see mod-custom-form mod-cms-form-page column-values">
+<%= f.fields_for :column_values do |g| %>
   <% @item.columns.order_by(order: 1, created: 1).each do |column| %>
     <% value = find_column_value(column) %>
-    <%= render file: column.column_form_path, locals: { f: f, object_name: "#{f.object_name}[column_values]", column: column, value: value } %>
+    <%= render file: column.column_form_path, locals: { f: g, object_name: g.object_name, column: column, value: value } %>
   <% end %>
-</dl>
+<% end %>
 
 <%= jquery do %>
   $('a.btn-file-upload').data('on-select', function($item) {

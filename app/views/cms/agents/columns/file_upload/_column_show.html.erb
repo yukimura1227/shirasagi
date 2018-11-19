@@ -1,7 +1,6 @@
 <% value ||= nil %>
 <% file = value.try(:file) %>
-<%= render file: 'cms/agents/columns/main/_common_label', locals: { column: column, show: true } %>
-<dd>
+<%= f.ss_field_set value.id.to_s, label: value.name, disabled: true do %>
   <% if file.present? %>
   <div class="fileview" style="display: table">
     <span class="icon" style="display: table-cell; vertical-align: middle; padding: 4px">
@@ -17,4 +16,4 @@
     </span>
   </div>
   <% end %>
-</dd>
+<% end %>

@@ -1,38 +1,43 @@
 <%= jquery do %> SS_SearchUI.modal(); <% end %>
 
-<div class="search-ui-form">
-  <%= form_for :s, url: { action: :index, level: @level }, html: { method: "GET", class: :search } do |f| %>
-    <dl class="see">
+<div class="content-search card mb-3">
+  <div class="card-body search-ui-form">
+    <%= form_for :s, url: { action: :index, level: @level }, html: { method: "GET", class: "search no-form-inline" } do |f| %>
       <% if browser.ie?(["<10"]) %>
-        <%= render partial: 'workflow/search_approvers/group_dropdown_normal' %>
+        <%= render partial: 'workflow/search_approvers/group_dropdown_normal', locals: { f: f } %>
       <% else %>
-        <%= render partial: 'workflow/search_approvers/group_dropdown_tree' %>
+        <%= render partial: 'workflow/search_approvers/group_dropdown_tree', locals: { f: f } %>
       <% end %>
-      <dt><%= t "cms.user" %></dt>
-      <dd><%= f.text_field :keyword, value: params[:s].try(:[], :keyword) %>
+
+      <%= f.ss_field_set :keyword, label: t("cms.user"), value: params[:s].try(:[], :keyword) %>
+
       <%= f.submit t("workflow.search_approvers.search"), class: "btn" %></dd>
-    </dl>
   <% end %>
+  </div>
 </div>
 
-<table class="index">
-  <thead class="list-head">
-    <tr>
-      <th class="checkbox"><input type="checkbox" /></th>
-      <th class="name"><%= @model.t :name %></th>
-    </tr>
-  </thead>
-  <tbody class="items">
-    <% @items.each do |item| %>
-      <tr data-id="<%= "#{@level},#{item.id}" %>" class="list-item">
-        <td class="checkbox">
-          <input type="checkbox" name="ids[]" value="<%= item.id %>" />
-        </td>
-        <td class="name"><%= link_to item.long_name, "#", class: "select-item" %></td>
+<%= paginate @items if @items.try(:current_page) %>
+
+<div class="table-responsive">
+  <table class="table table-striped index">
+    <thead class="list-head">
+      <tr>
+        <th class="checkbox"><input type="checkbox" /></th>
+        <th class="name"><%= @model.t :name %></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody class="items">
+      <% @items.each do |item| %>
+        <tr data-id="<%= "#{@level},#{item.id}" %>" data-userid="<%= item.id %>" class="list-item">
+          <td class="checkbox">
+            <input type="checkbox" name="ids[]" value="<%= item.id %>" />
+          </td>
+          <td class="name"><%= link_to item.long_name, "#", class: "select-item" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <div class="search-ui-select">
   <% btn_label = @level.start_with?("circulation") ? t("workflow.search_circulations.select") : t("workflow.search_approvers.select") %>

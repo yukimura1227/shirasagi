@@ -107,8 +107,12 @@ module SS::StandardHelper
     end
     msg = I18n.t(key, default: '', scope: 'tooltip') if msg.blank?
     return msg if msg.blank? || !html_wrap
-    msg = [msg] if msg.class.to_s == "String"
-    list = msg.map { |d| "<p>" + d.gsub(/\r\n|\n/, "<br />") + "</p>" }
+
+    format_tt msg
+  end
+
+  def format_tt(msg)
+    list = Array(msg).flatten.compact.map { |d| "<p>" + d.gsub(/\r\n|\n/, "<br />") + "</p>" }
 
     h = []
     h << %(<div class="ss-tooltip">)

@@ -338,17 +338,5 @@ describe Article::Part::Page, type: :model, dbscope: :example do
         expect(item.render_loop_html(page, html: '#{img.src}')).to eq('//b.st-hatena.com/images/entry-button/button-only@2x.png')
       end
     end
-
-    context 'body parts contains <img>' do
-      let(:body_layout) { create(:cms_body_layout) }
-      let(:page) do
-        create(:article_page, body_layout_id: body_layout.id,
-               body_parts: ['<img src="/fs/1/0/2/_/512px-Ghostscript_Tiger_svg.png" alt="Tiger">'])
-      end
-
-      it do
-        expect(item.render_loop_html(page, html: '#{img.src}')).to eq('/fs/1/0/2/_/512px-Ghostscript_Tiger_svg.png')
-      end
-    end
   end
 end

@@ -134,9 +134,15 @@ module SS::Helpers
 
     def normalize_tooltip(tooltip, model, method)
       return unless tooltip
-      return tooltip if !tooltip.is_a?(TrueClass)
 
-      model.tt(method)
+      if tooltip.is_a?(TrueClass)
+        tooltip = model.tt(method)
+      end
+      if tooltip.is_a?(Array)
+        tooltip = @template.format_tt(tooltip)
+      end
+
+      tooltip
     end
 
     # rubocop:disable Style/ZeroLengthPredicate
