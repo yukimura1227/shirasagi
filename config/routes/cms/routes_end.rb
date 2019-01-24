@@ -156,7 +156,6 @@ SS::Application.routes.draw do
       get "members" => "members#index"
       get "sites" => "sites#index"
       get "users" => "users#index"
-      get "related_page" => "related_page#index"
       get "node_tree/:id" => "node_tree#index", as: :node_tree
       get "forms" => "forms#index"
       get "forms/temp_file/:id/select" => "forms#select_temp_file", as: :form_temp_file_select

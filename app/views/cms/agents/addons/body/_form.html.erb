@@ -67,9 +67,33 @@
       <%= button_tag t("cms.preview_page"), { type: :button, class: "btn preview" } %>
     <% end %>
     <% if !@inplace_mode %>
-      <%= link_to t("cms.apis.related_pages.index"), cms_apis_related_page_path, class: "ajax-box" %>
+      <%
+        page_params = {}
+        if @cur_node
+          page_params[:s] = { node: @cur_node }
+        end
+      %>
+      <%= link_to t("cms.apis.related_pages.index"), cms_apis_pages_path(page_params), class: "ajax-box related-pages" %>
     <% end %>
     </dd>
   </dl>
+
+  <%= jquery do %>
+    var insertContent = function(cont) {
+      if (typeof tinymce !== "undefined") {
+        tinymce.get(Cms_Form.editorId).execCommand("mceInsertContent", false, cont);
+      } else if (typeof CKEDITOR !== "undefined") {
+        CKEDITOR.instances[Cms_Form.editorId].insertHtml(cont);
+      }
+    };
+
+    $('#addon-cms-agents-addons-body a.ajax-box.related-pages').data('on-select', function ($item) {
+      var data = $item.closest("[data-id]");
+      var href = "/" + data.find(".filename").text();
+      var label = data.find(".select-item").text();
+      var text = "<a href='" + href + "'>" + label + '</a>';
+      insertContent(text);
+    });
+  <% end %>
 
 <% end %>
