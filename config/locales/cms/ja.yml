@@ -133,6 +133,10 @@ ja:
         search: フォルダーを検索
         select: フォルダーを設定する
       pages:
+        index: ページを選択する
+        search: ページを検索
+        select: ページを設定する
+      related_pages:
         index: 関連記事を選択する
         search: 関連記事を検索
         select: 関連記事を設定する
