@@ -29,13 +29,13 @@ class Cms::Column::Value::UrlField2 < Cms::Column::Value::Base
 
     if label.present? && column.label_max_length.present? && column.label_max_length > 0
       if label.length > column.label_max_length
-        self.errors.add(:label, :less_than_or_equal_to, count: column.label_max_length)
+        self.errors.add(:label, :too_long, count: column.label_max_length)
       end
     end
 
     if link.present? && column.link_max_length.present? && column.link_max_length > 0
       if link.length > column.link_max_length
-        self.errors.add(:link, :less_than_or_equal_to, count: column.link_max_length)
+        self.errors.add(:link, :too_long, count: column.link_max_length)
       end
     end
   end

@@ -24,7 +24,7 @@ class Cms::Column::Value::List < Cms::Column::Value::Base
 
     if column.max_length.present? && column.max_length > 0
       if lists.any?{ |list| list[:text].length > column.max_length }
-        self.errors.add(:text, :less_than_or_equal_to, count: column.max_length)
+        self.errors.add(:list, :too_long, count: column.max_length)
       end
     end
   end

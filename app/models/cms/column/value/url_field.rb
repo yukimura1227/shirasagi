@@ -39,7 +39,7 @@ class Cms::Column::Value::UrlField < Cms::Column::Value::Base
 
     if column.max_length.present? && column.max_length > 0
       if value.length > column.max_length
-        self.errors.add(:value, :less_than_or_equal_to, count: column.max_length)
+        self.errors.add(:value, :too_long, count: column.max_length)
       end
     end
   end
