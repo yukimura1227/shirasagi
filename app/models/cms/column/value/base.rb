@@ -99,11 +99,7 @@ class Cms::Column::Value::Base
     return if column.blank?
 
     if column.required? && value.blank?
-      if self._parent
-        self._parent.errors.add(:base, name + I18n.t('errors.messages.blank'))
-      else
-        self.errors.add(:value, :blank)
-      end
+      self.errors.add(:value, :blank)
     end
   end
 

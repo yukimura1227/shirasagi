@@ -101,20 +101,21 @@ class Cms::Apis::Preview::InplaceEdit::ColumnValuesController < ApplicationContr
   end
 
   def save_with_overwrite
-    if params.key?(:save_if_no_alerts)
-      result = @item.valid?(%i[update accessibility link])
-      result &&= @item.column_link_errors.all? { |_link, status| status == :success }
-      if result
-        result = @item.save
-      end
-    else
-      result = @item.save
-    end
-
     render_opts = {
       location: { action: :edit },
       render: { file: :edit, status: :unprocessable_entity }
     }
+
+    if params.key?(:save_if_no_alerts)
+      result = @cur_column_value.valid?(%i[update accessibility link])
+      result &&= @cur_column_value.link_errors.all? { |_link, status| status == :success }
+      if !result
+        render_update false, render_opts
+        return
+      end
+    end
+
+    result = @item.save
     render_update result, render_opts
   end
 
@@ -126,7 +127,8 @@ class Cms::Apis::Preview::InplaceEdit::ColumnValuesController < ApplicationContr
     end
 
     if params.key?(:save_if_no_alerts)
-      result = @item.valid?(%i[update accessibility link])
+      result = @cur_column_value.valid?(%i[update accessibility link])
+      result &&= @cur_column_value.link_errors.all? { |_link, status| status == :success }
       if !result
         render_save_as_branch false
         return
