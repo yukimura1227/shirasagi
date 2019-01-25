@@ -8,6 +8,15 @@
     <dt><%= t("ss.keyword") %></dt>
     <dd><%= f.text_field :name, value: params[:s].try(:[], :name) %></dd>
 
+    <dt><%= Cms::Page.t :state %></dt>
+    <dd>
+      <% statuses_option.each do |label, value| %>
+        <label>
+          <%= check_box_tag("#{f.object_name}[statuses][]", value, @s.statuses.include?(value), id: nil) %> <%= label %>
+        </label>
+      <% end %>
+    </dd>
+
     <dt></dt>
     <dd><%= f.submit  t("cms.apis.pages.search"), class: :btn %></dd>
   </dl>
