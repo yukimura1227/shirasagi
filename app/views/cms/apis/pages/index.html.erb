@@ -1,7 +1,14 @@
-<%= jquery do %> SS_SearchUI.modal(); <% end %>
+<%= jquery do %>
+  <% if params[:layout] == "iframe" %>
+    window.top.SS_SearchUI.modal({ $el: $("#ajax-box") });
+  <% else %>
+    SS_SearchUI.modal();
+  <% end %>
+<% end %>
 
 <div class="search-ui-form">
 <%= form_for :s, url: { action: :index }, html: { method: "GET", class: :search } do |f| %>
+  <%= hidden_field_tag("layout", params[:layout]) %>
   <dl class="see">
     <%= render 'node_dropdown_tree', f: f %>
 
