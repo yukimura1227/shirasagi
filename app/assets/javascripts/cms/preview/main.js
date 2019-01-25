@@ -227,6 +227,19 @@ SS_Preview = (function () {
       }
     });
 
+    this.$el.find("#ss-preview-btn-select-draft-page")
+      .colorbox({ iframe: true, fixed: true, width: "90%", height: "90%" })
+      .data("on-select", function($item) {
+        var $dataEl = $item.closest("[data-id]");
+        var filename = $dataEl.find(".filename").text();
+
+        var url = SS_Preview.previewPath.replace(":path", filename);
+        if (self.inplaceMode) {
+          url += "#inplace";
+        }
+        window.location.href = url;
+      });
+
     this.$el.on("click", ".ss-preview-btn-pc", function () {
       self.previewPc();
     });

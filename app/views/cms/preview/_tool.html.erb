@@ -70,6 +70,7 @@
 
       SS_Preview.workflowPath.wizard = <%== cms_apis_preview_workflow_wizard_path(site: @cur_site, preview_date: params[:preview_date], id: ":id").to_json %>;
       SS_Preview.workflowPath.pages = <%== "/.s#{@cur_site.id}/workflow/pages/:id".to_json %>;
+      SS_Preview.previewPath = <%== cms_preview_path(path: ":path").to_json %>;
     <% end %>
   </script>
 <% end %>
@@ -115,7 +116,17 @@
               <option value="">記事</option>
             </select>
             <button type="button" class="ss-preview-btn ss-preview-btn-outline"><%= t("ss.buttons.new") %></button>
-            <button type="button" class="ss-preview-btn ss-preview-btn-outline"><%= t("cms.draft_page") %></button>
+            <%
+              page_params = { layout: "iframe", single: true, s: { statuses: %w(ready request remand draft closed) } }
+              if rendered[:page] && rendered[:page].parent
+                page_params[:s] ||= {}
+                page_params[:s][:node] = rendered[:page].parent
+              end
+              if rendered[:node]
+                page_params[:s][:node] = rendered[:node]
+              end
+            %>
+            <a id="ss-preview-btn-select-draft-page" class="ss-preview-btn ss-preview-btn-outline" href="<%== cms_apis_pages_path(page_params) %>"><%= t("cms.draft_page") %></a>
           </div>
         </div>
       <% end %>
