@@ -65,6 +65,7 @@ module Cms::Content
       export :full_url
       export :basename
       export :filename
+      export :order
       export :date
       export :released
       export :updated
