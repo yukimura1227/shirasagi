@@ -17,6 +17,11 @@ Cms_TemplateForm.targetEl = null;
 Cms_TemplateForm.confirms = {};
 Cms_TemplateForm.paths = {};
 
+// fast: 200
+// normal: 400
+// slow: 600
+Cms_TemplateForm.duration = 400;
+
 Cms_TemplateForm.render = function(options) {
   if (Cms_TemplateForm.instance) {
     return;
@@ -182,7 +187,7 @@ Cms_TemplateForm.prototype.bindOne = function(el) {
     var $this = $(this);
     var $fileView = $this.closest(".file-view");
 
-    $fileView.fadeOut().queue(function() {
+    $fileView.fadeOut(Cms_TemplateForm.duration).queue(function() {
       $fileView.remove();
     });
 
@@ -236,8 +241,7 @@ Cms_TemplateForm.prototype.resetOrder = function() {
   var options = [];
   for (var i = 0; i < count; i++) {
     options.push(optionTemplate.replace(":value", i.toString()).replace(":display", (i + 1).toString()));
-  };
-  options.push(optionTemplate.replace(":value", count.toString()).replace(":display", "末尾"));
+  }
 
   this.$el.find(".column-value").each(function(index) {
     var $select = $(this).find(".column-value-controller-move-position");
@@ -246,25 +250,102 @@ Cms_TemplateForm.prototype.resetOrder = function() {
   });
 };
 
-Cms_TemplateForm.prototype.movePosition = function($evTarget) {
-  var val = $evTarget.val();
-  if (! val) {
+Cms_TemplateForm.prototype.movePosition = function($evSource) {
+  var self = this;
+
+  var moveToIndex = $evSource.val();
+  if (! moveToIndex) {
+    return;
+  }
+  moveToIndex = parseInt(moveToIndex);
+
+  var $source = $evSource.closest(".column-value");
+  var source = $source[0];
+
+  var $columnValues = this.$el.find(".column-value");
+  var sourceIndex = -1;
+  $columnValues.each(function(index) {
+    if (this === source) {
+      sourceIndex = index;
+      return false;
+    }
+  });
+  if (sourceIndex < 0) {
     return;
   }
 
-  var $columnValue = $evTarget.closest(".column-value");
-
-  var $columnValues = this.$el.find(".column-value");
-  val = parseInt(val);
-  if (val >= $columnValues.length) {
-    var $moveTo = $($columnValues[$columnValues.length - 1]);
-    $moveTo.after($columnValue);
-  } else {
-    var $moveTo = $($columnValues[val]);
-    $moveTo.before($columnValue);
+  if (moveToIndex === sourceIndex || moveToIndex >= $columnValues.length || moveToIndex < 0) {
+    // are set some alert animations needed?
+    return;
   }
 
-  this.resetOrder();
+  var $moveTo;
+  var moveToMethod;
+  if (moveToIndex < sourceIndex) {
+    // move up
+    $moveTo = $($columnValues[moveToIndex]);
+    moveToMethod = $moveTo.before.bind($moveTo);
+  } else {
+    // move down
+    $moveTo = $($columnValues[moveToIndex]);
+    moveToMethod = $moveTo.after.bind($moveTo);
+  }
+
+  var moveTo = $moveTo[0];
+
+  if (moveToIndex < sourceIndex) {
+    // moveUp
+    source.style.transitionDuration = Cms_TemplateForm.duration + "ms";
+    source.style.transform = "translateY(" + (moveTo.offsetTop - source.offsetTop) + "px)";
+
+    var sourceBottom = source.offsetTop + source.offsetHeight;
+    var prev = $columnValues[sourceIndex - 1];
+    var prevBottom = prev.offsetTop + prev.offsetHeight;
+    var diff = sourceBottom - prevBottom;
+
+    for (var i = moveToIndex; i < sourceIndex; i++) {
+      var el = $columnValues[i];
+      el.style.transitionDuration = Cms_TemplateForm.duration + "ms";
+      el.style.transform = "translateY(" + diff + "px)";
+    }
+
+    setTimeout(function() {
+      $columnValues.each(function() {
+        if (this.style.transitionDuration) {
+          this.style.transitionDuration = "";
+          this.style.transform = "";
+        }
+      });
+      moveToMethod($source);
+      self.resetOrder();
+    }, Cms_TemplateForm.duration);
+  } else if (moveToIndex > sourceIndex) {
+    // moveDown
+    var moveToBottom = moveTo.offsetTop + moveTo.offsetHeight;
+    var sourceBottom = source.offsetTop + source.offsetHeight;
+    source.style.transitionDuration = Cms_TemplateForm.duration + "ms";
+    source.style.transform = "translateY(" + (moveToBottom - sourceBottom) + "px)";
+
+    var next = $columnValues[sourceIndex + 1];
+    var diff = source.offsetTop - next.offsetTop;
+
+    for (var i = sourceIndex + 1; i <= moveToIndex; i++) {
+      var el = $columnValues[i];
+      el.style.transitionDuration = Cms_TemplateForm.duration + "ms";
+      el.style.transform = "translateY(" + diff + "px)";
+    }
+
+    setTimeout(function() {
+      $columnValues.each(function() {
+        if (this.style.transitionDuration) {
+          this.style.transitionDuration = "";
+          this.style.transform = "";
+        }
+      });
+      moveToMethod($source);
+      self.resetOrder();
+    }, Cms_TemplateForm.duration);
+  }
 };
 
 Cms_TemplateForm.prototype.moveUp = function($evTarget) {
@@ -278,8 +359,11 @@ Cms_TemplateForm.prototype.moveUp = function($evTarget) {
     return;
   }
 
-  $prev.before($columnValue);
-  this.resetOrder();
+  var self = this;
+  this.swapElement($prev, $columnValue, function() {
+    $prev.before($columnValue);
+    self.resetOrder();
+  });
 };
 
 Cms_TemplateForm.prototype.moveDown = function($evTarget) {
@@ -293,8 +377,36 @@ Cms_TemplateForm.prototype.moveDown = function($evTarget) {
     return;
   }
 
-  $next.after($columnValue);
-  this.resetOrder();
+  var self = this;
+  this.swapElement($columnValue, $next, function() {
+    $next.after($columnValue);
+    self.resetOrder();
+  });
+};
+
+Cms_TemplateForm.prototype.swapElement = function($upper, $lower, completion) {
+  var upper = $upper[0];
+  var lower = $lower[0];
+
+  var diff = lower.offsetTop - upper.offsetTop;
+  var spacing = lower.offsetTop - (upper.offsetTop + upper.offsetHeight);
+
+  var saveUpperTransitionDuration = upper.style.transitionDuration;
+  var saveLowerTransitionDuration = lower.style.transitionDuration;
+
+  upper.style.transitionDuration = Cms_TemplateForm.duration + 'ms';
+  lower.style.transitionDuration = Cms_TemplateForm.duration + 'ms';
+  upper.style.transform = "translateY(" + (lower.offsetHeight + spacing) + "px)";
+  lower.style.transform = "translateY(" + (-diff) + "px)";
+
+  setTimeout(function() {
+    upper.style.transitionDuration = saveUpperTransitionDuration;
+    lower.style.transitionDuration = saveLowerTransitionDuration;
+    upper.style.transform = "translateY(0)";
+    lower.style.transform = "translateY(0)";
+
+    completion();
+  }, Cms_TemplateForm.duration);
 };
 
 Cms_TemplateForm.prototype.remove = function($evTarget) {
@@ -308,7 +420,7 @@ Cms_TemplateForm.prototype.remove = function($evTarget) {
   }
 
   var self = this;
-  $columnValue.addClass("column-value-deleting").fadeOut().queue(function() {
+  $columnValue.addClass("column-value-deleting").fadeOut(Cms_TemplateForm.duration).queue(function() {
     $columnValue.remove();
     self.resetOrder();
   });
