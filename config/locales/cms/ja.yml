@@ -264,6 +264,11 @@ ja:
       loop_format:
         shirasagi: SHIRASAGI
         liquid: Liquid
+      alignment:
+        flow: 成り行き
+        left: 左
+        center: 中央
+        right: 右
 
     sns_share:
       fb_like: Facebook いいね！
@@ -827,6 +832,8 @@ ja:
         file_type: ファイルタイプ
       cms/column/list:
         list_type: 種類
+      cms/column/value/base:
+        alignment: 配置
       cms/column/value/check_box:
         values: 選択肢
       cms/column/value/date_field:

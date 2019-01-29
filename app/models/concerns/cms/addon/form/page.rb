@@ -11,7 +11,7 @@ module Cms::Addon::Form::Page
                 extend: Cms::Extensions::ColumnValuesRelation
     field :column_values_updated, type: DateTime
 
-    permit_params :form_id, column_values: [ :_type, :column_id, :order, in_wrap: {} ]
+    permit_params :form_id, column_values: [ :_type, :column_id, :order, :alignment, in_wrap: {} ]
     accepts_nested_attributes_for :column_values
 
     # default validation `validates_associated :column_values` is not suitable for column_values.

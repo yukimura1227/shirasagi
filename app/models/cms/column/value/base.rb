@@ -15,6 +15,7 @@ class Cms::Column::Value::Base
   field :name, type: String
   field :order, type: Integer
   field :class_name, type: String
+  field :alignment, type: String
 
   after_initialize :copy_column_settings, if: ->{ new_record? }
 
@@ -24,6 +25,7 @@ class Cms::Column::Value::Base
 
   liquidize do
     export :name
+    export :alignment
     export as: :html do |context|
       self.to_html(preview: context.registers[:preview])
     end
