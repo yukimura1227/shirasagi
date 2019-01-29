@@ -16,6 +16,9 @@
   .column-value-header-group ~ .column-value-header-group {
     margin-left: 16px;
   }
+  .sortable-handle {
+    cursor: move;
+  }
 }
 
 .column-value-body {
@@ -40,6 +43,11 @@
 .column-youtube-left {
   text-align: left;
   float: left;
+}
+
+.column-value.ui-sortable-helper {
+  @include box-shadow(0px 1px 5px #666);
+  @include opacity(0.8);
 }
 
 .table-menu {

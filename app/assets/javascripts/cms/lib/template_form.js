@@ -6,14 +6,14 @@ Cms_TemplateForm = function(options) {
   this.$formPageBody = this.$formPage.find('.addon-body');
   this.selectedFormId = null;
 
-  if (Cms_TemplateForm.targetEl) {
-    this.bind(Cms_TemplateForm.targetEl);
+  if (Cms_TemplateForm.target) {
+    this.bind(Cms_TemplateForm.target.el, Cms_TemplateForm.target.options);
   }
 };
 
 Cms_TemplateForm.instance = null;
 Cms_TemplateForm.userId = null;
-Cms_TemplateForm.targetEl = null;
+Cms_TemplateForm.target = null;
 Cms_TemplateForm.confirms = {};
 Cms_TemplateForm.paths = {};
 
@@ -32,11 +32,12 @@ Cms_TemplateForm.render = function(options) {
   Cms_TemplateForm.instance = instance;
 };
 
-Cms_TemplateForm.bind = function(el) {
+Cms_TemplateForm.bind = function(el, options) {
   if (Cms_TemplateForm.instance) {
-    Cms_TemplateForm.instance.bind(el)
+    Cms_TemplateForm.instance.bind(el, options)
   } else {
-    Cms_TemplateForm.targetEl = el;
+    Cms_TemplateForm.target.el = el;
+    Cms_TemplateForm.target.options = options;
   }
 };
 
@@ -110,11 +111,11 @@ Cms_TemplateForm.prototype.deactivateForm = function() {
   Cms_Form.addonSelector = ".mod-cms-body";
 };
 
-Cms_TemplateForm.prototype.bind = function(el) {
+Cms_TemplateForm.prototype.bind = function(el, options) {
   var bindsOne = (!this.el || this.el !== el);
 
   if (bindsOne) {
-    this.bindOne(el);
+    this.bindOne(el, options);
   }
 
   this.resetOrder();
@@ -131,7 +132,7 @@ Cms_TemplateForm.prototype.bind = function(el) {
   });
 };
 
-Cms_TemplateForm.prototype.bindOne = function(el) {
+Cms_TemplateForm.prototype.bindOne = function(el, options) {
   this.el = el;
   this.$el = $(el);
 
@@ -195,11 +196,11 @@ Cms_TemplateForm.prototype.bindOne = function(el) {
     return false;
   });
 
-  var options = {};
-  options.uploadUrl = function() {
+  var tempFileOptions = {};
+  tempFileOptions.uploadUrl = function() {
     return "/.s" + Cms_TemplateForm.userId + "/cms/apis/temp_files.json";
   };
-  options.select = function(files, dropArea) {
+  tempFileOptions.select = function(files, dropArea) {
     if (! files[0]) {
       return;
     }
@@ -223,7 +224,7 @@ Cms_TemplateForm.prototype.bindOne = function(el) {
     });
   };
 
-  this.tempFile = new SS_Addon_TempFile($(".column-value-upload-drop-area"), Cms_TemplateForm.userId, options);
+  this.tempFile = new SS_Addon_TempFile($(".column-value-upload-drop-area"), Cms_TemplateForm.userId, tempFileOptions);
 
   this.$el.on('click', '.btn-add-list', function() {
     self.addList($(this));
@@ -232,6 +233,23 @@ Cms_TemplateForm.prototype.bindOne = function(el) {
   this.$el.on('click', '.btn-delete-list', function() {
     self.removeList($(this));
   });
+
+  if (options && options.type === "entry") {
+    this.$el.find(".addon-body").sortable({
+      axis: "y",
+      handle: '.sortable-handle',
+      items: "> .column-value",
+      // start: function (ev, ui) {
+      //   ui.item.addClass("column-value-dragging");
+      // },
+      // stop: function (ev, ui) {
+      //   ui.item.removeClass("column-value-dragging");
+      // },
+      update: function (ev, ui) {
+        self.resetOrder();
+      }
+    });
+  }
 };
 
 Cms_TemplateForm.prototype.resetOrder = function() {

@@ -5,7 +5,12 @@
 <div id="<%= id %>" class="column-value column-value-<%= column._type.parameterize %>">
   <div class="column-value-header">
     <div class="column-value-header-group">
-      <label><%= column.name %></label>
+      <label <% if controller %>class="sortable-handle"<% end %>>
+        <% if controller %>
+          <i class="material-icons">swap_vert</i>
+        <% end %>
+        <%= column.name %>
+      </label>
       <% if !show && column.tooltips.present? %>
         <div class="tooltip">?
           <ul>
