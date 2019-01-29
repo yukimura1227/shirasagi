@@ -43,12 +43,34 @@ class Cms::Column::Value::Base
 
   def to_html(options = {})
     html = _to_html(options)
+
+    wrap_data = []
+    wrap_css_classes = []
+
     if options[:preview]
-      data_attrs = [
+      wrap_data += [
         [ "page-id", _parent.id ], [ "column-id", id ], [ "column-name", ::CGI.escapeHTML(name) ],
         [ "column-order", order ]
       ]
-      wrap = "<div class=\"ss-preview-column\" #{data_attrs.map { |k, v| "data-#{k}=\"#{v}\"" }.join(" ")}>"
+      wrap_css_classes << "ss-preview-column"
+    end
+
+    if self._parent.form.sub_type_entry?
+      wrap_css_classes << "ss-alignment"
+      wrap_css_classes << "ss-alignment-#{alignment.presence || "flow"}"
+    end
+
+    if wrap_data.present? || wrap_css_classes.present?
+      attrs = []
+
+      if wrap_data.present?
+        attrs += wrap_data.map { |k, v| "data-#{k}=\"#{v}\"" }
+      end
+      if wrap_css_classes.present?
+        attrs << "class=\"#{wrap_css_classes.join(" ")}\""
+      end
+
+      wrap = "<div #{attrs.join(" ")}>"
       wrap += html if html
       wrap += "</div>"
 
