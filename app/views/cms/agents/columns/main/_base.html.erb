@@ -1,6 +1,8 @@
 <% show ||= false %>
 <% controller ||= false %>
-<div class="column-value">
+<% id = value.try(:id) || BSON::ObjectId.new %>
+<% id = "column-value-#{id}" %>
+<div id="<%= id %>" class="column-value column-value-<%= column._type.parameterize %>">
   <div class="column-value-header">
     <div class="column-value-header-group">
       <label><%= column.name %></label>
@@ -50,6 +52,6 @@
       <%= hidden_field_tag "#{f.object_name}[][column_id]", column.id, id: nil %>
       <%= hidden_field_tag "#{f.object_name}[][_type]", column.value_type, id: nil %>
     <% end %>
-    <%= yield %>
+    <%= yield(id) %>
   </div>
 </div>
