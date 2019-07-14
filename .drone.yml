@@ -1,0 +1,59 @@
+kind: pipeline
+name: default
+
+steps:
+- name: restore-cache
+  image: plugins/volume-cache
+  settings:
+    mount:
+    - ./vendor/bundle
+    - ./vendor/bin
+    restore: true
+  volumes:
+  - name: cache
+    path: /cache
+
+- name: bundle-install
+  image: ruby:2.4.6
+  commands:
+  - bundle install --path=vendor/bundle --binstubs=vendor/bin --clean --quiet
+  environment:
+    RAILS_ENV: test
+
+- name: rebuild-cache
+  image: plugins/volume-cache
+  settings:
+    mount:
+    - ./vendor/bundle
+    - ./vendor/bin
+    rebuild: true
+  volumes:
+  - name: cache
+    path: /cache
+
+- name: config-copy
+  image: ruby:2.4.6
+  commands:
+  - cp -n config/samples/*.yml config/
+  - cp -n config/samples/*.rb  config/
+  - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
+
+- name: rspec
+  image: ruby:2.4.6
+  commands:
+  - bundle check --path=vendor/bundle
+  - bundle exec rspec
+  environment:
+    RAILS_ENV: test
+
+services:
+- name: mongo
+  image: mongo:3.4
+  command: [ --smallfiles, --logpath=/dev/null ]
+  ports:
+  - 27017
+
+volumes:
+- name: cache
+  host:
+    path: /tmp/cache/drone-shirasagi
