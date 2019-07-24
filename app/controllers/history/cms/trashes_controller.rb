@@ -35,8 +35,11 @@ class History::Cms::TrashesController < ApplicationController
     render_opts[:render] = { file: :undo_delete }
     render_opts[:notice] = t('ss.notice.restored')
 
-    result = @item.restore!
-    @item.children.restore! if params.dig(:item, :target) == 'children' && @item.ref_coll == 'cms_nodes' && result
+    result = if params.dig(:item, :target) == 'children' && @item.ref_coll == 'cms_nodes'
+      @item.children.restore!
+    else
+      @item.restore!
+    end
     render_update result, render_opts
   end
 
