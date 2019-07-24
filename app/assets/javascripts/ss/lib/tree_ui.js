@@ -32,11 +32,12 @@ this.SS_TreeUI = (function () {
       opts = {}
     }
 
+    var root;
+    var expand_all = null;
     this.tree = $(tree);
 
-    var root = [];
-    var expand_all = opts["expand_all"];
-    var collapse_all = opts["collapse_all"];
+    root = [];
+    expand_all = opts["expand_all"];
 
     this.tree.find("tbody tr").each(function () {
       return root.push(parseInt($(this).attr("data-depth")));
@@ -93,12 +94,11 @@ this.SS_TreeUI = (function () {
       e.stopPropagation();
       return false;
     });
-    if (expand_all) {
-      SS_TreeUI.openImage(this.tree.find("tbody tr img"));
-    } else if (collapse_all) {
-      SS_TreeUI.closeImage(this.tree.find("tbody tr img"));
-    } else {
+    if (!expand_all) {
       this.tree.find("tr[data-depth='" + root + "'] img").click();
+    }
+    else {
+      SS_TreeUI.openImage(this.tree.find("tbody tr img"));
     }
   }
 
