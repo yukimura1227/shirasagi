@@ -205,9 +205,7 @@ module Cms::Model::Node
   end
 
   def remove_all
-    dst = path.sub("#{Rails.root}/public", "#{Rails.root}/private/trash")
-    Fs.mkdir_p(File.dirname(dst))
-    Fs.mv(path, dst) if Fs.exists?(path)
+    Fs.rm_rf path
   end
 
   private
@@ -262,10 +260,7 @@ module Cms::Model::Node
 
   def destroy_children
     %w(nodes pages parts layouts).each do |name|
-      send(name).each do |item|
-        item.cur_user = @cur_user
-        item.destroy
-      end
+      send(name).destroy_all
     end
   end
 

@@ -24,7 +24,8 @@ class Opendata::App
   field :license, type: String
   field :executed, type: Integer
 
-  has_many :points, class_name: "Opendata::AppPoint", dependent: :destroy, inverse_of: :app
+  has_many :points, primary_key: :app_id, class_name: "Opendata::AppPoint",
+    dependent: :destroy
   embeds_ids :datasets, class_name: "Opendata::Dataset"
   has_many :ideas, primary_key: :app_id, class_name: "Opendata::Idea"
 
