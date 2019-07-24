@@ -9,14 +9,12 @@
           <dt><%= @item.model.t(:name) %></dt>
           <dd><%= @item.data[:name] %></dd>
 
-          <% if @item.ref_coll =~ /cms_nodes|cms_pages|cms_parts|cms_layouts/ && @item.parent.present? %>
+          <% if @item.ref_coll =~ /cms_nodes|cms_pages|cms_parts|cms_layouts/ %>
             <dt><%= @model.t(:parent) %></dt>
-            <dd>
-              <label><%= check_box_tag "#{f.object_name}[parent]", true, false, {} %> <%= t("history.options.target.restore") %></label>
-            </dd>
+            <dd><%= select_tag "#{f.object_name}[parent]", options_for_select(@item.target_options) %></dd>
           <% end %>
 
-          <% if @item.ref_coll == 'cms_nodes' && @item.children.present? %>
+          <% if @item.ref_coll == 'cms_nodes' %>
             <dt><%= @model.t(:children) %></dt>
             <dd><%= select_tag "#{f.object_name}[children]", options_for_select(@item.target_options) %></dd>
           <% end %>
