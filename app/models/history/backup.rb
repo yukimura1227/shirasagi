@@ -1,8 +1,32 @@
 class History::Backup
-  include History::Model::Data
+  include SS::Document
+  include SS::Reference::User
+
+  store_in_repl_master
+  index({ ref_coll: 1, "data._id" => 1, created: -1 })
+
+  cattr_reader(:max_age) { 20 }
+
+  field :version, type: String, default: SS.version
+  field :ref_coll, type: String
+  field :ref_class, type: String
+  field :data, type: Hash
+  field :state, type: String
+
+  validates :ref_coll, presence: true
+  validates :data, presence: true
+
+  def coll
+    collection.database[ref_coll]
+  end
+
+  def ref_class_constantize
+    models = Mongoid.models.reject { |m| m.to_s.start_with?('Mongoid::') }
+    models.find{ |m| m.to_s == ref_class }
+  end
 
   def ref_item
-    @_ref_item ||= model.find(data["_id"])
+    @_ref_item ||= ref_class_constantize.find(data["_id"])
   end
 
   def get
@@ -25,8 +49,7 @@ class History::Backup
     end
   end
 
-  def restore(opts = {})
-    opts[:create_by_trash] = true
+  def restore
     data  = self.data.dup
     query = coll.find _id: data["_id"]
     if query.count != 1
@@ -35,8 +58,9 @@ class History::Backup
     end
 
     data.delete("_id")
+    data.delete("file_id")
+    data.delete("file_ids") # TODO: for attachment files
     data.delete("state")
-    data = restore_data(data, opts)
 
     begin
       query.update_many('$set' => data)
