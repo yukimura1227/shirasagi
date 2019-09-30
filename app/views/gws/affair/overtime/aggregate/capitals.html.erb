@@ -1,0 +1,5 @@
+<div class="gws-attendance">
+  <%= render partial: 'tabs', locals: { current: "capitals" } %>
+  <%= render partial: 'search', locals: { current: "capitals" } %>
+  <%= render partial: "capitals/#{@unit}", locals: { current: "capitals" } %>
+</div>

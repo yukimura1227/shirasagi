@@ -1,0 +1,35 @@
+<div class="attendance-box">
+  <div class="attendance-box-main">
+    <%
+      @s = OpenStruct.new params[:s]
+      @s[:start_year] ||= @start_year
+      @s[:start_month] ||= @start_month
+      @s[:end_year] ||= @end_year
+      @s[:end_month] ||= @end_month
+
+      current_year = Time.zone.now.year
+      year_options = ((current_year - 5)..current_year).map { |y| ["#{y}#{t("datetime.prompts.year")}", y] }.reverse
+      month_options = (1..12).map { |m| ["#{m}#{t("datetime.prompts.month")}", m] }
+      unit_options = %w(day month year).map { |u| [t("datetime.prompts.#{u}"), u] }
+    %>
+    <%= form_for :s, url: "", html: { method: :get } do |f| %>
+
+      <span><%= "期間" %></span>
+      <%= f.select :start_year, year_options %>
+      <%= f.select :start_month, month_options %>
+      <span><%= "〜" %></span>
+      <%= f.select :end_year, year_options %>
+      <%= f.select :end_month, month_options %>
+
+      <span><%= "期間" %></span>
+      <%= f.select :unit, unit_options %>
+
+      <input type="submit" value="<%= t('ss.buttons.search') %>" class="btn" />
+      <% if current == "index" %>
+        <%= link_to t("ss.buttons.reset"), gws_affair_overtime_aggregate_path, class: "btn" %>
+      <% else %>
+        <%= link_to t("ss.buttons.reset"), gws_affair_overtime_aggregate_capitals_path, class: "btn" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

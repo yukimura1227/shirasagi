@@ -1,0 +1,13 @@
+<dl class="see addon-gws-affair-overtime_file">
+  <dt><%= @model.t :start_at %><%= @model.tt :start_at %></dt>
+  <dd><%= f.text_field :start_at, class: "datetime js-datetime", value: tryb { @item.start_at.strftime("%Y/%m/%d %H:%M") } %></dd>
+
+  <dt><%= @model.t :end_at %><%= @model.tt :end_at %></dt>
+  <dd><%= f.text_field :end_at, class: "datetime js-datetime", value: tryb { @item.end_at.strftime("%Y/%m/%d %H:%M") } %></dd>
+
+  <dt><%= @model.t :leave_type %><%= @model.tt :leave_type %></dt>
+  <dd><%= f.select :leave_type, @item.leave_type_options, include_blank: true %></dd>
+
+  <dt><%= @model.t :reason %><%= @model.tt :reason %></dt>
+  <dd><%= f.text_area :reason %></dd>
+</dl>

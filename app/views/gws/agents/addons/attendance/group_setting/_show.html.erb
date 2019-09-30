@@ -11,7 +11,15 @@
   <dd><%= @item.attendance_year_changed_month %> <%= t("datetime.prompts.month") %></dd>
 
   <dt><%= @model.t :attendance_time_changed_minute %></dt>
-  <dd><%= @item.attendance_time_changed_minute / 60 %> <%= t("datetime.prompts.hour") %>
+  <dd><%= @item.attendance_time_changed_minute / 60 %> <%= t("datetime.prompts.hour") %></dd>
+
+  <dt><%= @model.t :affair_time %></dt>
+  <dd>
+    <%= @item.label :affair_start_at_hour %>
+    <%= @item.label :affair_start_at_minute %>
+    <%= t("ss.wave_dash") %>
+    <%= @item.label :affair_end_at_hour %>
+    <%= @item.label :affair_end_at_minute %>
   </dd>
 
   <dt><%= t('gws/attendance.enter_leave') %></dt>

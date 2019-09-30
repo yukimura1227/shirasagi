@@ -1,0 +1,8 @@
+<div class="gws-affair-overtime-aggregate-tabs">
+  <%= link_to gws_affair_overtime_aggregate_path, class: (current == "index" ? "current" : "") do %>
+    <span class="tab-name"><%= t("gws/affair.links.aggregate") %></span>
+  <% end %>
+  <%= link_to gws_affair_overtime_aggregate_capitals_path, class: (current == "capitals" ? "current" : "") do %>
+    <span class="tab-name"><%= t("gws/affair.links.aggregate_capitals") %></span>
+  <% end %>
+</div>

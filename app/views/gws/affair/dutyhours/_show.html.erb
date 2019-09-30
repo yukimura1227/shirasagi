@@ -1,0 +1,28 @@
+<dl class="see">
+  <dt><%= @model.t :name %></dt>
+  <dd><%= @item.name %></dd>
+
+  <dt><%= @model.t :start_at %></dt>
+  <dd><%= tryb { @item.start_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :end_at %></dt>
+  <dd><%= tryb { @item.end_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :break_enter1_start_at %></dt>
+  <dd><%= tryb { @item.break_enter1_start_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :break_enter1_end_at %></dt>
+  <dd><%= tryb { @item.break_enter1_end_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :break_enter2_start_at %></dt>
+  <dd><%= tryb { @item.break_enter2_start_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :break_enter2_end_at %></dt>
+  <dd><%= tryb { @item.break_enter2_end_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :break_enter3_start_at %></dt>
+  <dd><%= tryb { @item.break_enter3_start_at.strftime("%H:%M") } %></dd>
+
+  <dt><%= @model.t :break_enter3_end_at %></dt>
+  <dd><%= tryb { @item.break_enter3_end_at.strftime("%H:%M") } %></dd>
+</dl>

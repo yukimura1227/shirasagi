@@ -49,7 +49,7 @@ ja:
     gws/attendance/time_card: タイムカード
     gws/attendance/management/time_card: 管理
     addons:
-      gws/attendance/group_setting: 出退勤
+      gws/attendance/group_setting: 庶務事務
 
   gws_role:
     use_gws_attendance_time_cards: 出退勤時刻の利用
@@ -87,6 +87,7 @@ ja:
         reason: 修正理由
         created: 修正時刻
       gws/addon/attendance/group_setting:
+        affair_time: 勤務時間
         attendance_enter_label: 出勤表示
         attendance_leave_label: 退勤表示
         attendance_management_year: 管理年数

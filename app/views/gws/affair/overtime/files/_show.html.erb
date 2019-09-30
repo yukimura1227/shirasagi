@@ -1,0 +1,12 @@
+<dl class="see">
+  <dt><%= @model.t :name %></dt>
+  <dd><%= @item.send :name %></dd>
+
+  <dt><%= @model.t :capital_id %></dt>
+  <dd><%= tryb { @item.capital.name } %></dd>
+</dl>
+
+<%= jquery do %>
+  var highlighter = new Gws_Elasticsearch_Highlighter();
+  highlighter.render();
+<% end %>

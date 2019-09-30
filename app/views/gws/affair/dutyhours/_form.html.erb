@@ -1,0 +1,28 @@
+<dl class="see">
+  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
+  <dd><%= f.text_field :name, autofocus: pc_browser? %></dd>
+
+  <dt><%= @model.t :start_at %><%= @model.tt :start_at %></dt>
+  <dd><%= f.text_field :start_at, value: tryb { @item.start_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :end_at %><%= @model.tt :end_at %></dt>
+  <dd><%= f.text_field :end_at, value: tryb { @item.end_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :break_enter1_start_at %><%= @model.tt :break_enter1_start_at %></dt>
+  <dd><%= f.text_field :break_enter1_start_at, value: tryb { @item.break_enter1_start_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :break_enter1_end_at %><%= @model.tt :break_enter1_end_at %></dt>
+  <dd><%= f.text_field :break_enter1_end_at, value: tryb { @item.break_enter1_end_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :break_enter2_start_at %><%= @model.tt :break_enter2_start_at %></dt>
+  <dd><%= f.text_field :break_enter2_start_at, value: tryb { @item.break_enter2_start_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :break_enter2_end_at %><%= @model.tt :break_enter2_end_at %></dt>
+  <dd><%= f.text_field :break_enter2_end_at, value: tryb { @item.break_enter2_end_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :break_enter3_start_at %><%= @model.tt :break_enter3_start_at %></dt>
+  <dd><%= f.text_field :break_enter3_start_at, value: tryb { @item.break_enter3_start_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+
+  <dt><%= @model.t :break_enter3_end_at %><%= @model.tt :break_enter3_end_at %></dt>
+  <dd><%= f.text_field :break_enter3_end_at, value: tryb { @item.break_enter3_end_at.strftime("%H:%M") }, class: "date js-time" %></dd>
+</dl>

@@ -418,7 +418,7 @@ this.SS = (function () {
         }
         return $(this).datetimepicker(opts);
       });
-      return $.each($(".js-datetime"), function () {
+      $.each($(".js-datetime"), function () {
         var data, opts;
         opts = {
           roundTime: 'ceil',
@@ -430,6 +430,31 @@ this.SS = (function () {
         }
         if (data.maxDate !== null) {
           opts.maxDate = data.maxDate;
+        }
+        if (data.defaulttime !== null) {
+          opts.defaultTime = data.defaulttime;
+        }
+        return $(this).datetimepicker(opts);
+      });
+      $.each($(".js-time"), function () {
+        var data, opts;
+        opts = {
+          timepicker: true,
+          datepicker: false,
+          format: 'H:i',
+          step: 1,
+          closeOnDateSelect: true,
+          scrollInput: false
+        };
+        data = $(this).data();
+        if (data.mindate !== null) {
+          opts.minDate = data.mindate;
+        }
+        if (data.maxdate !== null) {
+          opts.maxDate = data.maxdate;
+        }
+        if (data.defaulttime !== null) {
+          opts.defaultTime = data.defaulttime;
         }
         return $(this).datetimepicker(opts);
       });

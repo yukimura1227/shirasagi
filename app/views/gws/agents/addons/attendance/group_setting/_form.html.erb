@@ -15,6 +15,15 @@
   <dt><%= @model.t :attendance_time_changed_minute %><%= @model.tt :attendance_time_changed_minute %></dt>
   <dd><%= f.select :in_attendance_time_change_hour, @item.attendance_time_changed_options %></dd>
 
+  <dt><%= @model.t :affair_time %></dt>
+  <dd>
+    <%= f.select :affair_start_at_hour, @item.affair_start_at_hour_options %>
+    <%= f.select :affair_start_at_minute, @item.affair_start_at_minute_options %>
+    <%= t("ss.wave_dash") %>
+    <%= f.select :affair_end_at_hour, @item.affair_end_at_hour_options %>
+    <%= f.select :affair_end_at_minute, @item.affair_end_at_minute_options %>
+  </dd>
+
   <dt><%= t('gws/attendance.enter_leave') %></dt>
   <dd>
     <%= f.text_field :attendance_enter_label, placeholder: Gws::Attendance::Record.t(:enter), style: 'width: 10.5em;' %>

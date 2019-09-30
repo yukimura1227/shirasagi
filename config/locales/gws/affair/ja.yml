@@ -1,0 +1,175 @@
+ja:
+  gws/affair:
+    overtime_workflow: 残業申請
+    leave_workflow: 休暇申請
+    aggregate: 集計結果
+    capital: 原資区分
+    links:
+      set_results: 結果を入力する
+      edit_results: 結果を編集する
+      aggregate: 残業時間
+      aggregate_capitals: 原資区分
+    options:
+      leave_type:
+        annual_leave: 年次有給休暇
+        sick_leave: 病気休暇
+        paidleave: 特別休暇
+        nursing_care_leave: 介護休暇
+        compensatory_leave: 振替又は代休
+  modules:
+    gws/affair: 庶務事務
+    addons:
+      gws/affair/overtime_file: 残業申請書
+      gws/affair/overtime_result: 結果
+      gws/affair/approver: 承認
+      gws/affair/leave_file: 休暇申請書
+
+  mongoid:
+    models:
+      gws/affair/capital: タイムカード
+      gws/affair/duty_hour: 勤務体系
+    attributes:
+      gws/affair/capital:
+        name: 原資区分名
+        order: 並び順
+        remark: 説明
+      gws/affair/dutyhour:
+        name: 勤務体系名
+        start_at: 開始時間
+        end_at: 終了時間
+        break_enter1_start_at: 休憩1開始時間
+        break_enter1_end_at: 休憩1終了時間
+        break_enter2_start_at: 休憩2開始時間
+        break_enter2_end_at: 休憩2終了時間
+        break_enter3_start_at: 休憩3開始時間
+        break_enter3_end_at: 休憩3終了時間
+      gws/affair/overtime_file:
+        name: タイトル
+        capital_id: 原資区分
+      gws/addon/affair/overtime_file:
+        overtime_name: 業務名
+        start_at: 残業開始時間
+        end_at: 残業終了時間
+        remark: 備考
+      gws/affair/leave_file:
+        name: タイトル
+        start_at: 休暇開始時間
+        end_at: 休暇終了時間
+        leave_type: 休暇区分
+        reason: 理由
+      gws/affair/overtime_result:
+        start_at: 開始時間
+        end_at: 終了時間
+        capital_id: 原資区分
+      gws/addon/affair/approver:
+        workflow_user_id: 申請者
+        workflow_state: 承認状態
+        workflow_comment: 申請コメント
+        workflow_pull_up: 引き上げ承認
+        workflow_on_remand: 差し戻し時
+        workflow_approvers: 承認者
+        workflow_required_counts: 必要承認数
+        workflow_circulations: 回覧者
+        approved: 承認日時
+        comment: 差し戻しコメント
+        approver_comment: 承認者コメント
+
+  gws_role:
+    read_other_gws_affair_capitals: 原資区分の閲覧（所有）
+    read_private_gws_affair_capitals: 原資区分の閲覧（全て）
+    edit_other_gws_affair_capitals: 原資区分の編集（所有）
+    edit_private_gws_affair_capitals: 原資区分の編集（全て）
+    delete_other_gws_affair_capitals: 原資区分の削除（所有）
+    delete_private_gws_affair_capitals: 原資区分の削除（全て）
+    read_other_gws_affair_dutyhours: 勤務体系の閲覧（所有）
+    read_private_gws_affair_dutyhours: 勤務体系の閲覧（全て）
+    edit_other_gws_affair_dutyhours: 勤務体系の編集（所有）
+    edit_private_gws_affair_dutyhours: 勤務体系の編集（全て）
+    delete_other_gws_affair_dutyhours: 勤務体系の削除（所有）
+    delete_private_gws_affair_dutyhours: 勤務体系の削除（全て）
+    read_other_gws_affair_overtime_files: 残業申請の閲覧（所有）
+    read_private_gws_affair_overtime_files: 残業申請の閲覧（全て）
+    edit_other_gws_affair_overtime_files: 残業申請の編集（所有）
+    edit_private_gws_affair_overtime_files: 残業申請の編集（全て）
+    delete_other_gws_affair_overtime_files: 残業申請の削除（所有）
+    delete_private_gws_affair_overtime_files: 残業申請の削除（全て）
+    approve_other_gws_affair_overtime_files: 残業申請の承認（全て）
+    approve_private_gws_affair_overtime_files: 残業申請の承認（所有）
+    reroute_other_gws_affair_overtime_files: 残業申請の経路変更（全て）
+    reroute_private_gws_affair_overtime_files: 残業申請の経路変更（所有）
+    read_other_gws_affair_leave_files: 休暇申請の閲覧（所有）
+    read_private_gws_affair_leave_files: 休暇申請の閲覧（全て）
+    edit_other_gws_affair_leave_files: 休暇申請の編集（所有）
+    edit_private_gws_affair_leave_files: 休暇申請の編集（全て）
+    delete_other_gws_affair_leave_files: 休暇申請の削除（所有）
+    delete_private_gws_affair_leave_files: 休暇申請の削除（全て）
+    approve_other_gws_affair_leave_files: 休暇申請の承認（全て）
+    approve_private_gws_affair_leave_files: 休暇申請の承認（所有）
+    reroute_other_gws_affair_leave_files: 休暇申請の経路変更（全て）
+    reroute_private_gws_affair_leave_files: 休暇申請の経路変更（所有）
+
+  tooltip:
+    gws/affair/capital:
+      name:
+        - 原資区分名を入力します。
+      order:
+        - 並び順を入力します。
+      remark:
+        - 説明を入力します。
+    gws/affair/overtime_file:
+      name:
+        - タイトルを入力します。
+      capital_id:
+        - 原資区分を入力します。
+      overtime_name:
+        - 業務名を入力します。
+      start_at:
+        - 残業開始時間を入力します。
+      end_at:
+        - 残業終了時間を入力します。
+      remark:
+        - 備考を入力します。
+    gws/affair/leave_file:
+      name:
+        - タイトルを入力します。
+      start_at:
+        - 休暇開始時間を入力します。
+      end_at:
+        - 休暇終了時間を入力します。
+      leave_type:
+        - 休暇区分を入力します。
+      reason:
+        - 備考を入力します。
+    gws/addon/affair/approver:
+      workflow_comment:
+        - 申請理由など承認者に対するコメントをを記述してください。
+      workflow_approvers:
+        - 承認者を選択します。
+      workflow_circulations:
+        - 回覧者を選択します。
+        - 回覧者へは承認後に回覧依頼の通知が送られます。
+      approve_remand:
+        - 承認依頼が届いています。申請者に対するコメントを入力（任意）の上、承認または差し戻しを選択してください。
+      workflow_routes:
+        - 承認を申請するには承認経路を選択してから、選択ボタンをクリックしてください。
+      circulation_step:
+        - 確認依頼が届いています。申請者に対するコメントを入力（任意）の上、「確認済みにする」をクリックしてください。
+    gws/affair/dutyhour:
+      name:
+        - 勤務体系名を入力します。
+      start_at:
+        - 開始時間を入力します。
+      end_at:
+        - 終了時間を入力します。
+      break_enter1_start_at:
+        - 休憩1開始時間を入力します。
+      break_enter1_end_at:
+        - 休憩1終了時間を入力します。
+      break_enter2_start_at:
+        - 休憩2開始時間を入力します。
+      break_enter2_end_at:
+        - 休憩2終了時間を入力します。
+      break_enter3_start_at:
+        - 休憩3開始時間を入力します。
+      break_enter3_end_at:
+        - 休憩3終了時間を入力します。

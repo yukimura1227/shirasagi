@@ -60,6 +60,10 @@ module Workflow::Approver
     state
   end
 
+  def workflow_url
+    nil
+  end
+
   def workflow_user
     if workflow_user_id.present?
       self.class.approver_user_class.where(id: workflow_user_id).first

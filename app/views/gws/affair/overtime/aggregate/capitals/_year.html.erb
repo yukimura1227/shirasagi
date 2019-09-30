@@ -1,0 +1,24 @@
+<div class="attendance-box monthly">
+  <div class="attendance-box-main main">
+    <table class="affair-overtime-aggregate">
+      <%
+        total = 0
+        @items = @items.sort_by { |capital_id, _| @capitals[capital_id] ? @capitals[capital_id].order : -1  }
+        @items.each do |capital_id, minute|
+      %>
+        <%
+          capital = @capitals[capital_id]
+          total += minute
+        %>
+        <tr>
+          <th><%= capital ? capital.name : "" %></th>
+          <td><%= "#{minute / 60}:#{format("%02d", (minute % 60))}" %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <th class="total"><%= "合計" %></th>
+        <td class="total"><%= "#{total / 60}:#{format("%02d", (total % 60))}" %></td>
+      </tr>
+    </table>
+  </div>
+</div>

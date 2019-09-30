@@ -22,6 +22,16 @@ module Gws::Addon::Attendance::GroupSetting
       permit_params "attendance_break_leave#{i + 1}_label"
     end
 
+    field :affair_start_at_hour, type: Integer, default: 9
+    field :affair_start_at_minute, type: Integer, default: 0
+    field :affair_end_at_hour, type: Integer, default: 18
+    field :affair_end_at_minute, type: Integer, default: 0
+
+    permit_params :affair_start_at_hour
+    permit_params :affair_start_at_minute
+    permit_params :affair_end_at_hour
+    permit_params :affair_end_at_minute
+
     permit_params :in_attendance_time_change_hour
     permit_params :attendance_year_changed_month, :attendance_management_year
     permit_params :attendance_enter_label, :attendance_leave_label
@@ -46,9 +56,33 @@ module Gws::Addon::Attendance::GroupSetting
     end
   end
 
+  def affair_start_at_hour_options
+    (0..23).map do |h|
+      [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ]
+    end
+  end
+
+  def affair_end_at_hour_options
+    (0..23).map do |h|
+      [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ]
+    end
+  end
+
   def attendance_time_changed_options
     (0..23).map do |h|
       [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ]
+    end
+  end
+
+  def affair_start_at_minute_options
+    (0..59).map do |h|
+      [ "#{h}#{I18n.t('datetime.prompts.minute')}", h.to_s ]
+    end
+  end
+
+  def affair_end_at_minute_options
+    (0..59).map do |h|
+      [ "#{h}#{I18n.t('datetime.prompts.minute')}", h.to_s ]
     end
   end
 
@@ -58,6 +92,18 @@ module Gws::Addon::Attendance::GroupSetting
 
   def calc_attendance_date(time = Time.zone.now)
     Time.zone.at(time.to_i - attendance_time_changed_minute * 60).beginning_of_day
+  end
+
+  def affair_start(date)
+    day = date.to_date.strftime("%Y/%m/%d")
+    hour = " #{affair_start_at_hour}:#{affair_start_at_minute}"
+    Time.zone.parse(day + hour)
+  end
+
+  def affair_end(date)
+    day = date.to_date.strftime("%Y/%m/%d")
+    hour = " #{affair_end_at_hour}:#{affair_end_at_minute}"
+    Time.zone.parse(day + hour)
   end
 
   private

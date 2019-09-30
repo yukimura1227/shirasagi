@@ -1,0 +1,12 @@
+<%
+  capital_options = Gws::Affair::Capital.site(@cur_site).
+    readable(@cur_user, site: @cur_site).pluck(:name, :id)
+%>
+
+<dl class="see">
+  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
+  <dd><%= f.text_field :name, autofocus: pc_browser? %></dd>
+
+  <dt><%= @model.t :capital_id %><%= @model.tt :capital_id %></dt>
+  <dd><%= f.select :capital_id, capital_options, include_blank: true %></dd>
+</dl>

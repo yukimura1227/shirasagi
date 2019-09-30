@@ -1,0 +1,67 @@
+// gws/affair
+.overtime-results {
+  margin-bottom: 10px;
+  tr:nth-child(2n) {
+    background: #fff !important;
+  }
+  tr.current, tr:hover {
+    background: #fff !important;
+  }
+  th.set {
+    width: 100px;
+  }
+  th.delete {
+    width: 100px;
+  }
+  td.start-at input {
+    width: 5em;
+  }
+  td.end-at input {
+    width: 5em;
+  }
+}
+
+.gws-affair-overtime-aggregate-tabs {
+  @include clear;
+  margin-top: -1px;
+  padding: 0 10px;
+  a {
+    display: block;
+    float: left;
+    margin: 1px 6px -1px 0;
+    border: 1px solid $gray4;
+    border-left: 3px solid #bbb;
+    border-radius: 0 4px 0 0;
+    background-color: $gray5;
+    color: #000;
+    @include mb {
+      margin: 1px 6px 6px 0;
+      border-radius: 4px;
+    }
+    .tab-name {
+      display: block;
+      padding: 5px 8px;
+      text-align: center;
+    }
+    &:hover {
+      border-left-color: $orange;
+      background-color: #fff;
+      text-decoration: none;
+    }
+    &.current {
+      border-bottom-color: #fff;
+      border-left-color: $orange;
+      background-color: #fff;
+      @include mb {
+        border-bottom-color: #bbb;
+      }
+    }
+  }
+}
+
+table.affair-overtime-aggregate {
+  width: 200px;
+  .total {
+    border-top: 1px solid #d0d0d0;
+  }
+}
