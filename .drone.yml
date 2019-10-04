@@ -117,7 +117,7 @@ steps:
   # rspec
   - cd /drone/src
   - bundle check --path=vendor/bundle
-  - bundle exec rspec spec/features/gws/users_spec.rb
+  - bundle exec rspec
   environment:
     RAILS_ENV: test
     sandbox: 1
