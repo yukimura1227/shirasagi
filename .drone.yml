@@ -1,4 +1,5 @@
 kind: pipeline
+type: docker
 name: default
 
 steps:
@@ -129,6 +130,11 @@ services:
   command: [ --smallfiles, --logpath=/dev/null ]
   ports:
   - 27017
+- name: test_mail
+  image: shirasagi/mail
+  ports:
+    - 11143:143
+    - 11587:587
 
 volumes:
 - name: cache
