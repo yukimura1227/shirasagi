@@ -135,8 +135,8 @@ services:
 - name: test_mail
   image: shirasagi/mail
   ports:
-    - 11143:143
-    - 11587:587
+    - 143
+    - 587
 
 volumes:
 - name: cache
