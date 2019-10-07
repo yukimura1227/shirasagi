@@ -138,7 +138,7 @@ services:
     - 143
     - 587
 
-volumes:
-- name: cache
-  host:
-    path: /tmp/cache/drone-shirasagi
+#volumes:
+#- name: cache
+#  host:
+#    path: /tmp/cache/drone-shirasagi
