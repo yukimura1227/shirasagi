@@ -1,0 +1,13 @@
+<%
+  duty_hour = @item.effective_duty_hour(@cur_site)
+  return if duty_hour.blank?
+%>
+<dl class="see">
+  <dt class="wide"></dt>
+  <dd class="wide">
+    <%= duty_hour.name %>
+    (<%= duty_hour.label :affair_start_at_hour %><%= duty_hour.label :affair_start_at_minute %>
+    <%= t("ss.wave_dash") %>
+    <%= duty_hour.label :affair_end_at_hour %><%= duty_hour.label :affair_end_at_minute %>)
+  </dd>
+</dl>

@@ -87,12 +87,10 @@ ja:
         reason: 修正理由
         created: 修正時刻
       gws/addon/attendance/group_setting:
-        affair_time: 勤務時間
         attendance_enter_label: 出勤表示
         attendance_leave_label: 退勤表示
         attendance_management_year: 管理年数
         attendance_year_changed_month: 年度替わり月
-        attendance_time_changed_minute: 日替わり時刻
         attendance_break_time1_state: 休憩1表示
         attendance_break_enter1_label: 休憩1開始ラベル
         attendance_break_leave1_label: 休憩1終了ラベル
@@ -102,6 +100,7 @@ ja:
         attendance_break_time3_state: 休憩3表示
         attendance_break_enter3_label: 休憩3開始ラベル
         attendance_break_leave3_label: 休憩3終了ラベル
+        affair_rounding_time_minute: 丸め
     errors:
       models:
         gws/attendance/time_card:
@@ -130,3 +129,8 @@ ja:
         - 文字コードを選択してください。
         - 難読人名に対して特殊な漢字を割り当てている場合は「UTF-8」を選択してください。
         - 通常の利用の場合ですと「シフトJIS」を選択して問題ありません。
+
+    gws/addon/attendance/group_setting:
+      affair_rounding_time_minute:
+        - 出勤の切り上げおよび退勤の切り捨てに関する設定です。
+        - 休憩時間は丸めの対象とはなりません。

@@ -1,15 +1,13 @@
 module Gws::Addon::Attendance::GroupSetting
   extend ActiveSupport::Concern
   extend SS::Addon
+  include Gws::Affair::DutyHourSetting
 
   set_addon_type :organization
 
   included do
-    attr_accessor :in_attendance_time_change_hour
-
     field :attendance_year_changed_month, type: Integer, default: 4
     field :attendance_management_year, type: Integer, default: 3
-    field :attendance_time_changed_minute, type: Integer, default: 3 * 60
     field :attendance_enter_label, type: String
     field :attendance_leave_label, type: String
     SS.config.gws.attendance['max_break'].times do |i|
@@ -22,21 +20,11 @@ module Gws::Addon::Attendance::GroupSetting
       permit_params "attendance_break_leave#{i + 1}_label"
     end
 
-    field :affair_start_at_hour, type: Integer, default: 9
-    field :affair_start_at_minute, type: Integer, default: 0
-    field :affair_end_at_hour, type: Integer, default: 18
-    field :affair_end_at_minute, type: Integer, default: 0
+    field :affair_rounding_time_minute, type: Integer, default: 15
 
-    permit_params :affair_start_at_hour
-    permit_params :affair_start_at_minute
-    permit_params :affair_end_at_hour
-    permit_params :affair_end_at_minute
-
-    permit_params :in_attendance_time_change_hour
     permit_params :attendance_year_changed_month, :attendance_management_year
     permit_params :attendance_enter_label, :attendance_leave_label
-
-    before_validation :set_attendance_time_changed_minute
+    permit_params :affair_rounding_time_minute
 
     validates :attendance_year_changed_month, presence: true,
               numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 12, allow_blank: true }
@@ -56,63 +44,11 @@ module Gws::Addon::Attendance::GroupSetting
     end
   end
 
-  def affair_start_at_hour_options
-    (0..23).map do |h|
-      [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ]
-    end
-  end
-
-  def affair_end_at_hour_options
-    (0..23).map do |h|
-      [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ]
-    end
-  end
-
-  def attendance_time_changed_options
-    (0..23).map do |h|
-      [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ]
-    end
-  end
-
-  def affair_start_at_minute_options
-    (0..59).map do |h|
-      [ "#{h}#{I18n.t('datetime.prompts.minute')}", h.to_s ]
-    end
-  end
-
-  def affair_end_at_minute_options
-    (0..59).map do |h|
-      [ "#{h}#{I18n.t('datetime.prompts.minute')}", h.to_s ]
-    end
-  end
-
   def attendance_break_time_options
     %w(hide show).map { |k| [I18n.t("ss.options.state.#{k}"), k] }
   end
 
-  def calc_attendance_date(time = Time.zone.now)
-    Time.zone.at(time.to_i - attendance_time_changed_minute * 60).beginning_of_day
-  end
-
-  def affair_start(date)
-    day = date.to_date.strftime("%Y/%m/%d")
-    hour = " #{affair_start_at_hour}:#{affair_start_at_minute}"
-    Time.zone.parse(day + hour)
-  end
-
-  def affair_end(date)
-    day = date.to_date.strftime("%Y/%m/%d")
-    hour = " #{affair_end_at_hour}:#{affair_end_at_minute}"
-    Time.zone.parse(day + hour)
-  end
-
-  private
-
-  def set_attendance_time_changed_minute
-    if in_attendance_time_change_hour.blank?
-      self.attendance_time_changed_minute = 3 * 60
-    else
-      self.attendance_time_changed_minute = Integer(in_attendance_time_change_hour) * 60
-    end
+  def affair_rounding_time_minute_options
+    %w(0 1 5 10 15).map { |k| [I18n.t("gws/affair.options.affair_rounding_time_minute.#{k}"), k] }
   end
 end

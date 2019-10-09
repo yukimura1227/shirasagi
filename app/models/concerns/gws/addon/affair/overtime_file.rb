@@ -32,18 +32,18 @@ module Gws::Addon::Affair::OvertimeFile
       errors.add :end_at, "が残業開始日時より１日以上経過しています。１日以内で設定してください。"
     end
 
-    site = cur_site || site
-    return if site.blank? || errors.present?
+    return if errors.present?
 
-    affair_start = site.affair_start(start_at)
-    affair_end = site.affair_end(start_at)
+    duty_hour = cur_user.effective_duty_hour(cur_site || self.site)
+    affair_start = duty_hour.affair_start(start_at)
+    affair_end = duty_hour.affair_end(start_at)
     if end_at > affair_start && start_at < affair_end
       errors.add :base, "残業開始〜残業終了時間が勤務時間内です。勤務時間外で設定してください。"
       return
     end
 
-    affair_start = site.affair_start(end_at)
-    affair_end = site.affair_end(end_at)
+    affair_start = duty_hour.affair_start(end_at)
+    affair_end = duty_hour.affair_end(end_at)
     if end_at > affair_start && start_at < affair_end
       errors.add :base, "残業開始〜残業終了時間が勤務時間内です。勤務時間外で設定してください。"
     end

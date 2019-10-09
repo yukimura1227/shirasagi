@@ -1,0 +1,29 @@
+<dt><%= @model.t :affair_time %></dt>
+<dd>
+  <%= @item.label :affair_start_at_hour %>
+  <%= @item.label :affair_start_at_minute %>
+  <%= t("ss.wave_dash") %>
+  <%= @item.label :affair_end_at_hour %>
+  <%= @item.label :affair_end_at_minute %>
+</dd>
+
+<dt><%= @model.t :attendance_time_changed_minute %></dt>
+<dd><%= @item.attendance_time_changed_minute / 60 %> <%= t("datetime.prompts.hour") %></dd>
+
+<dt><%= @model.t :affair_on_duty %></dt>
+<dd></dd>
+
+<dt class="depth-2"><%= @model.t :affair_on_duty_working_minute %></dt>
+<dd class="depth-2"><%= @item.affair_on_duty_working_minute.try { |v| "#{v}#{t('datetime.prompts.minute')}" } %></dd>
+
+<dt class="depth-2"><%= @model.t :affair_on_duty_break_minute %></dt>
+<dd class="depth-2"><%= @item.affair_on_duty_break_minute.try { |v| "#{v}#{t('datetime.prompts.minute')}" } %></dd>
+
+<dt><%= @model.t :affair_overtime %></dt>
+<dd></dd>
+
+<dt class="depth-2"><%= @model.t :affair_overtime_working_minute %></dt>
+<dd class="depth-2"><%= @item.affair_overtime_working_minute.try { |v| "#{v}#{t('datetime.prompts.minute')}" } %></dd>
+
+<dt class="depth-2"><%= @model.t :affair_overtime_break_minute %></dt>
+<dd class="depth-2"><%= @item.affair_overtime_break_minute.try { |v| "#{v}#{t('datetime.prompts.minute')}" } %></dd>

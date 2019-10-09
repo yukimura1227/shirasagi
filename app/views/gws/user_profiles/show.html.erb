@@ -1,9 +1,20 @@
 <div class="main-box">
   <dl class="see">
     <dt><%= @model.t :name %></dt>
-    <dd><%= @item.send :name %></dd>
+    <dd><%= @item.name %></dd>
 
     <dt><%= @model.t :group_ids %></dt>
     <dd><%= @item.groups.site(@cur_site).map {|m| m.name }.join(", ") %></dd>
+
+    <dt><%= t("mongoid.models.gws/affair/duty_hour") %></dt>
+    <dd>
+      <% duty_hour = @item.effective_duty_hour(@cur_site) %>
+      <% if duty_hour.present? %>
+        <%= duty_hour.name %>
+        (<%= duty_hour.label :affair_start_at_hour %><%= duty_hour.label :affair_start_at_minute %>
+        <%= t("ss.wave_dash") %>
+        <%= duty_hour.label :affair_end_at_hour %><%= duty_hour.label :affair_end_at_minute %>)
+      <% end %>
+    </dd>
   </dl>
 </div>

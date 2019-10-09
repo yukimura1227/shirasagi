@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     get '/' => redirect { |p, req| "#{req.path}/attendance/time_cards/#{Time.zone.now.strftime('%Y%m')}" }, as: :main
 
     resources :capitals, concerns: :deletion
-    resources :dutyhours, concerns: :deletion
+    resources :duty_hours, concerns: :deletion
 
     namespace "overtime" do
       resources :files, path: 'files/:state', concerns: [:deletion, :soft_deletion, :workflow]

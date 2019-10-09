@@ -1,0 +1,7 @@
+<% @pre_items = [ Gws::Affair::DefaultDutyHour.wrap(@cur_site) ] %>
+
+<% @index_meta = proc do |item| %>
+  <span class="datetime"><%= item.updated.strftime("%Y/%m/%d %H:%M") %></span>
+<% end %>
+
+<%= render file: "gws/crud/index" %>

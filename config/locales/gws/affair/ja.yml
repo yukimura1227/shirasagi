@@ -4,6 +4,7 @@ ja:
     leave_workflow: 休暇申請
     aggregate: 集計結果
     capital: 原資区分
+    default_duty_hour: 標準の勤務体系
     links:
       set_results: 結果を入力する
       edit_results: 結果を編集する
@@ -16,6 +17,12 @@ ja:
         paidleave: 特別休暇
         nursing_care_leave: 介護休暇
         compensatory_leave: 振替又は代休
+      affair_rounding_time_minute:
+        "0": なし
+        "1": 1分単位
+        "5": 5分単位
+        "10": 10分単位
+        "15": 15分単位
   modules:
     gws/affair: 庶務事務
     addons:
@@ -33,7 +40,7 @@ ja:
         name: 原資区分名
         order: 並び順
         remark: 説明
-      gws/affair/dutyhour:
+      gws/affair/duty_hour:
         name: 勤務体系名
         start_at: 開始時間
         end_at: 終了時間
@@ -73,6 +80,15 @@ ja:
         approved: 承認日時
         comment: 差し戻しコメント
         approver_comment: 承認者コメント
+      gws/affair/duty_hour_setting:
+        attendance_time_changed_minute: 日替わり時刻
+        affair_time: 勤務時間
+        affair_on_duty: 休憩時間設定（勤務時間内）
+        affair_overtime: 休憩時間設定（勤務時間外）
+        affair_on_duty_working_minute: 就業時間（分）
+        affair_on_duty_break_minute: 休憩時間（分）
+        affair_overtime_working_minute: 就業時間（分）
+        affair_overtime_break_minute: 休憩時間（分）
 
   gws_role:
     read_other_gws_affair_capitals: 原資区分の閲覧（所有）
@@ -81,12 +97,9 @@ ja:
     edit_private_gws_affair_capitals: 原資区分の編集（全て）
     delete_other_gws_affair_capitals: 原資区分の削除（所有）
     delete_private_gws_affair_capitals: 原資区分の削除（全て）
-    read_other_gws_affair_dutyhours: 勤務体系の閲覧（所有）
-    read_private_gws_affair_dutyhours: 勤務体系の閲覧（全て）
-    edit_other_gws_affair_dutyhours: 勤務体系の編集（所有）
-    edit_private_gws_affair_dutyhours: 勤務体系の編集（全て）
-    delete_other_gws_affair_dutyhours: 勤務体系の削除（所有）
-    delete_private_gws_affair_dutyhours: 勤務体系の削除（全て）
+    read_gws_affair_duty_hours: 勤務体系の閲覧
+    edit_gws_affair_duty_hours: 勤務体系の編集
+    delete_gws_affair_duty_hours: 勤務体系の削除
     read_other_gws_affair_overtime_files: 残業申請の閲覧（所有）
     read_private_gws_affair_overtime_files: 残業申請の閲覧（全て）
     edit_other_gws_affair_overtime_files: 残業申請の編集（所有）
@@ -154,22 +167,17 @@ ja:
         - 承認を申請するには承認経路を選択してから、選択ボタンをクリックしてください。
       circulation_step:
         - 確認依頼が届いています。申請者に対するコメントを入力（任意）の上、「確認済みにする」をクリックしてください。
-    gws/affair/dutyhour:
+    gws/affair/duty_hour_setting:
+      attendance_time_changed_minute:
+        - 日替わり時刻を設定します。日替わり時刻とは、タイムカードの印字を翌日へ切り替える時刻のことです。
+      affair_on_duty:
+        - 勤務時間内で就業時間（分）以上勤務すると、休憩時間（分）を適用します。
+        -
+        - 例えば、6 時間以上勤務した場合に 45 分の休憩を取る場合、就業時間（分）に 360 を、休憩時間（分）に 45 を設定します。
+      affair_overtime:
+        - 勤務時間外で就業時間（分）以上勤務する毎に、休憩時間（分）を適用します。
+        -
+        - 例えば、時間外勤務の時間が 3 時間を超えるたびに 30 分の休憩を取る場合、就業時間（分）に 180 を、休憩時間（分）に 30 を設定します。
+    gws/affair/duty_hour:
       name:
         - 勤務体系名を入力します。
-      start_at:
-        - 開始時間を入力します。
-      end_at:
-        - 終了時間を入力します。
-      break_enter1_start_at:
-        - 休憩1開始時間を入力します。
-      break_enter1_end_at:
-        - 休憩1終了時間を入力します。
-      break_enter2_start_at:
-        - 休憩2開始時間を入力します。
-      break_enter2_end_at:
-        - 休憩2終了時間を入力します。
-      break_enter3_start_at:
-        - 休憩3開始時間を入力します。
-      break_enter3_end_at:
-        - 休憩3終了時間を入力します。

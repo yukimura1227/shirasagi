@@ -18,7 +18,7 @@
   <% if %i[manage_private manage_all].find { |priv| Gws::Attendance::TimeCard.allowed?(priv, @cur_user, site: @cur_site) } %>
     <h3><%= link_to "タイムカードの管理", gws_affair_attendance_management_main_path, class: "management" %></h3>
   <% end %>
-  <h3><%= link_to "勤務体系の管理", gws_affair_dutyhours_path, class: "management" %></h3>
+  <h3><%= link_to "勤務体系の管理", gws_affair_duty_hours_path, class: "management" %></h3>
   <h3><%= link_to "原資区分の管理", gws_affair_capitals_path, class: "management" %></h3>
 </nav>
 
