@@ -32,6 +32,16 @@ steps:
   - name: cache
     path: /cache
 
+- name: google-chrome
+  image: ruby:2.4.6
+  commands:
+    # chrome
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+    - sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    - apt-get update && apt-get install -y google-chrome-stable
+    # font
+    - apt install -y fonts-ipafont fonts-ipaexfont && fc-cache -fv
+
 - name: build-mecab
   image: ruby:2.4.6
   commands:
@@ -97,22 +107,7 @@ steps:
 - name: rspec
   image: ruby:2.4.6
   commands:
-  # chrome
-  - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-  - sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-  - apt-get update && apt-get install -y google-chrome-stable
-  # font
-  - apt install -y fonts-ipafont fonts-ipaexfont && fc-cache -fv
-  # mecab
-  - cd /drone/src/vendor/mecab/mecab-0.996 && make install
-  - cd ../mecab-ipadic-2.7.0-20070801 && make install
-  - cd ../mecab-ruby-0.996 && make install
-  - echo '/usr/local/lib' >> /etc/ld.so.conf.d/usrlocal.conf && ldconfig
-  # open_jtalk
-  - cd /drone/src/vendor/mecab/hts_engine_API-1.08 && make install
-  - cd ../open_jtalk-1.07 && make install
-  - cd ../lame-3.99.5 && make install
-  - cd ../sox-14.4.1 && make install
+  - echo '/usr/local/lib' >> /etc/ld.so.conf.d/usrlocal.conf
   - ldconfig
   # rspec
   - cd /drone/src
