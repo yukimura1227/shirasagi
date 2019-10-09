@@ -44,6 +44,7 @@ steps:
   - sed -i 's/#\ \ \ host:\ localhost/\ \ host:\ mail/g' config/webmail.yml
   - sed -i 's/#\ \ \ account:\ email/\ \ account:\ email/g' config/webmail.yml
   - sed -i 's/#\ \ \ password:\ pass/\ \ password:\ pass/g' config/webmail.yml
+  - cp -n config/defaults/voice.yml config/
   - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
   - sed -i 's#/usr/local/bin/lame#/usr/bin/lame#g' config/voice.yml
 
