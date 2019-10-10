@@ -3,68 +3,88 @@ type: docker
 name: default
 
 steps:
-- name: config/mongoid.yml
-  image: shirasagi/cibase
-  commands:
-    - cp -n config/samples/mongoid.yml config/
-    - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
-    - cat config/mongoid.yml
+  - name: inspection
+    image: shirasagi/cibase
+    commands:
+      - uname -a
+      - cat /etc/debian_version
+      - ruby --version
+      - google-chrome --version
 
-- name: config/secrets.yml
-  image: shirasagi/cibase
-  commands:
-    - cp -n config/samples/secrets.yml config/
-    - cat config/secrets.yml
+  - name: config/mongoid.yml
+    image: shirasagi/cibase
+    commands:
+      - cp -n config/samples/mongoid.yml config/
+      - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
+      - cat config/mongoid.yml
 
-- name: config/webmail
-  image: shirasagi/cibase
-  commands:
-    - cp -n config/defaults/webmail.yml config/
-    - sed -i 's/#\ test_by:\ user/test_by:\ user/g' config/webmail.yml
-    - sed -i 's/#\ test_user:/test_user:/g' config/webmail.yml
-    - sed -i 's/#\ \ \ host:\ localhost/\ \ host:\ mail/g' config/webmail.yml
-    - sed -i 's/#\ \ \ account:\ email/\ \ account:\ email/g' config/webmail.yml
-    - sed -i 's/#\ \ \ password:\ pass/\ \ password:\ pass/g' config/webmail.yml
-    - cat config/webmail.yml
+  - name: config/secrets.yml
+    image: shirasagi/cibase
+    commands:
+      - cp -n config/samples/secrets.yml config/
+      - cat config/secrets.yml
 
-- name: config/voice.yml
-  image: shirasagi/cibase
-  commands:
-    - cp -n config/defaults/voice.yml config/
-    - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
-    - sed -i 's#/usr/local/bin/lame#/usr/bin/lame#g' config/voice.yml
-    - cat config/voice.yml
+  - name: config/webmail
+    image: shirasagi/cibase
+    commands:
+      - cp -n config/defaults/webmail.yml config/
+      - sed -i 's/#\ test_by:\ user/test_by:\ user/g' config/webmail.yml
+      - sed -i 's/#\ test_user:/test_user:/g' config/webmail.yml
+      - sed -i 's/#\ \ \ host:\ localhost/\ \ host:\ mail/g' config/webmail.yml
+      - sed -i 's/#\ \ \ account:\ email/\ \ account:\ email/g' config/webmail.yml
+      - sed -i 's/#\ \ \ password:\ pass/\ \ password:\ pass/g' config/webmail.yml
+      - cat config/webmail.yml
 
-- name: bundle
-  image: shirasagi/cibase
-  commands:
-    - bundle install --path=/cache/shirasagi/bundle
-  volumes:
-    - /tmp/cache:/cache
-    - /var/run/docker.sock:/var/run/docker.sock
+  - name: config/voice.yml
+    image: shirasagi/cibase
+    commands:
+      - cp -n config/defaults/voice.yml config/
+      - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
+      - sed -i 's#/usr/local/bin/lame#/usr/bin/lame#g' config/voice.yml
+      - cat config/voice.yml
 
-- name: rspec
-  image: shirasagi/cibase
-  commands:
-    - bundle exec rspec spec/features/gws/attendance
-  environment:
-    sandbox: 1
-    allow_open_jtalk: 1
-    ldap_host: 153.122.23.169
-    CI: true
-    TRAVIS: true
-  volumes:
-    - /tmp/cache:/cache
-    - /var/run/docker.sock:/var/run/docker.sock
+  - name: bundle
+    image: shirasagi/cibase
+    volumes:
+      - name: cache
+        path: /var/lib/cache
+      - name: docker.sock
+        path: /var/run/docker.sock
+    commands:
+      - bundle install --path=/var/lib/cache/shirasagi/bundle
+
+  - name: rspec
+    image: shirasagi/cibase
+    volumes:
+      - name: cache
+        path: /var/lib/cache
+      - name: docker.sock
+        path: /var/run/docker.sock
+    environment:
+      sandbox: 1
+      allow_open_jtalk: 1
+      ldap_host: 153.122.23.169
+      CI: true
+      TRAVIS: true
+    commands:
+      - bundle exec rspec spec/features/gws/attendance
 
 services:
-- name: mongo
-  image: mongo:3.4
-  command: [ --smallfiles, --logpath=/dev/null ]
-  ports:
-    - 27017
-- name: test_mail
-  image: shirasagi/mail
-  ports:
-    - 143
-    - 587
+  - name: mongo
+    image: mongo:3.4
+    command: [ --smallfiles, --logpath=/dev/null ]
+    ports:
+      - 27017
+  - name: test_mail
+    image: shirasagi/mail
+    ports:
+      - 143
+      - 587
+
+volumes:
+  - name: cache
+    host:
+      path: /tmp/cache/drone-shirasagi
+  - name: docker.sock
+    host:
+      path: /var/run/docker.sock
