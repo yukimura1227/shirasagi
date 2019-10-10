@@ -3,77 +3,68 @@ type: docker
 name: default
 
 steps:
-- name: restore-cache
-  image: plugins/volume-cache
-  settings:
-    mount:
-    - ./vendor/bundle
-    - ./vendor/bin
-    restore: true
-  volumes:
-  - name: cache
-    path: /cache
-
-- name: bundle-install
+- name: config/mongoid.yml
   image: shirasagi/cibase
   commands:
-  - bundle install --path=vendor/bundle --binstubs=vendor/bin --clean --quiet
-  environment:
-    RAILS_ENV: test
+    - cp -n config/samples/mongoid.yml config/
+    - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
+    - cat config/mongoid.yml
 
-- name: rebuild-cache
-  image: plugins/volume-cache
-  settings:
-    mount:
-    - ./vendor/bundle
-    - ./vendor/bin
-    rebuild: true
-  volumes:
-  - name: cache
-    path: /cache
-
-- name: config-yml
+- name: config/secrets.yml
   image: shirasagi/cibase
   commands:
-  - cp -n config/samples/*.yml config/
-  - cp -n config/samples/*.rb  config/
-  - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
-  - cp -n config/defaults/webmail.yml config/
-  - sed -i 's/#\ test_by:\ user/test_by:\ user/g' config/webmail.yml
-  - sed -i 's/#\ test_user:/test_user:/g' config/webmail.yml
-  - sed -i 's/#\ \ \ host:\ localhost/\ \ host:\ mail/g' config/webmail.yml
-  - sed -i 's/#\ \ \ account:\ email/\ \ account:\ email/g' config/webmail.yml
-  - sed -i 's/#\ \ \ password:\ pass/\ \ password:\ pass/g' config/webmail.yml
-  - cp -n config/defaults/voice.yml config/
-  - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
-  - sed -i 's#/usr/local/bin/lame#/usr/bin/lame#g' config/voice.yml
+    - cp -n config/samples/secrets.yml config/
+    - cat config/secrets.yml
+
+- name: config/webmail
+  image: shirasagi/cibase
+  commands:
+    - cp -n config/defaults/webmail.yml config/
+    - sed -i 's/#\ test_by:\ user/test_by:\ user/g' config/webmail.yml
+    - sed -i 's/#\ test_user:/test_user:/g' config/webmail.yml
+    - sed -i 's/#\ \ \ host:\ localhost/\ \ host:\ mail/g' config/webmail.yml
+    - sed -i 's/#\ \ \ account:\ email/\ \ account:\ email/g' config/webmail.yml
+    - sed -i 's/#\ \ \ password:\ pass/\ \ password:\ pass/g' config/webmail.yml
+    - cat config/webmail.yml
+
+- name: config/voice.yml
+  image: shirasagi/cibase
+  commands:
+    - cp -n config/defaults/voice.yml config/
+    - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
+    - sed -i 's#/usr/local/bin/lame#/usr/bin/lame#g' config/voice.yml
+    - cat config/voice.yml
+
+- name: bundle
+  image: shirasagi/cibase
+  commands:
+    - bundle install --path=/cache/shirasagi/bundle
+  volumes:
+    - /tmp/cache:/cache
+    - /var/run/docker.sock:/var/run/docker.sock
 
 - name: rspec
   image: shirasagi/cibase
   commands:
-  - bundle check --path=vendor/bundle
-  - bundle exec rspec spec/lib/voice spec/features/kana spec/features/gws
+    - bundle exec rspec spec/features/gws/attendance
   environment:
-    RAILS_ENV: test
     sandbox: 1
     allow_open_jtalk: 1
     ldap_host: 153.122.23.169
     CI: true
     TRAVIS: true
+  volumes:
+    - /tmp/cache:/cache
+    - /var/run/docker.sock:/var/run/docker.sock
 
 services:
 - name: mongo
   image: mongo:3.4
   command: [ --smallfiles, --logpath=/dev/null ]
   ports:
-  - 27017
+    - 27017
 - name: test_mail
   image: shirasagi/mail
   ports:
     - 143
     - 587
-
-#volumes:
-#- name: cache
-#  host:
-#    path: /tmp/cache/drone-shirasagi
