@@ -52,7 +52,7 @@ steps:
   image: shirasagi/cibase
   commands:
   - bundle check --path=vendor/bundle
-  - bundle exec rspec spec/features/ads
+  - bundle exec rspec spec/lib/voice spec/features/kana spec/features/gws
   environment:
     RAILS_ENV: test
     sandbox: 1
