@@ -8,6 +8,10 @@ steps:
     commands:
       - uname -a
       - cat /etc/debian_version
+      - date
+      - locale
+      - mongo --version
+      - mongo --host mongo --eval "db.version()"
       - ruby --version
       - google-chrome --version
 
@@ -65,7 +69,7 @@ steps:
       allow_open_jtalk: 1
       ldap_host: 153.122.23.169
       CI: true
-      TRAVIS: true
+      DRONE: true
     commands:
       - bundle check --path=/var/lib/cache/shirasagi/bundle
       - bundle exec rspec spec/features/gws/attendance

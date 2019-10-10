@@ -23,12 +23,16 @@ require 'support/ss/capybara_support'
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
-def travis?
-  ENV["CI"] == "true" && ENV["TRAVIS"] == "true"
+def ci?(type = :any)
+  if type.blank? || type == :any
+    ENV["CI"] == "true"
+  else
+    ENV["CI"] == "true" && ENV[type.to_s.upcase] == "true"
+  end
 end
 
 def analyze_coverage?
-  travis? || ENV["ANALYZE_COVERAGE"] != "disabled"
+  ci?(:travis) || ENV["ANALYZE_COVERAGE"] != "disabled"
 end
 
 if analyze_coverage?
@@ -39,7 +43,7 @@ if analyze_coverage?
     SimpleCov::Formatter::HTMLFormatter,
     SimpleCov::Formatter::CSVFormatter
   ])
-  if travis?
+  if ci?(:travis)
     require 'coveralls'
     Coveralls.wear!
   end
