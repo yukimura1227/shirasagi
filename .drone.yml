@@ -67,6 +67,7 @@ steps:
       CI: true
       TRAVIS: true
     commands:
+      - bundle check --path=/var/lib/cache/shirasagi/bundle
       - bundle exec rspec spec/features/gws/attendance
 
 services:
