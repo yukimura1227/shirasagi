@@ -35,10 +35,7 @@ module SS
     end
 
     def enable_headless_chrome_download(driver)
-      @enabled_chromes ||= {}
-
       bridge = driver.browser.send(:bridge)
-      return if @enabled_chromes[bridge.session_id]
 
       path = "/session/#{bridge.session_id}/chromium/send_command"
       cmd = {
@@ -49,7 +46,7 @@ module SS
         }
       }
       bridge.http.call(:post, path, cmd)
-      @enabled_chromes[bridge.session_id] = true
+      true
     end
 
     module Helper
