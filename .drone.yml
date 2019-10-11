@@ -4,7 +4,7 @@ name: default
 
 steps:
   - name: inspection
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     commands:
       - uname -a
       - cat /etc/debian_version
@@ -16,20 +16,20 @@ steps:
       - google-chrome --version
 
   - name: config/mongoid.yml
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     commands:
       - cp -n config/samples/mongoid.yml config/
       - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
       - cat config/mongoid.yml
 
   - name: config/secrets.yml
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     commands:
       - cp -n config/samples/secrets.yml config/
       - cat config/secrets.yml
 
   - name: config/webmail
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     commands:
       - cp -n config/defaults/webmail.yml config/
       - sed -i 's/#\ test_by:\ user/test_by:\ user/g' config/webmail.yml
@@ -40,7 +40,7 @@ steps:
       - cat config/webmail.yml
 
   - name: config/voice.yml
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     commands:
       - cp -n config/defaults/voice.yml config/
       - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
@@ -48,7 +48,7 @@ steps:
       - cat config/voice.yml
 
   - name: bundle
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     volumes:
       - name: cache
         path: /var/lib/cache
@@ -58,7 +58,7 @@ steps:
       - bundle install --path=/var/lib/cache/shirasagi/bundle
 
   - name: rspec
-    image: shirasagi/cibase
+    image: shirasagi/cibase:ruby-265-chrome-77
     volumes:
       - name: cache
         path: /var/lib/cache
@@ -72,7 +72,18 @@ steps:
       DRONE: true
     commands:
       - bundle check --path=/var/lib/cache/shirasagi/bundle
-      - bundle exec rspec spec/features/gws
+      # - bundle exec rspec spec/features/gws
+      - bundle exec rspec spec/features/gws/report
+      # - bundle exec rspec spec/features/gws/roles_spec.rb
+      # - bundle exec rspec spec/features/gws/schedule
+      # - bundle exec rspec spec/features/gws/share
+      # - bundle exec rspec spec/features/gws/sites_spec.rb
+      # - bundle exec rspec spec/features/gws/staff_record
+      # - bundle exec rspec spec/features/gws/survey
+      # - bundle exec rspec spec/features/gws/user_profiles_spec.rb
+      # - bundle exec rspec spec/features/gws/user_titles_spec.rb
+      # - bundle exec rspec spec/features/gws/users_spec.rb
+      # - bundle exec rspec spec/features/gws/workflow
 
 services:
   - name: mongo
