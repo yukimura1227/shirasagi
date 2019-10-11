@@ -6,7 +6,7 @@
   <ul class="narrow-page">
     <li><%= link_to "依頼されたもの", gws_affair_overtime_files_path(state: "request") %></li>
     <li><%= link_to "申請したもの", gws_affair_overtime_files_path(state: "approve") %></li>
-    <li><%= link_to t('gws/affair.aggregate'), gws_affair_overtime_aggregate_path %></li>
+    <li><%#= link_to t('gws/affair.aggregate'), gws_affair_overtime_aggregate_path %></li>
   </ul>
 
   <h3><%= link_to t('gws/affair.leave_workflow'), gws_affair_leave_files_path(state: "all") %></h3>
@@ -18,6 +18,7 @@
   <% if %i[manage_private manage_all].find { |priv| Gws::Attendance::TimeCard.allowed?(priv, @cur_user, site: @cur_site) } %>
     <h3><%= link_to "タイムカードの管理", gws_affair_attendance_management_main_path, class: "management" %></h3>
   <% end %>
+  <h3><%= link_to "残業時間の集計", gws_affair_overtime_management_aggregate_path, class: "management" %></h3>
   <h3><%= link_to "勤務体系の管理", gws_affair_duty_hours_path, class: "management" %></h3>
   <h3><%= link_to "原資区分の管理", gws_affair_capitals_path, class: "management" %></h3>
 </nav>

@@ -1,0 +1,31 @@
+<div class="addon-view" id="addon-gws-agents-addons-affair-overtime_file">
+  <div class="addon-head toggle-head"></div>
+  <div class="addon-body toggle-body">
+    <dl class="see addon-gws-affair-overtime_file">
+      <dt><%= @model.t :name %></dt>
+      <dd><%= @item.name %></dd>
+
+      <dt><%= @model.t :start_at %></dt>
+      <dd><%= tryb { @item.start_at.strftime("%Y/%m/%d %H:%M") } %></dd>
+
+      <dt><%= @model.t :end_at %></dt>
+      <dd><%= tryb { @item.end_at.strftime("%Y/%m/%d %H:%M") } %></dd>
+
+      <dt><%= @model.t :leave_type %></dt>
+      <dd><%= @item.label :leave_type %></dd>
+
+      <% if @item.week_in_compensatory_file %>
+        <dt><%= @model.t :week_in_compensatory_file_id %></dt>
+        <dd><%= @item.week_in_compensatory_file.name %></dd>
+      <% end %>
+
+      <% if @item.week_out_compensatory_file %>
+        <dt><%= @model.t :week_out_compensatory_file_id %></dt>
+        <dd><%= @item.week_out_compensatory_file.name %></dd>
+      <% end %>
+
+      <dt><%= @model.t :reason %></dt>
+      <dd><%=br @item.reason %></dd>
+    </dl>
+  </div>
+</div>

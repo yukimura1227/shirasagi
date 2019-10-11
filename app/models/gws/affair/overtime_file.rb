@@ -5,6 +5,7 @@ class Gws::Affair::OvertimeFile
   include Gws::Reference::Site
   #include Gws::Addon::Reminder
   include Gws::Addon::Affair::OvertimeResult
+  include Gws::Addon::Affair::OvertimeDayResult
   include Gws::Addon::Affair::Approver
   include Gws::Addon::Affair::OvertimeFile
   include Gws::Addon::ReadableSetting

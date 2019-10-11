@@ -35,4 +35,18 @@ class Gws::Attendance::Record
     # lower_bound から upper_bound。ただし upper_bound は範囲に含まない。
     lower_bound...upper_bound
   end
+
+  def overtime_minute
+    return nil unless enter
+    return nil unless leave
+
+    duty_hour = time_card.duty_hour
+    affair_end = duty_hour.affair_end(date)
+
+    if duty_hour.leave_day?(date)
+      ((leave - enter) * 24 * 60).to_i
+    else
+      (leave > affair_end) ? ((leave - affair_end) * 24 * 60).to_i : nil
+    end
+  end
 end

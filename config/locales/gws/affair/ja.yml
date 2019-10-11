@@ -16,13 +16,55 @@ ja:
         sick_leave: 病気休暇
         paidleave: 特別休暇
         nursing_care_leave: 介護休暇
-        compensatory_leave: 振替又は代休
+        week_in_compensatory_leave: 同一週内の振替代休
+        week_out_compensatory_leave: 同一週外の振替代休
+      compensatory_minute:
+        0: ""
+        240: "4.0時間"
+        465: "7.75時間"
       affair_rounding_time_minute:
         "0": なし
         "1": 1分単位
         "5": 5分単位
-        "10": 10分単位
+        "10": 10分単
         "15": 15分単位
+    notice:
+      not_found_overtime_file: "設定可能な残業申請がありませんでした。"
+    labels:
+      overtime:
+        under_threshold:
+          duty_day_time:
+            name: "時間外（勤務日）"
+            rate: "普通\n125/100"
+          duty_night_time:
+            name: "時間外（勤務日）"
+            rate: "深夜\n150/100"
+          leave_day_time:
+            name: "時間外（週休日・休日）"
+            rate: "普通\n135/100"
+          leave_night_time:
+            name: "時間外（週休日・休日）"
+            rate: "深夜\n160/100"
+          week_out_compensatory:
+            name: "同一週以外の振替"
+            rate: "同一週以外の振替\n25/100"
+        over_threshold:
+          duty_day_time:
+            name: "時間外（勤務日）"
+            rate: "普通\n150/100"
+          duty_night_time:
+            name: "時間外（勤務日）"
+            rate: "深夜\n175/100"
+          leave_day_time:
+            name: "時間外（週休日・休日）"
+            rate: "普通\n150/100"
+          leave_night_time:
+            name: "時間外（週休日・休日）"
+            rate: "深夜\n175/100"
+          week_out_compensatory:
+            name: "同一週以外の振替"
+            rate: "同一週以外の振替\n50/100"
+
   modules:
     gws/affair: 庶務事務
     addons:
@@ -57,6 +99,8 @@ ja:
         overtime_name: 業務名
         start_at: 残業開始時間
         end_at: 残業終了時間
+        week_in_compensatory_minute: 同一週内振替
+        week_out_compensatory_minute: 同一週外振替
         remark: 備考
       gws/affair/leave_file:
         name: タイトル
@@ -64,10 +108,12 @@ ja:
         end_at: 休暇終了時間
         leave_type: 休暇区分
         reason: 理由
+        week_in_compensatory_file_id: 振替残業申請（同一週内）
+        week_out_compensatory_file_id: 振替残業申請（同一週外）
       gws/affair/overtime_result:
         start_at: 開始時間
         end_at: 終了時間
-        capital_id: 原資区分
+        break_time_minute: 休憩時間
       gws/addon/affair/approver:
         workflow_user_id: 申請者
         workflow_state: 承認状態
@@ -140,6 +186,10 @@ ja:
         - 残業開始時間を入力します。
       end_at:
         - 残業終了時間を入力します。
+      week_in_compensatory_minute:
+        - 同一週内振替を入力します。
+      week_out_compensatory_minute:
+        - 同一週外振替を入力します。
       remark:
         - 備考を入力します。
     gws/affair/leave_file:
@@ -153,6 +203,10 @@ ja:
         - 休暇区分を入力します。
       reason:
         - 備考を入力します。
+      week_in_compensatory_file_id:
+        - 振替残業申請（同一週内）を設定します。
+      week_out_compensatory_file_id:
+        - 振替残業申請（同一週外）を設定します。
     gws/addon/affair/approver:
       workflow_comment:
         - 申請理由など承認者に対するコメントをを記述してください。

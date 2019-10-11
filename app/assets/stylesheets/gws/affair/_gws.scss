@@ -1,23 +1,9 @@
 // gws/affair
+
 .overtime-results {
   margin-bottom: 10px;
-  tr:nth-child(2n) {
-    background: #fff !important;
-  }
-  tr.current, tr:hover {
-    background: #fff !important;
-  }
-  th.set {
-    width: 100px;
-  }
-  th.delete {
-    width: 100px;
-  }
-  td.start-at input {
-    width: 5em;
-  }
-  td.end-at input {
-    width: 5em;
+  th.time, td.time {
+    text-align: center;
   }
 }
 
@@ -64,4 +50,17 @@ table.affair-overtime-aggregate {
   .total {
     border-top: 1px solid #d0d0d0;
   }
+}
+
+.leave-file-tooltip {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 1.1;
+  @include border-radius(8px);
+  background: $orange;
+  color: $white;
+  text-align: center;
+  cursor: pointer;
 }

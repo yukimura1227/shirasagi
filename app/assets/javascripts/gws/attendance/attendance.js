@@ -37,6 +37,14 @@ Gws_Attendance.prototype.render = function() {
     $(this).find('.reason').show();
   });
 
+  this.$el.find('.leave-file-tooltip').on('click', function(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    var href = $(this).attr("data-href");
+    $.colorbox({ href: href });
+  });
+
   this.$el.find('select[name=year_month]').on('change', function() {
     var val = $(this).val();
     if (! val) {

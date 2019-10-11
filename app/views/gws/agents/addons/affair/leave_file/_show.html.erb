@@ -8,6 +8,16 @@
   <dt><%= @model.t :leave_type %></dt>
   <dd><%= @item.label :leave_type %></dd>
 
+  <% if @item.week_in_compensatory_file %>
+    <dt><%= @model.t :week_in_compensatory_file_id %></dt>
+    <dd><%= link_to @item.week_in_compensatory_file.name, gws_affair_overtime_file_path(site: @cur_site.id, id: @item.week_in_compensatory_file) %></dd>
+  <% end %>
+
+  <% if @item.week_out_compensatory_file %>
+    <dt><%= @model.t :week_out_compensatory_file_id %></dt>
+    <dd><%= link_to @item.week_out_compensatory_file.name, gws_affair_overtime_file_path(site: @cur_site.id, id: @item.week_out_compensatory_file) %></dd>
+  <% end %>
+
   <dt><%= @model.t :reason %></dt>
   <dd><%=br @item.reason %></dd>
 </dl>

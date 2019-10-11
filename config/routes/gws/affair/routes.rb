@@ -37,6 +37,18 @@ Rails.application.routes.draw do
 
       get "aggregate" => "aggregate#index"
       get "aggregate/capitals" => "aggregate#capitals"
+
+      resources :results, only: [:edit, :update]
+
+      namespace 'management' do
+        get "aggregate" => "aggregate#index"
+        get "aggregate_over_threshold" => "aggregate#over_threshold"
+      end
+
+      namespace "apis" do
+        get "week_in_files/:uid" => "files#week_in", as: :files_week_in
+        get "week_out_files/:uid" => "files#week_out", as: :files_week_out
+      end
     end
 
     namespace "leave" do
@@ -46,6 +58,10 @@ Rails.application.routes.draw do
       get "/wizard/:id/reroute" => "wizard#reroute", as: :reroute
       post "/wizard/:id/reroute" => "wizard#do_reroute", as: :do_reroute
       match "/wizard/:id" => "wizard#index", via: [:get, :post], as: :wizard
+
+      namespace "apis" do
+        get "files/:id" => "files#show", as: :file
+      end
     end
 
     namespace "apis" do
@@ -76,6 +92,12 @@ Rails.application.routes.draw do
           match :download, on: :collection, via: %i[get post]
           match :lock, on: :collection, via: %i[get post]
           match :unlock, on: :collection, via: %i[get post]
+        end
+      end
+
+      namespace 'apis' do
+        namespace 'management' do
+          get 'users' => 'users#index'
         end
       end
     end

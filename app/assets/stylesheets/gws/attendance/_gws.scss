@@ -184,6 +184,20 @@
     .focus {
       background-color: #f2a950;
     }
+
+    .break_time_minute, .compensatory-minute {
+      //color: #00f;
+    }
+
+    .overtime-diff.minus {
+      color: #f00;
+    }
+    .overtime-diff.plus {
+      color: #00f;
+    }
+    .overtime-diff.equal {
+      color: #28a745;
+    }
   }
 }
 

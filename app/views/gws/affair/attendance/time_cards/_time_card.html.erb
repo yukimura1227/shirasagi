@@ -23,15 +23,28 @@
 <% end %>
 
 <%
-  overtime_files = Gws::Affair::OvertimeFile.site(@cur_site).user(@cur_user).and(
-    { "start_at" => { "$gte" => @cur_month } },
-    { "start_at" => { "$lte" => @cur_month.end_of_month } },
-  ).map { |item| [item.start_at.to_date, item] }.to_h
+  overtime_day_results = {}
+  Gws::Affair::OvertimeDayResult.site(@cur_site).user(@cur_user).and(
+    { "date" => { "$gte" => @cur_month } },
+    { "date" => { "$lte" => @cur_month.end_of_month } },
+  ).each do |item|
+    overtime_day_results[item.date] ||= []
+    overtime_day_results[item.date] << item
+  end
 
-  leave_files = Gws::Affair::LeaveFile.site(@cur_site).user(@cur_user).and(
+  leave_files = {}
+  Gws::Affair::LeaveFile.site(@cur_site).user(@cur_user).and(
     { "start_at" => { "$gte" => @cur_month } },
     { "start_at" => { "$lte" => @cur_month.end_of_month } },
-  ).map { |item| [item.start_at.to_date, item] }.to_h
+    { "workflow_state" => "approve" }
+  ).each do |item|
+    leave_files[item.date] ||= []
+    leave_files[item.date] << item
+  end
+
+  def format_minute(minute)
+    (minute.to_i > 0) ? "#{minute / 60}:#{format("%02d", (minute % 60))}" : "--:--"
+  end
 %>
 
 <div class="time-card-wrap">
@@ -50,8 +63,9 @@
             <th class="time <%= "break_leave#{i + 1}" %>"><%= @cur_site["attendance_break_leave#{i + 1}_label"].presence || t('gws/attendance.formats.break_leave', count: i + 1) %></th>
           <% end %>
           <th class="memo"><%= Gws::Attendance::Record.t(:memo) %></th>
-          <th class="overtime"><%= "残業時間 (結果)" %></th>
-          <th class="difference"><%= "残業差分" %></th>
+          <th class="overtime time"><%= "時間外 (結果 | 差分)" %></th>
+          <th class="break-time"><%= "休憩" %></th>
+          <th class="compensatory-time"><%= "振替" %></th>
           <th class="leave"><%= "休暇" %></th>
         </tr>
       <% end %>
@@ -69,25 +83,90 @@
         <% end %>
         <td class="memo <%= offset %>" data-day="<%= date.day %>" data-type="memo" data-mode="edit"><%= record ? record.memo : '' %></td>
 
-        <td>
-          <% if overtime_file = overtime_files[date.to_date] %>
-            <% if overtime_file.results.present? %>
-              <%= overtime_file.results_start_at.strftime('%H:%M') %>〜<%= overtime_file.results_end_at.strftime('%H:%M') %>
-            <% elsif overtime_file.workflow_state == "approve" %>
-              <%= link_to "結果を入力する", "" %>
-            <% elsif overtime_file.workflow_state == "request" %>
-              <%= "申請中" %>
+        <%
+          overtime_minute = nil
+          result_minute = nil
+          compensatory_minute = 0
+
+          overtime_minute = record.overtime_minute if record
+          day_results = overtime_day_results[date.to_datetime]
+
+          if day_results.present?
+            compensatory_minute = day_results.first.week_in_compensatory_minute + day_results.first.week_out_compensatory_minute
+          end
+
+          if overtime_minute && compensatory_minute > 0
+            overtime_minute = (overtime_minute - compensatory_minute) > 0 ? (overtime_minute - compensatory_minute) : 0
+          end
+        %>
+        <td class="overtime time">
+          <%= format_minute(overtime_minute.to_i) %>
+
+          <% if day_results.present? %>
+            <%= " (" %>
+            <% result_minute = day_results.pluck(:overtime_minute).sum %>
+            <%= format_minute(result_minute) %>
+
+            <% if overtime_minute && day_results.present? && result_minute %>
+              <%= " | " %>
+              <% overtime_diff = result_minute - overtime_minute %>
+              <% if overtime_diff == 0 %>
+                <% label = format_minute(overtime_diff) %>
+                <%= link_to label, edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box overtime-diff equal" %>
+              <% elsif overtime_diff > 0 %>
+                <% label = "-" + format_minute(overtime_diff) %>
+                <%= link_to label, edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box overtime-diff minus" %>
+              <% else %>
+                <% overtime_diff = overtime_diff * -1 %>
+                <% label = "+" + format_minute(overtime_diff) %>
+                <%= link_to label, edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box overtime-diff plus" %>
+              <% end %>
             <% end %>
+            <%= ")" %>
           <% end %>
         </td>
-        <td></td>
+
+        <%
+          day_results = overtime_day_results[date.to_datetime]
+          if day_results.present?
+            break_time_minute = day_results.map(&:break_time_minute).sum
+          else
+            break_time_minute = 0
+          end
+        %>
         <td>
-          <% if leave_file = leave_files[date.to_date] %>
-            <% if leave_file.workflow_state == "approve" %>
-              <%= leave_file.start_at.strftime('%H:%M') %>〜<%= leave_file.end_at.strftime('%H:%M') %>
-            <% elsif leave_file.workflow_state == "request" %>
-              <%= "申請中" %>
-            <% end %>
+          <% if break_time_minute > 0 %>
+            <span class="break_time_minute"><%= format_minute(break_time_minute) %></span>
+          <% else %>
+            <%= format_minute(break_time_minute) %>
+          <% end %>
+        </td>
+
+        <%
+          day_results = overtime_day_results[date.to_datetime]
+          if day_results.present?
+            compensatory_minute = day_results.map(&:week_in_compensatory_minute).sum
+            compensatory_minute += day_results.map(&:week_out_compensatory_minute).sum
+          else
+            compensatory_minute = 0
+          end
+        %>
+        <td>
+          <% if compensatory_minute > 0 %>
+            <span class="compensatory-minute"><%= format_minute(compensatory_minute) %></span>
+          <% else %>
+            <%= format_minute(compensatory_minute) %>
+          <% end %>
+        </td>
+
+        <td>
+          <% (leave_files[date.to_datetime] || []).each do |leave_file|%>
+            <div class="leave-file">
+              <%= leave_file.label :leave_type %>
+              <div class="leave-file-tooltip" data-href="<%= gws_affair_leave_apis_file_path(id: leave_file.id) %>">
+                <i class="material-icons md-13">&#xE0C9;</i>
+              </div>
+            </div>
           <% end %>
         </td>
       </tr>
