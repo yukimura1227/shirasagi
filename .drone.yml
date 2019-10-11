@@ -73,10 +73,10 @@ steps:
     commands:
       - bundle check --path=/var/lib/cache/shirasagi/bundle
       # - bundle exec rspec spec/features/gws
-      - bundle exec rspec spec/features/gws/report
+      # - bundle exec rspec spec/features/gws/report
       # - bundle exec rspec spec/features/gws/roles_spec.rb
       # - bundle exec rspec spec/features/gws/schedule
-      # - bundle exec rspec spec/features/gws/share
+      - bundle exec rspec spec/features/gws/share
       # - bundle exec rspec spec/features/gws/sites_spec.rb
       # - bundle exec rspec spec/features/gws/staff_record
       # - bundle exec rspec spec/features/gws/survey
