@@ -14,6 +14,14 @@ class Gws::Affair::DutyHoursController < ApplicationController
     { cur_user: @cur_user, cur_site: @cur_site }
   end
 
+  def permit_fields
+    ret = super
+    if @item.is_a?(Gws::Affair::DefaultDutyHour)
+      ret.delete(:name)
+    end
+    ret
+  end
+
   def set_item
     @item ||= begin
       if params[:id] == "default"

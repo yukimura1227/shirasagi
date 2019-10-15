@@ -35,16 +35,24 @@ class Gws::Affair::DefaultDutyHour
     I18n.t("gws/affair.default_duty_hour")
   end
 
-  delegate :label, :t, :tt, :attributes, :update, :save, to: :site
-  delegate :cur_user, :cur_user=, :updated, to: :site
-  delegate :attendance_time_changed_minute, :attendance_time_changed_options, to: :site
-  delegate :in_attendance_time_change_hour, :in_attendance_time_change_hour=, to: :site
-  delegate :affair_on_duty_working_minute, :affair_on_duty_working_minute=, to: :site
-  delegate :affair_on_duty_break_minute, :affair_on_duty_break_minute=, to: :site
-  delegate :affair_overtime_working_minute, :affair_overtime_working_minute=, to: :site
-  delegate :affair_overtime_break_minute, :affair_overtime_break_minute=, to: :site
-  delegate :affair_start_at_hour, :affair_start_at_hour=, :affair_start_at_minute, :affair_start_at_minute=, to: :site
-  delegate :affair_end_at_hour, :affair_end_at_hour=, :affair_end_at_minute, :affair_end_at_minute=, to: :site
-  delegate :affair_start_at_hour_options, :affair_start_at_minute_options, to: :site
-  delegate :affair_end_at_hour_options, :affair_end_at_minute_options, to: :site
+  def addons
+    []
+  end
+
+  def lookup_addons
+  end
+
+  def method_missing(name, *args, &block)
+    if site.respond_to?(name)
+      return site.send(name, *args, &block)
+    end
+
+    super
+  end
+
+  def respond_to_missing?(name, include_private)
+    return true if site.respond_to?(name, include_private)
+
+    super
+  end
 end
