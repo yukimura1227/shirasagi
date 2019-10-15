@@ -6,6 +6,8 @@ class Gws::Affair::DutyHoursController < ApplicationController
 
   navi_view "gws/affair/main/navi"
 
+  before_action :check_deletable_item, only: %i[delete destroy]
+
   private
 
   def fix_params
@@ -25,5 +27,9 @@ class Gws::Affair::DutyHoursController < ApplicationController
   rescue Mongoid::Errors::DocumentNotFound => e
     return render_destroy(true) if params[:action] == 'destroy'
     raise e
+  end
+
+  def check_deletable_item
+    raise "404" if @item.is_a?(Gws::Affair::DefaultDutyHour)
   end
 end
