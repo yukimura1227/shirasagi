@@ -31,7 +31,7 @@ module Gws::Schedule::PlanHelper
   end
 
   def group_holidays(start_at, end_at)
-    Gws::Schedule::Holiday.site(@cur_site).and_public.
+    Gws::Schedule::Holiday.site(@cur_site).and_public.and_system.
       search(start: start_at, end: end_at).
       map(&:calendar_format)
   end

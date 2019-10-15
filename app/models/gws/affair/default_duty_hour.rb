@@ -42,6 +42,20 @@ class Gws::Affair::DefaultDutyHour
   def lookup_addons
   end
 
+  def self.holiday?(site, user, date)
+    return true if HolidayJapan.check(date.localtime.to_date)
+
+    Gws::Schedule::Holiday.site(site).
+      and_public.
+      and_system.
+      allow(:read, user, site: site).
+      search(start: date, end: date).present?
+  end
+
+  def holiday?(user, date)
+    self.class.holiday?(site, user, date)
+  end
+
   def method_missing(name, *args, &block)
     if site.respond_to?(name)
       return site.send(name, *args, &block)
