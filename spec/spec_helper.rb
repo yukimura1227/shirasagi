@@ -102,7 +102,7 @@ RSpec.configure do |config|
   end
 
   # fragile specs are ignored when rspec is executing in Travis CI.
-  if ENV["CI"] == "true" && ENV["TRAVIS"] == "true"
+  if ci?
     config.filter_run_excluding(fragile: true)
   end
 
