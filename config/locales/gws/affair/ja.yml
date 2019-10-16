@@ -10,6 +10,7 @@ ja:
       edit_results: 結果を編集する
       aggregate: 残業時間
       aggregate_capitals: 原資区分
+      manage_holidays: 休日を管理する
     options:
       leave_type:
         annual_leave: 年次有給休暇
@@ -28,6 +29,9 @@ ja:
         "5": 5分単位
         "10": 10分単
         "15": 15分単位
+      holiday_type:
+        system: 標準の休日
+        own: 勤務体系独自
     notice:
       not_found_overtime_file: "設定可能な残業申請がありませんでした。"
     labels:
@@ -72,6 +76,7 @@ ja:
       gws/affair/overtime_result: 結果
       gws/affair/approver: 承認
       gws/affair/leave_file: 休暇申請書
+      gws/affair/holiday: 休日
 
   mongoid:
     models:
@@ -135,6 +140,9 @@ ja:
         affair_on_duty_break_minute: 休憩時間（分）
         affair_overtime_working_minute: 就業時間（分）
         affair_overtime_break_minute: 休憩時間（分）
+      gws/addon/affair/holiday:
+        holiday_type: 休日種別
+        holidays: 休日
 
   gws_role:
     read_other_gws_affair_capitals: 原資区分の閲覧（所有）

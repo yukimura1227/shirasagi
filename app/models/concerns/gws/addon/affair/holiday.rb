@@ -6,7 +6,15 @@ module Gws::Addon::Affair::Holiday
     field :holiday_type, type: String
     has_many :holidays, class_name: 'Gws::Schedule::Holiday', dependent: :destroy, inverse_of: :duty_hour
 
+    permit_params :holiday_type
+
     validates :holiday_type, presence: true, inclusion: { in: %w(system own), allow_blank: true }
+  end
+
+  def holiday_type_options
+    %w(system own).map do |v|
+      [ I18n.t("gws/affair.options.holiday_type.#{v}"), v ]
+    end
   end
 
   def holiday_type_system?

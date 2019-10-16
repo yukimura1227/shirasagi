@@ -1,0 +1,36 @@
+<dl class="see">
+  <dt><%= @model.t :holiday_type %></dt>
+  <dd><%= @item.label :holiday_type %></dd>
+
+  <% if @item.holiday_type_own? %>
+    <dt><%= @model.t :holidays %></dt>
+    <% if @item.holidays.present? %>
+      <dd>
+        <table class="index">
+          <thead>
+          <tr>
+            <th><%= Gws::Schedule::Holiday.t :name %></th>
+            <th><%= Gws::Schedule::Holiday.t :term %></th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @item.holidays.limit(5).each do |holiday| %>
+            <tr>
+              <td><%= holiday.name %></td>
+              <td><%= term(holiday) %></td>
+            </tr>
+          <% end %>
+          </tbody>
+          <tfoot>
+          <tr>
+            <th colspan="2"><%= t("job.log_notice", count: 5) %></th>
+          </tr>
+          </tfoot>
+        </table>
+      </dd>
+    <% end %>
+    <dd>
+      <%= link_to(t("gws/affair.links.manage_holidays"), gws_affair_duty_hour_holidays_path(duty_hour_id: @item), class: "btn") %>
+    </dd>
+  <% end %>
+</dl>
