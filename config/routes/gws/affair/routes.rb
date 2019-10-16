@@ -27,7 +27,10 @@ Rails.application.routes.draw do
     resources :capitals, concerns: :deletion
     resources :duty_hours, concerns: :deletion
     resources :holiday_calendars, concerns: :deletion do
-      resources :holidays, concerns: :deletion, path: "holidays/:year"
+      resources :holidays, concerns: :deletion, path: "holidays/:year" do
+        get :download, on: :collection
+        match :import, on: :collection, via: %i[get post]
+      end
     end
 
     namespace "overtime" do

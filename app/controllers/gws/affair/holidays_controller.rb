@@ -118,4 +118,21 @@ class Gws::Affair::HolidaysController < ApplicationController
     @item.edit_range = params.dig(:item, :edit_range)
     render_destroy @item.destroy
   end
+
+  def download
+    set_items
+    csv = @items.order_by(start_at: 1).to_csv
+    send_data csv.encode("SJIS", invalid: :replace, undef: :replace), filename: "gws_affair_holidays_#{Time.zone.now.to_i}.csv"
+  end
+
+  def import
+    return if request.get?
+    @item = @model.new get_params
+    @item.cur_site = @cur_site
+    @item.cur_user = @cur_user
+    @item.cur_holiday_calendar = @holiday_calendar
+    result = @item.import
+    flash.now[:notice] = t("ss.notice.saved") if !result && @item.imported > 0
+    render_create result, location: { action: :index }, render: { file: :import }
+  end
 end

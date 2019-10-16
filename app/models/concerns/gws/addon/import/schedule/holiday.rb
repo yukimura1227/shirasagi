@@ -6,7 +6,7 @@ module Gws::Addon::Import::Schedule
     extend SS::Addon
 
     included do
-      attr_accessor :in_file, :imported
+      attr_accessor :in_file, :imported, :cur_holiday_calendar
       permit_params :in_file
     end
 
@@ -139,6 +139,7 @@ module Gws::Addon::Import::Schedule
       end
       item.site = @cur_site
       item.user = @cur_user
+      item.holiday_calendar = @cur_holiday_calendar
       item.edit_range = edit_range
       item.name = name
       item.start_on = start_on
