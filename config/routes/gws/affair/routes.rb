@@ -25,7 +25,8 @@ Rails.application.routes.draw do
     get '/' => redirect { |p, req| "#{req.path}/attendance/time_cards/#{Time.zone.now.strftime('%Y%m')}" }, as: :main
 
     resources :capitals, concerns: :deletion
-    resources :duty_hours, concerns: :deletion do
+    resources :duty_hours, concerns: :deletion
+    resources :holiday_calendars, concerns: :deletion do
       resources :holidays, concerns: :deletion, path: "holidays/:year"
     end
 
@@ -67,6 +68,7 @@ Rails.application.routes.draw do
       namespace "overtime" do
         resources :results, only: [:edit, :update]
       end
+      get "holiday_calendars" => "holiday_calendars#index"
     end
 
     namespace "attendance" do

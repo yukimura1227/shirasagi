@@ -4,9 +4,9 @@ module Gws::Addon::Affair::Holiday
 
   included do
     field :holiday_type, type: String
-    has_many :holidays, class_name: 'Gws::Schedule::Holiday', dependent: :destroy, inverse_of: :duty_hour
+    embeds_ids :holiday_calendars, class_name: 'Gws::Affair::HolidayCalendar'
 
-    permit_params :holiday_type
+    permit_params :holiday_type, holiday_calendar_ids: []
 
     validates :holiday_type, presence: true, inclusion: { in: %w(system own), allow_blank: true }
   end
@@ -30,9 +30,11 @@ module Gws::Addon::Affair::Holiday
       return Gws::Affair::DefaultDutyHour.holiday?(@cur_site || site, user, date)
     end
 
+    return false if holiday_calendars.blank?
+
     Gws::Schedule::Holiday.site(@cur_site || site).
       and_public.
-      and_duty_hour(self).
+      and_holiday_calendar(holiday_calendars.first).
       allow(:read, user, site: site).
       search(start: date, end: date).present?
   end

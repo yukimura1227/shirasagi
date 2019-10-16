@@ -71,6 +71,11 @@ ja:
           week_out_compensatory:
             name: "同一週以外の振替"
             rate: "同一週以外の振替\n50/100"
+    apis:
+      holiday_calendars:
+        index: 休日カレンダーを選択する
+        search: 休日カレンダーを検索
+        select: 休日カレンダーを設定する
 
   modules:
     gws/affair: 庶務事務
@@ -85,6 +90,7 @@ ja:
     models:
       gws/affair/capital: タイムカード
       gws/affair/duty_hour: 勤務体系
+      gws/affair/holiday_calendar: 休日カレンダー
     attributes:
       gws/affair/capital:
         name: 原資区分名
@@ -145,6 +151,9 @@ ja:
         affair_overtime_break_minute: 休憩時間（分）
       gws/addon/affair/holiday:
         holiday_type: 休日種別
+        holiday_calendar_ids: 休日カレンダー
+      gws/affair/holiday_calendar:
+        name: タイトル
         holidays: 休日
 
   gws_role:
