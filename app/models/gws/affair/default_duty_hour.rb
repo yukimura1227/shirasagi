@@ -60,7 +60,6 @@ class Gws::Affair::DefaultDutyHour
     Gws::Schedule::Holiday.site(site).
       and_public.
       and_system.
-      allow(:read, user, site: site).
       search(start: date, end: date).present?
   end
 

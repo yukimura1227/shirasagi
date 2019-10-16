@@ -71,7 +71,9 @@
       <% end %>
       <% tr_css_classes = [ "day-#{date.day}" ] %>
       <% tr_css_classes << (Time.zone.now.beginning_of_day == date ? 'current' : nil) %>
-      <% tr_css_classes << if holiday?(date); 'holiday' elsif date.wday == 0; 'sunday' elsif date.wday == 6; 'saturday' end %>
+      <% tr_css_classes << 'holiday' if holiday?(date) %>
+      <% tr_css_classes << 'sunday' if date.wday == 0 %>
+      <% tr_css_classes << 'saturday' if date.wday == 6 %>
       <tr class="<%= tr_css_classes.compact.join(' ') %>" data-day="<%= date.day %>">
         <% record = @item.records.where(date: date).first %>
         <td class="date"><%= I18n.l(date.to_date, format: :attendance_month_day) %></td>
