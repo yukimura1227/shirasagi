@@ -105,7 +105,7 @@ class Gws::Affair::HolidaysController < ApplicationController
     raise "403" unless @holiday_calendar.allowed?(:edit, @cur_user, site: @cur_site)
     @item.attributes = get_params
     @item.in_updated = params[:_updated] if @item.respond_to?(:in_updated)
-    render_update @item.update
+    render_update @item.save
   end
 
   def delete
@@ -115,6 +115,7 @@ class Gws::Affair::HolidaysController < ApplicationController
 
   def destroy
     raise "403" unless @holiday_calendar.allowed?(:delete, @cur_user, site: @cur_site)
+    @item.edit_range = params.dig(:item, :edit_range)
     render_destroy @item.destroy
   end
 end
