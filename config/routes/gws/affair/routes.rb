@@ -26,7 +26,7 @@ Rails.application.routes.draw do
 
     resources :capitals, concerns: :deletion
     resources :duty_hours, concerns: :deletion do
-      resources :holidays, concerns: :deletion
+      resources :holidays, concerns: :deletion, path: "holidays/:year"
     end
 
     namespace "overtime" do

@@ -5,6 +5,9 @@ ja:
     aggregate: 集計結果
     capital: 原資区分
     default_duty_hour: 標準の勤務体系
+    top_holidays_on_year: "%{year}年度の休日を最大%{count}件を表示しています。"
+    year_id: 年度
+    all_year_id: 全年度
     links:
       set_results: 結果を入力する
       edit_results: 結果を編集する

@@ -15,6 +15,11 @@ class Gws::Affair::DutyHoursController < ApplicationController
     { cur_user: @cur_user, cur_site: @cur_site }
   end
 
+  def set_crumbs
+    @crumbs << [ @cur_site.menu_affair_label || t('modules.gws/affair'), gws_affair_main_path ]
+    @crumbs << [ t("mongoid.models.gws/affair/duty_hour"), action: :index ]
+  end
+
   def permit_fields
     ret = super
     if @item.is_a?(Gws::Affair::DefaultDutyHour)

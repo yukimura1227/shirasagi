@@ -51,4 +51,17 @@ module Gws::Addon::Attendance::GroupSetting
   def affair_rounding_time_minute_options
     %w(0 1 5 10 15).map { |k| [I18n.t("gws/affair.options.affair_rounding_time_minute.#{k}"), k] }
   end
+
+  def attendance_year_range(now = nil)
+    now ||= Time.zone.now
+
+    if now.month < attendance_year_changed_month
+      now -= 1.year
+    end
+    start_at = now.change(month: attendance_year_changed_month, day: 1, hour: 0, min: 0, sec: 0)
+
+    end_at = start_at + 1.year - 1.day
+    end_at = end_at.end_of_day
+    [ start_at, end_at ]
+  end
 end
