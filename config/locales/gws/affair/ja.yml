@@ -33,7 +33,7 @@ ja:
         "10": 10分単
         "15": 15分単位
       holiday_type:
-        system: 標準の休日
+        system: 標準の休日カレンダー
         own: 勤務体系独自
     notice:
       not_found_overtime_file: "設定可能な残業申請がありませんでした。"

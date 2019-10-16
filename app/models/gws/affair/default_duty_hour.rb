@@ -42,6 +42,18 @@ class Gws::Affair::DefaultDutyHour
   def lookup_addons
   end
 
+  def holiday_type
+    "system"
+  end
+
+  def holiday_type_system?
+    true
+  end
+
+  def holiday_type_own?
+    false
+  end
+
   def self.holiday?(site, user, date)
     return true if HolidayJapan.check(date.localtime.to_date)
 

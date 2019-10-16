@@ -16,5 +16,8 @@
         <%= duty_hour.label :affair_end_at_hour %><%= duty_hour.label :affair_end_at_minute %>)
       <% end %>
     </dd>
+
+    <dt><%= t("mongoid.models.gws/affair/holiday_calendar") %></dt>
+    <dd><%= duty_hour.holiday_type_system? ? t("gws/affair.options.holiday_type.system") : duty_hour.holiday_calendars.first.try(:name) %></dd>
   </dl>
 </div>
