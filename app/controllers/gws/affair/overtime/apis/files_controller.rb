@@ -7,7 +7,8 @@ class Gws::Affair::Overtime::Apis::FilesController < ApplicationController
     @user = Gws::User.find(params[:uid])
     @leave_file = Gws::Affair::LeaveFile.find(params[:id]) rescue nil
 
-    file_ids = Gws::Affair::LeaveFile.site(@cur_site).pluck(:week_in_compensatory_file_id)
+    file_ids = Gws::Affair::LeaveFile.site(@cur_site).where(workflow_state: "approve").
+      pluck(:week_in_compensatory_file_id).compact
     file_ids -= [@leave_file.week_in_compensatory_file_id] if @leave_file
 
     @items = @model.site(@cur_site).user(@user).where(
@@ -21,7 +22,8 @@ class Gws::Affair::Overtime::Apis::FilesController < ApplicationController
     @user = Gws::User.find(params[:uid])
     @leave_file = Gws::Affair::LeaveFile.find(params[:id]) rescue nil
 
-    file_ids = Gws::Affair::LeaveFile.site(@cur_site).pluck(:week_out_compensatory_file_id)
+    file_ids = Gws::Affair::LeaveFile.site(@cur_site).where(workflow_state: "approve").
+      pluck(:week_out_compensatory_file_id).compact
     file_ids -= [@leave_file.week_out_compensatory_file_id] if @leave_file
 
     @items = @model.site(@cur_site).user(@user).where(

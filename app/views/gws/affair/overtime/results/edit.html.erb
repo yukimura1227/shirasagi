@@ -72,7 +72,7 @@ $(".delete-result").on("click", deleteResult);
     date_options = [item.date, item.date.advance(days: 1)].map { |date| [date.strftime("%Y/%m/%d"), date.strftime("%Y/%m/%d")] }
     hour_options = (0..23).map { |h| [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ] }
     minute_options = (0..59).select { |m| m % 5 == 0 }.map { |m| [ "#{m}#{I18n.t('datetime.prompts.minute')}", m.to_s ] }
-    break_time_minute_options = (1..60).select { |m| m % 5 == 0 }.map { |m| [ "#{m}#{I18n.t('datetime.prompts.minute')}", m.to_s ] }
+    break_time_minute_options = (0..60).select { |m| m % 5 == 0 }.map { |m| [ "#{m}#{I18n.t('datetime.prompts.minute')}", m.to_s ] }
 
     if item.result
       start_at_date = item.result.start_at.strftime("%Y/%m/%d")
@@ -84,6 +84,14 @@ $(".delete-result").on("click", deleteResult);
       end_at_minute = item.result.end_at.minute
 
       break_time_minute = item.result.break_time_minute
+    else
+      start_at_date = item.start_at.strftime("%Y/%m/%d")
+      start_at_hour = item.start_at.hour
+      start_at_minute = item.start_at.minute
+
+      end_at_date = item.end_at.strftime("%Y/%m/%d")
+      end_at_hour = item.end_at.hour
+      end_at_minute = item.end_at.minute
     end
   %>
   <table class="index" style="margin-bottom: 10px;">
@@ -106,7 +114,7 @@ $(".delete-result").on("click", deleteResult);
         <%= select_tag "item[in_results][#{item.id}][end_at_hour]", options_for_select(hour_options, end_at_hour), include_blank: true %>
         <%= select_tag "item[in_results][#{item.id}][end_at_minute]", options_for_select(minute_options, end_at_minute), include_blank: true %>
       </td>
-        <td class="break-time"><%= select_tag "item[in_results][#{item.id}][break_time_minute]", options_for_select(break_time_minute_options, break_time_minute), include_blank: true %></td>
+        <td class="break-time"><%= select_tag "item[in_results][#{item.id}][break_time_minute]", options_for_select(break_time_minute_options, break_time_minute) %></td>
       </tr>
     </tbody>
   </table>

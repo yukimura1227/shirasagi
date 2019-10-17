@@ -39,6 +39,10 @@ module Gws::Addon::Affair::OvertimeFile
     end
   end
 
+  def overtime_name_label
+    "#{overtime_name}（#{start_at.strftime("%Y/%m/%d %H:%M")}#{I18n.t("ss.wave_dash")}#{end_at.strftime("%Y/%m/%d %H:%M")}）"
+  end
+
   def start_at_hour_options
     (0..23).map { |h| [ "#{h}#{I18n.t('datetime.prompts.hour')}", h.to_s ] }
   end

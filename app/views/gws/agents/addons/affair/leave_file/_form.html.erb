@@ -58,7 +58,7 @@ toggleSelectCompensatoryFile();
           <tr data-id="<%= @item.id %>">
             <td>
               <%= f.hidden_field "week_in_compensatory_file_id", value: @item.week_in_compensatory_file_id, class: "hidden-ids" %>
-              <%= @item.week_out_compensatory_file.overtime_name %>
+              <%= @item.week_in_compensatory_file.overtime_name_label %>
             </td>
             <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
           </tr>
@@ -87,7 +87,7 @@ toggleSelectCompensatoryFile();
           <tr data-id="<%= @item.id %>">
             <td>
               <%= f.hidden_field "week_out_compensatory_file_id", value: @item.week_out_compensatory_file_id, class: "hidden-ids" %>
-              <%= @item.week_out_compensatory_file.overtime_name %>
+              <%= @item.week_out_compensatory_file.overtime_name_label %>
             </td>
             <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
           </tr>

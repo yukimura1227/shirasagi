@@ -84,20 +84,24 @@
         <td class="memo <%= offset %>" data-day="<%= date.day %>" data-type="memo" data-mode="edit"><%= record ? record.memo : '' %></td>
 
         <%
-          overtime_minute = nil
-          result_minute = nil
-          compensatory_minute = 0
-
+          overtime_minute = 0
           overtime_minute = record.overtime_minute if record
+
           day_results = overtime_day_results[date.to_datetime]
 
+          compensatory_minute = 0
           if day_results.present?
-            compensatory_minute = day_results.first.week_in_compensatory_minute + day_results.first.week_out_compensatory_minute
+            compensatory_minute = day_results.map(&:week_in_compensatory_minute).sum
+            compensatory_minute += day_results.map(&:week_out_compensatory_minute).sum
           end
 
-          if overtime_minute && compensatory_minute > 0
-            overtime_minute = (overtime_minute - compensatory_minute) > 0 ? (overtime_minute - compensatory_minute) : 0
+          break_time_minute = 0
+          if day_results.present?
+            break_time_minute = day_results.map(&:break_time_minute).sum
           end
+
+          overtime_minute = (overtime_minute - compensatory_minute) > 0 ? (overtime_minute - compensatory_minute) : 0
+          overtime_minute = (overtime_minute - break_time_minute) > 0 ? (overtime_minute - break_time_minute) : 0
         %>
         <td class="overtime time">
           <%= format_minute(overtime_minute.to_i) %>
@@ -107,7 +111,7 @@
             <% result_minute = day_results.pluck(:overtime_minute).sum %>
             <%= format_minute(result_minute) %>
 
-            <% if overtime_minute && day_results.present? && result_minute %>
+            <% if day_results.present? && result_minute %>
               <%= " | " %>
               <% overtime_diff = result_minute - overtime_minute %>
               <% if overtime_diff == 0 %>

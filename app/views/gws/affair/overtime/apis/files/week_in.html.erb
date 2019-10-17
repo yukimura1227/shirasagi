@@ -15,8 +15,6 @@
       <th class="checkbox"><input type="checkbox" /></th>
       <% end %>
       <th class="name"><%= @model.t :overtime_name %></th>
-      <th class="name"><%= @model.t :start_at %></th>
-      <th class="name"><%= @model.t :end_at %></th>
       <th><%= @model.t :week_in_compensatory_minute %></th>
     </tr>
   </thead>
@@ -28,9 +26,7 @@
             <input type="checkbox" name="ids[]" value="<%= item.id %>" />
           </td>
         <% end %>
-        <td><%= link_to item.overtime_name, "#", class: @multi ? "select-item" : "select-single-item" %></td>
-        <td><%= item.start_at.strftime("%Y/%m/%d %H:%M") %></td>
-        <td><%= item.end_at.strftime("%Y/%m/%d %H:%M") %></td>
+        <td><%= link_to item.overtime_name_label, "#", class: @multi ? "select-item" : "select-single-item" %></td>
         <td><%= item.label :week_in_compensatory_minute %></td>
       </tr>
     <% end %>

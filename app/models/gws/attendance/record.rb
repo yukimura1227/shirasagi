@@ -37,8 +37,8 @@ class Gws::Attendance::Record
   end
 
   def overtime_minute
-    return nil unless enter
-    return nil unless leave
+    return 0 unless enter
+    return 0 unless leave
 
     duty_hour = time_card.duty_hour
     affair_end = duty_hour.affair_end(date)
@@ -46,7 +46,7 @@ class Gws::Attendance::Record
     if duty_hour.leave_day?(date)
       ((leave - enter) * 24 * 60).to_i
     else
-      (leave > affair_end) ? ((leave - affair_end) * 24 * 60).to_i : nil
+      (leave > affair_end) ? ((leave - affair_end) * 24 * 60).to_i : 0
     end
   end
 end
