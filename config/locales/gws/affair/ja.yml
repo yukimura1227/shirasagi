@@ -14,6 +14,7 @@ ja:
       aggregate: 残業時間
       aggregate_capitals: 原資区分
       manage_holidays: 休日を管理する
+      manage_shifts: シフト勤務を管理する
     options:
       leave_type:
         annual_leave: 年次有給休暇
@@ -75,10 +76,10 @@ ja:
             name: "同一週以外の振替"
             rate: "同一週以外の振替\n50/100"
     apis:
+      duty_hours:
+        index: 勤務体系を選択する
       holiday_calendars:
         index: 休日カレンダーを選択する
-        search: 休日カレンダーを検索
-        select: 休日カレンダーを設定する
 
   modules:
     gws/affair: 庶務事務
@@ -87,11 +88,13 @@ ja:
       gws/affair/overtime_result: 結果
       gws/affair/approver: 承認
       gws/affair/leave_file: 休暇申請書
+      gws/affair/duty_hour: 勤務体系
       gws/affair/holiday: 休日
 
   mongoid:
     models:
       gws/affair/capital: タイムカード
+      gws/affair/duty_calendar: 勤務カレンダー
       gws/affair/duty_hour: 勤務体系
       gws/affair/holiday_calendar: 休日カレンダー
     attributes:
@@ -99,6 +102,8 @@ ja:
         name: 原資区分名
         order: 並び順
         remark: 説明
+      gws/affair/duty_calendar:
+        name: タイトル
       gws/affair/duty_hour:
         name: 勤務体系名
         start_at: 開始時間
@@ -152,6 +157,8 @@ ja:
         affair_on_duty_break_minute: 休憩時間（分）
         affair_overtime_working_minute: 就業時間（分）
         affair_overtime_break_minute: 休憩時間（分）
+      gws/addon/affair/duty_hour:
+        duty_hour_ids: 勤務体系
       gws/addon/affair/holiday:
         holiday_type: 休日種別
         holiday_calendar_ids: 休日カレンダー
