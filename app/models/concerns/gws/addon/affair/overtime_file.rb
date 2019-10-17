@@ -103,7 +103,7 @@ module Gws::Addon::Affair::OvertimeFile
     in_affair_at_2 = end_at > affair_start && start_at < affair_end
 
     if in_affair_at_1 || in_affair_at_2
-      errors.add :base, "残業時間が勤務時間内です。"
+      errors.add :base, "時間外が勤務時間内です。"
     end
   end
 end

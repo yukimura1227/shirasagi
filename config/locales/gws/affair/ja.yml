@@ -1,6 +1,6 @@
 ja:
   gws/affair:
-    overtime_workflow: 残業申請
+    overtime_workflow: 時間外申請
     leave_workflow: 休暇申請
     aggregate: 集計結果
     capital: 原資区分
@@ -11,7 +11,7 @@ ja:
     links:
       set_results: 結果を入力する
       edit_results: 結果を編集する
-      aggregate: 残業時間
+      aggregate: 時間外
       aggregate_capitals: 原資区分
       manage_holidays: 休日を管理する
       manage_shifts: シフト勤務を管理する
@@ -21,8 +21,8 @@ ja:
         sick_leave: 病気休暇
         paidleave: 特別休暇
         nursing_care_leave: 介護休暇
-        week_in_compensatory_leave: 同一週内の振替代休
-        week_out_compensatory_leave: 同一週外の振替代休
+        week_in_compensatory_leave: 同一週内の振替
+        week_out_compensatory_leave: 同一週外の振替
       compensatory_minute:
         0: ""
         240: "4.0時間"
@@ -40,7 +40,7 @@ ja:
         workday: 勤務日
         holiday: 休日
     notice:
-      not_found_overtime_file: "設定可能な残業申請がありませんでした。"
+      not_found_overtime_file: "設定可能な時間外申請がありませんでした。"
     labels:
       overtime:
         under_threshold:
@@ -84,7 +84,7 @@ ja:
   modules:
     gws/affair: 庶務事務
     addons:
-      gws/affair/overtime_file: 残業申請書
+      gws/affair/overtime_file: 時間外申請書
       gws/affair/overtime_result: 結果
       gws/affair/approver: 承認
       gws/affair/leave_file: 休暇申請書
@@ -119,19 +119,19 @@ ja:
         capital_id: 原資区分
       gws/addon/affair/overtime_file:
         overtime_name: 業務名
-        start_at: 残業開始時間
-        end_at: 残業終了時間
+        start_at: 開始時間
+        end_at: 終了時間
         week_in_compensatory_minute: 同一週内振替
         week_out_compensatory_minute: 同一週外振替
         remark: 備考
       gws/affair/leave_file:
         name: タイトル
-        start_at: 休暇開始時間
-        end_at: 休暇終了時間
+        start_at: 開始時間
+        end_at: 終了時間
         leave_type: 休暇区分
         reason: 理由
-        week_in_compensatory_file_id: 振替残業申請（同一週内）
-        week_out_compensatory_file_id: 振替残業申請（同一週外）
+        week_in_compensatory_file_id: 振替申請（同一週内）
+        week_out_compensatory_file_id: 振替申請（同一週外）
       gws/affair/overtime_result:
         start_at: 開始時間
         end_at: 終了時間
@@ -185,16 +185,16 @@ ja:
     read_gws_affair_duty_hours: 勤務体系の閲覧
     edit_gws_affair_duty_hours: 勤務体系の編集
     delete_gws_affair_duty_hours: 勤務体系の削除
-    read_other_gws_affair_overtime_files: 残業申請の閲覧（所有）
-    read_private_gws_affair_overtime_files: 残業申請の閲覧（全て）
-    edit_other_gws_affair_overtime_files: 残業申請の編集（所有）
-    edit_private_gws_affair_overtime_files: 残業申請の編集（全て）
-    delete_other_gws_affair_overtime_files: 残業申請の削除（所有）
-    delete_private_gws_affair_overtime_files: 残業申請の削除（全て）
-    approve_other_gws_affair_overtime_files: 残業申請の承認（全て）
-    approve_private_gws_affair_overtime_files: 残業申請の承認（所有）
-    reroute_other_gws_affair_overtime_files: 残業申請の経路変更（全て）
-    reroute_private_gws_affair_overtime_files: 残業申請の経路変更（所有）
+    read_other_gws_affair_overtime_files: 時間外申請の閲覧（所有）
+    read_private_gws_affair_overtime_files: 時間外申請の閲覧（全て）
+    edit_other_gws_affair_overtime_files: 時間外申請の編集（所有）
+    edit_private_gws_affair_overtime_files: 時間外申請の編集（全て）
+    delete_other_gws_affair_overtime_files: 時間外申請の削除（所有）
+    delete_private_gws_affair_overtime_files: 時間外申請の削除（全て）
+    approve_other_gws_affair_overtime_files: 時間外申請の承認（全て）
+    approve_private_gws_affair_overtime_files: 時間外申請の承認（所有）
+    reroute_other_gws_affair_overtime_files: 時間外申請の経路変更（全て）
+    reroute_private_gws_affair_overtime_files: 時間外申請の経路変更（所有）
     read_other_gws_affair_leave_files: 休暇申請の閲覧（所有）
     read_private_gws_affair_leave_files: 休暇申請の閲覧（全て）
     edit_other_gws_affair_leave_files: 休暇申請の編集（所有）
@@ -222,9 +222,9 @@ ja:
       overtime_name:
         - 業務名を入力します。
       start_at:
-        - 残業開始時間を入力します。
+        - 開始時間を入力します。
       end_at:
-        - 残業終了時間を入力します。
+        - 終了時間を入力します。
       week_in_compensatory_minute:
         - 同一週内振替を入力します。
       week_out_compensatory_minute:
@@ -235,17 +235,17 @@ ja:
       name:
         - タイトルを入力します。
       start_at:
-        - 休暇開始時間を入力します。
+        - 開始時間を入力します。
       end_at:
-        - 休暇終了時間を入力します。
+        - 終了時間を入力します。
       leave_type:
         - 休暇区分を入力します。
       reason:
         - 備考を入力します。
       week_in_compensatory_file_id:
-        - 振替残業申請（同一週内）を設定します。
+        - 振替申請（同一週内）を設定します。
       week_out_compensatory_file_id:
-        - 振替残業申請（同一週外）を設定します。
+        - 振替申請（同一週外）を設定します。
     gws/addon/affair/approver:
       workflow_comment:
         - 申請理由など承認者に対するコメントをを記述してください。
