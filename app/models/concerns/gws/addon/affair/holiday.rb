@@ -33,9 +33,6 @@ module Gws::Addon::Affair::Holiday
     calendar = holiday_calendars.first
     return false if calendar.blank?
 
-    Gws::Schedule::Holiday.site(@cur_site || site).
-      and_public.
-      and_holiday_calendar(calendar).
-      search(start: date, end: date).present?
+    calendar.holiday?(date)
   end
 end

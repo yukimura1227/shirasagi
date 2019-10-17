@@ -13,6 +13,12 @@ class Gws::Affair::HolidayCalendar
 
   validates :name, presence: true
 
+  %w(sunday monday tuesday wednesday thursday friday saturday national_holiday).each do |wday|
+    field "#{wday}_type", type: String
+    permit_params "#{wday}_type".to_sym
+    validates "#{wday}_type", presence: true, inclusion: { in: %w(workday holiday), allow_blank: true }
+  end
+
   class << self
     def search(params)
       criteria = self.where({})
@@ -26,5 +32,26 @@ class Gws::Affair::HolidayCalendar
       end
       criteria
     end
+  end
+
+  def wday_type_options
+    %w(workday holiday).map do |v|
+      [ I18n.t("gws/affair.options.wday_type.#{v}"), v ]
+    end
+  end
+
+  %w(sunday monday tuesday wednesday thursday friday saturday national_holiday).each do |wday|
+    alias_method "#{wday}_type_options", :wday_type_options
+  end
+
+  def holiday?(date)
+    wday = %w(sunday monday tuesday wednesday thursday friday saturday)[date.wday]
+    return true if send("#{wday}_type") == "holiday"
+    return true if national_holiday_type == "holiday" && HolidayJapan.check(date.localtime.to_date)
+
+    Gws::Schedule::Holiday.site(@cur_site || site).
+      and_public.
+      and_holiday_calendar(self).
+      search(start: date, end: date).present?
   end
 end

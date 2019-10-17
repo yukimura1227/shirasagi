@@ -35,6 +35,9 @@ ja:
       holiday_type:
         system: 標準の休日カレンダー
         own: 勤務体系独自
+      wday_type:
+        workday: 勤務日
+        holiday: 休日
     notice:
       not_found_overtime_file: "設定可能な残業申請がありませんでした。"
     labels:
@@ -154,7 +157,16 @@ ja:
         holiday_calendar_ids: 休日カレンダー
       gws/affair/holiday_calendar:
         name: タイトル
-        holidays: 休日
+        wday_settings: 休日設定
+        sunday_type: 日曜日
+        monday_type: 月曜日
+        tuesday_type: 火曜日
+        wednesday_type: 水曜日
+        thursday_type: 木曜日
+        friday_type: 金曜日
+        saturday_type: 土曜日
+        national_holiday_type: 勤務日が祝祭日の場合
+        holidays: 他の所定休日
 
   gws_role:
     read_other_gws_affair_capitals: 原資区分の閲覧（所有）
