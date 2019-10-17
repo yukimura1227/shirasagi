@@ -3,7 +3,13 @@
   <div class="addon-body toggle-body">
     <dl class="see addon-gws-affair-overtime_file">
       <dt><%= @model.t :name %></dt>
-      <dd><%= @item.name %></dd>
+      <dd>
+        <% if @item.readable?(@cur_user, site: @cur_site) %>
+          <%= link_to @item.name, gws_affair_leave_file_path(id: @item.id, state: "all") %>
+        <% else %>
+          <%= @item.name %>
+        <% end %>
+      </dd>
 
       <dt><%= @model.t :start_at %></dt>
       <dd><%= tryb { @item.start_at.strftime("%Y/%m/%d %H:%M") } %></dd>
