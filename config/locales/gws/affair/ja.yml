@@ -41,6 +41,8 @@ ja:
         holiday: 休日
     notice:
       not_found_overtime_file: "設定可能な時間外申請がありませんでした。"
+    confirm:
+      download: ダウンロードしてよろしいですか？
     labels:
       overtime:
         under_threshold:

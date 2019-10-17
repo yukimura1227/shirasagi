@@ -3,10 +3,10 @@
 %>
 
 <div class="gws-schedule-tabs">
-  <%= link_to gws_affair_overtime_management_aggregate_path do %>
+  <%= link_to gws_affair_overtime_management_aggregate_path(threshold: "under") do %>
     <span class="tab-name">通常分</span>
   <% end %>
-  <%= link_to gws_affair_overtime_management_aggregate_over_threshold_path do %>
+  <%= link_to gws_affair_overtime_management_aggregate_path(threshold: "over") do %>
     <span class="tab-name">割合引上対象分（<%= "#{threshold_hour}時間超過" %>）</span>
   <% end %>
 </div>
@@ -35,6 +35,7 @@
 
       <input type="submit" value="<%= t('ss.buttons.search') %>" class="btn" />
       <%= link_to t("ss.buttons.reset"), gws_affair_overtime_management_aggregate_path, class: "btn" %>
+      <%= link_to t("ss.links.download"), gws_affair_overtime_management_download_aggregate_path, class: "btn", style: "float: right;" %>
     <% end %>
   </div>
 </div>

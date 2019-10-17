@@ -107,5 +107,48 @@ class Gws::Affair::OvertimeDayResult
       end
       prefs
     end
+
+    def enum_csv(users, threshold, params)
+      prefs = aggregate_by_user
+      Gws::Affair::OvertimeDayResultEnumerator.new(prefs, users, threshold, params)
+    end
+
+    def aggregate_to_csv(users, threshold)
+      prefs = aggregate_by_user
+
+      format_minute = proc do |minute|
+        (minute.to_i > 0) ? "#{minute / 60}:#{format("%02d", (minute % 60))}" : ""
+      end
+
+      CSV.generate do |data|
+        data << [
+          Gws::User.t(:name),
+          Gws::User.t(:organization_uid),
+          I18n.t("gws/affair.labels.overtime.#{threshold}_threshold.duty_day_time.rate"),
+          I18n.t("gws/affair.labels.overtime.#{threshold}_threshold.duty_night_time.rate"),
+          I18n.t("gws/affair.labels.overtime.#{threshold}_threshold.leave_day_time.rate"),
+          I18n.t("gws/affair.labels.overtime.#{threshold}_threshold.leave_night_time.rate"),
+          I18n.t("gws/affair.labels.overtime.#{threshold}_threshold.week_out_compensatory.rate")
+        ]
+
+        users.each do |user|
+          duty_day_time_minute = prefs.dig(user.id, "#{threshold}_threshold", "duty_day_time_minute")
+          duty_night_time_minute = prefs.dig(user.id, "#{threshold}_threshold", "duty_night_time_minute")
+          leave_day_time_minute = prefs.dig(user.id, "#{threshold}_threshold", "leave_day_time_minute")
+          leave_night_time_minute = prefs.dig(user.id, "#{threshold}_threshold", "leave_night_time_minute")
+          week_out_compensatory_minute = prefs.dig(user.id, "#{threshold}_threshold", "week_out_compensatory_minute")
+
+          line = []
+          line << user.long_name
+          line << user.organization_uid
+          line << format_minute.call(duty_day_time_minute)
+          line << format_minute.call(duty_night_time_minute)
+          line << format_minute.call(leave_day_time_minute)
+          line << format_minute.call(leave_night_time_minute)
+          line << format_minute.call(week_out_compensatory_minute)
+          data << line
+        end
+      end
+    end
   end
 end

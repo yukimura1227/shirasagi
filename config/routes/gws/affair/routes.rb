@@ -45,8 +45,9 @@ Rails.application.routes.draw do
       resources :results, only: [:edit, :update]
 
       namespace 'management' do
-        get "aggregate" => "aggregate#index"
-        get "aggregate_over_threshold" => "aggregate#over_threshold"
+        get "aggregate/:threshold" => "aggregate#index", as: :aggregate
+        get "aggregate/:threshold/download" => "aggregate#download", as: :download_aggregate
+        post "aggregate/:threshold/download" => "aggregate#download"
       end
 
       namespace "apis" do

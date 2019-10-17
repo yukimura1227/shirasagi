@@ -23,9 +23,9 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
     @capital_id = params.dig(:s, :capital_id)
   end
 
-  public
+  def set_items
+    @threshold = params[:threshold]
 
-  def index
     start_at = Time.zone.parse("#{@year}/#{@month}/1").to_date
     end_at = start_at.end_of_month
 
@@ -40,39 +40,32 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
     cond = [
       { "date" => { "$gte" => start_at } },
       { "date" => { "$lte" => end_at } },
-      { "user_id" => { "$in" => user_ids } }      
+      { "user_id" => { "$in" => user_ids } }
     ]
 
     if @capital_id.present?
       cond << { "capital_id" => @capital_id.to_i }
     end
 
-    @items = @model.site(@cur_site).and(cond).aggregate_by_user
+    @items = @model.site(@cur_site).and(cond)
   end
 
-  def over_threshold
-    start_at = Time.zone.parse("#{@year}/#{@month}/1").to_date
-    end_at = start_at.end_of_month
+  public
 
-    if @group_id.present?
-      group_ids = @groups.where(id: @group_id).pluck(:id)
-    else
-      group_ids = @groups.pluck(:id)
-    end
-    @users = Gws::User.active.in(group_ids: group_ids).order_by_title(@cur_site)
-    user_ids = @users.pluck(:id)
+  def index
+    set_items
+    @items = @items.aggregate_by_user
+  end
 
-    cond = [
-        { "date" => { "$gte" => start_at } },
-        { "date" => { "$lte" => end_at } },
-        { "user_id" => { "$in" => user_ids } }
-    ]
+  def download
+    return if request.get?
 
-    if @capital_id.present?
-      cond << { "capital_id" => @capital_id.to_i }
-    end
+    safe_params = params.require(:item).permit(:encoding)
+    encoding = safe_params[:encoding]
+    filename = "aggregate_#{@threshold}_#{Time.zone.now.to_i}.csv"
 
-    @threshold = "over_threshold"
-    @items = @model.site(@cur_site).and(cond).aggregate_by_user
+    set_items
+    enum_csv = @items.enum_csv(@users, @threshold, OpenStruct.new(encoding: encoding))
+    send_enum(enum_csv, type: "text/csv; charset=#{encoding}", filename: filename)
   end
 end
