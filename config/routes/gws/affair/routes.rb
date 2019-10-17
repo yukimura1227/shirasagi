@@ -35,9 +35,6 @@ Rails.application.routes.draw do
       post "/wizard/:id/reroute" => "wizard#do_reroute", as: :do_reroute
       match "/wizard/:id" => "wizard#index", via: [:get, :post], as: :wizard
 
-      get "aggregate" => "aggregate#index"
-      get "aggregate/capitals" => "aggregate#capitals"
-
       resources :results, only: [:edit, :update]
 
       namespace 'management' do
