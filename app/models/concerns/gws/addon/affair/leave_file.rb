@@ -82,10 +82,9 @@ module Gws::Addon::Affair::LeaveFile
       errors.add :end_at, :greater_than, count: t(:start_at)
     end
 
-    duty_hour = user.effective_duty_hour(site)
-    duty_hour.cur_user = user
+    duty_calendar = user.effective_duty_calendar(site)
 
-    changed_at = duty_hour.affair_next_changed(start_at)
+    changed_at = duty_calendar.affair_next_changed(start_at)
     self.date = changed_at.advance(days: -1).change(hour: 0, min: 0, sec: 0)
   end
 

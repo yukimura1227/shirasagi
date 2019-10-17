@@ -31,13 +31,13 @@ module Gws::Schedule::PlanHelper
   end
 
   def group_holidays(start_at, end_at)
-    duty_hour = (@user || @cur_user).effective_duty_hour(@cur_site)
+    duty_calendar = (@user || @cur_user).effective_duty_calendar(@cur_site)
 
     criteria = Gws::Schedule::Holiday.site(@cur_site).and_public
-    if duty_hour.holiday_type_system?
+    if duty_calendar.holiday_type_system?
       criteria = criteria.and_system
     else
-      calendar = duty_hour.holiday_calendars.first
+      calendar = duty_calendar.holiday_calendars.first
       if calendar.present?
         criteria = criteria.and_holiday_calendar(calendar)
       else

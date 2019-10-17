@@ -1,14 +1,14 @@
-module Gws::Addon::Affair::DutyHour
-  extend ActiveSupport::Concern
-  extend SS::Addon
+class Gws::Affair::DefaultDutyCalendar
+  include ActiveModel::Model
 
-  included do
-    embeds_ids :duty_hours, class_name: 'Gws::Affair::DutyHour'
-    permit_params duty_hour_ids: []
+  attr_accessor :cur_site, :cur_user
+
+  def name
+    I18n.t("gws/affair.default_duty_calendar")
   end
 
   def default_duty_hour
-    duty_hours.first || Gws::Affair::DefaultDutyHour.new(cur_site: @cur_site || site)
+    Gws::Affair::DefaultDutyHour.new(cur_site: cur_site)
   end
 
   # _date は現在は使用していない。将来のシフト勤務サポートのためにある。
@@ -38,5 +38,25 @@ module Gws::Addon::Affair::DutyHour
 
   def night_time_end(time)
     effective_duty_hour(time).night_time_end(time)
+  end
+
+  def holiday_type_system?
+    true
+  end
+
+  def holiday_type_own?
+    false
+  end
+
+  def effective_holiday_calendar
+    Gws::Affair::DefaultHolidayCalendar.new(cur_site: cur_site)
+  end
+
+  def leave_day?(date)
+    effective_holiday_calendar.leave_day?(date)
+  end
+
+  def holiday?(date)
+    effective_holiday_calendar.holiday?(date)
   end
 end

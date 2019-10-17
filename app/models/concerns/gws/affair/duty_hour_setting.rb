@@ -84,38 +84,12 @@ module Gws::Affair::DutyHourSetting
 
   def night_time_start(time)
     hour = SS.config.gws.affair.dig("overtime", "night_time", "start_hour")
-    time.change(hour: 0, min: 0, sec: 0).advance(hours: hour)
+    time.change(hour: hour, min: 0, sec: 0)
   end
 
   def night_time_end(time)
     hour = SS.config.gws.affair.dig("overtime", "night_time", "end_hour")
-    time.change(hour: 0, min: 0, sec: 0).advance(hours: hour)
-  end
-
-  def leave_day?(date)
-    date = date.to_datetime
-    return true if (date.wday == 0 || date.wday == 6)
-
-    # Gws::Attendance::TimeCardFilter
-    return true if HolidayJapan.check(date.localtime.to_date)
-
-    Gws::Schedule::Holiday.site(site).
-      and_public.
-      allow(:read, user, site: site).
-      search(start: date, end: date).present?
-  end
-
-  def holiday?(date)
-    date = date.to_datetime
-    #return true if (date.wday == 0 || date.wday == 6)
-
-    # Gws::Attendance::TimeCardFilter
-    return true if HolidayJapan.check(date.localtime.to_date)
-
-    Gws::Schedule::Holiday.site(site).
-      and_public.
-      allow(:read, user, site: site).
-      search(start: date, end: date).present?
+    time.change(hour: hour, min: 0, sec: 0)
   end
 
   private

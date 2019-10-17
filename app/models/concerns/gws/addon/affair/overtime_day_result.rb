@@ -10,13 +10,12 @@ module Gws::Addon::Affair::OvertimeDayResult
   def save_day_results
     return if result.blank?
 
-    duty_hour = user.effective_duty_hour(site)
-    duty_hour.cur_user = user
+    duty_calendar = user.effective_duty_calendar(site)
 
     results = [[result.date, result.start_at, result.end_at]]
 
     # 日替わり時刻を超えているか
-    changed_at = duty_hour.affair_next_changed(result.start_at)
+    changed_at = duty_calendar.affair_next_changed(result.start_at)
     if result.end_at > changed_at
       r_date = changed_at.change(hour: 0, min: 0, sec: 0)
       results = [
@@ -38,8 +37,8 @@ module Gws::Addon::Affair::OvertimeDayResult
     results.each do |r_date, r_start_at, r_end_at|
       overtime_minute = ((r_end_at - r_start_at) * 24 * 60).to_i
 
-      night_time_start = duty_hour.night_time_start(r_date.to_datetime).to_datetime
-      night_time_end = duty_hour.night_time_end(r_date.to_datetime).to_datetime
+      night_time_start = duty_calendar.night_time_start(r_date.to_datetime).to_datetime
+      night_time_end = duty_calendar.night_time_end(r_date.to_datetime).to_datetime
 
       # 通常 深夜 休日通常 休日深夜
       if r_start_at >= night_time_start && r_end_at <= night_time_end
@@ -59,7 +58,7 @@ module Gws::Addon::Affair::OvertimeDayResult
         night_time_minute = 0
       end
 
-      is_holiday = duty_hour.holiday?(r_date)
+      is_holiday = duty_calendar.holiday?(r_date)
       if is_holiday
         duty_day_time_minute = 0
         duty_night_time_minute = 0

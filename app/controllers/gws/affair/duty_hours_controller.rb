@@ -22,7 +22,7 @@ class Gws::Affair::DutyHoursController < ApplicationController
 
   def permit_fields
     ret = super
-    if @item.is_a?(Gws::Affair::DefaultDutyHour)
+    if @item && @item.is_a?(Gws::Affair::DefaultDutyHour)
       ret.delete(:name)
     end
     ret

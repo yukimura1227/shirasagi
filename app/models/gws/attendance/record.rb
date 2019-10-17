@@ -40,10 +40,10 @@ class Gws::Attendance::Record
     return 0 unless enter
     return 0 unless leave
 
-    duty_hour = time_card.duty_hour
-    affair_end = duty_hour.affair_end(date)
+    duty_calendar = time_card.duty_calendar
+    affair_end = duty_calendar.affair_end(date)
 
-    if duty_hour.leave_day?(date)
+    if duty_calendar.leave_day?(date)
       ((leave - enter) * 24 * 60).to_i
     else
       (leave > affair_end) ? ((leave - affair_end) * 24 * 60).to_i : 0

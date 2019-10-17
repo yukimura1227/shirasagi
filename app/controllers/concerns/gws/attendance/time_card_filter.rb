@@ -57,7 +57,7 @@ module Gws::Attendance::TimeCardFilter
   end
 
   def holiday?(date)
-    @cur_user.effective_duty_hour(@cur_site).holiday?(@cur_user, date)
+    @cur_user.effective_duty_calendar(@cur_site).holiday?(date)
   end
 
   WELL_KNOWN_TYPES = begin

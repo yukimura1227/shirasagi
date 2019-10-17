@@ -25,14 +25,22 @@ module Gws::Addon::Affair::Holiday
     holiday_type == "own"
   end
 
-  def holiday?(user, date)
+  def effective_holiday_calendar
     if holiday_type_system?
-      return Gws::Affair::DefaultDutyHour.holiday?(@cur_site || site, user, date)
+      Gws::Affair::DefaultHolidayCalendar.new(cur_site: @cur_site || site)
+    else
+      calendar = holiday_calendars.first
+      calendar.cur_site = @cur_site || site
+      calendar.cur_user = @cur_user || user
+      calendar
     end
+  end
 
-    calendar = holiday_calendars.first
-    return false if calendar.blank?
+  def leave_day?(date)
+    effective_holiday_calendar.leave_day?(date)
+  end
 
-    calendar.holiday?(date)
+  def holiday?(date)
+    effective_holiday_calendar.holiday?(date)
   end
 end

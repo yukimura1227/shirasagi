@@ -83,24 +83,23 @@ module Gws::Addon::Affair::OvertimeFile
       errors.add :end_at, :greater_than, count: t(:start_at)
     end
 
-    duty_hour = user.effective_duty_hour(site)
-    duty_hour.cur_user = user
+    duty_calendar = user.effective_duty_calendar(site)
 
-    changed_at = duty_hour.affair_next_changed(start_at)
+    changed_at = duty_calendar.affair_next_changed(start_at)
     self.date = changed_at.advance(days: -1).change(hour: 0, min: 0, sec: 0)
 
     if end_at > changed_at
       errors.add :end_at, "が日替わり時刻を超えています。"
     end
 
-    return if duty_hour.leave_day?(date)
+    return if duty_calendar.leave_day?(date)
 
-    affair_start = duty_hour.affair_start(start_at)
-    affair_end = duty_hour.affair_end(start_at)
+    affair_start = duty_calendar.affair_start(start_at)
+    affair_end = duty_calendar.affair_end(start_at)
     in_affair_at_1 = end_at > affair_start && start_at < affair_end
 
-    affair_start = duty_hour.affair_start(end_at)
-    affair_end = duty_hour.affair_end(end_at)
+    affair_start = duty_calendar.affair_start(end_at)
+    affair_end = duty_calendar.affair_end(end_at)
     in_affair_at_2 = end_at > affair_start && start_at < affair_end
 
     if in_affair_at_1 || in_affair_at_2

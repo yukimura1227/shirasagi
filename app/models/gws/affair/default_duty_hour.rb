@@ -4,16 +4,7 @@ class Gws::Affair::DefaultDutyHour
 
   set_permission_name "gws_affair_duty_hours"
 
-  def self.wrap(site)
-    new(site)
-  end
-
-  attr_reader :site
   attr_accessor :cur_site
-
-  def initialize(site)
-    @site = site
-  end
 
   def new_record?
     false
@@ -42,41 +33,16 @@ class Gws::Affair::DefaultDutyHour
   def lookup_addons
   end
 
-  def holiday_type
-    "system"
-  end
-
-  def holiday_type_system?
-    true
-  end
-
-  def holiday_type_own?
-    false
-  end
-
-  def self.holiday?(site, user, date)
-    return true if HolidayJapan.check(date.localtime.to_date)
-
-    Gws::Schedule::Holiday.site(site).
-      and_public.
-      and_system.
-      search(start: date, end: date).present?
-  end
-
-  def holiday?(user, date)
-    self.class.holiday?(site, user, date)
-  end
-
   def method_missing(name, *args, &block)
-    if site.respond_to?(name)
-      return site.send(name, *args, &block)
+    if cur_site.respond_to?(name)
+      return cur_site.send(name, *args, &block)
     end
 
     super
   end
 
   def respond_to_missing?(name, include_private)
-    return true if site.respond_to?(name, include_private)
+    return true if cur_site.respond_to?(name, include_private)
 
     super
   end
@@ -103,31 +69,5 @@ class Gws::Affair::DefaultDutyHour
   def night_time_end(time)
     hour = SS.config.gws.affair.dig("overtime", "night_time", "end_hour")
     time.change(hour: 0, min: 0, sec: 0).advance(hours: hour)
-  end
-
-  def leave_day?(date)
-    date = date.to_datetime
-    return true if (date.wday == 0 || date.wday == 6)
-
-    # Gws::Attendance::TimeCardFilter
-    return true if HolidayJapan.check(date.localtime.to_date)
-
-    Gws::Schedule::Holiday.site(site).
-      and_public.
-      allow(:read, cur_user, site: site).
-      search(start: date, end: date).present?
-  end
-
-  def holiday?(date)
-    date = date.to_datetime
-    #return true if (date.wday == 0 || date.wday == 6)
-
-    # Gws::Attendance::TimeCardFilter
-    return true if HolidayJapan.check(date.localtime.to_date)
-
-    Gws::Schedule::Holiday.site(site).
-      and_public.
-      allow(:read, cur_user, site: site).
-      search(start: date, end: date).present?
   end
 end

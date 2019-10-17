@@ -119,11 +119,9 @@ class Gws::Attendance::TimeCard
     Gws::Attendance::TimeCardEnumerator.new(@cur_site || site, [ self ], params)
   end
 
-  def duty_hour
-    @_dury_hour ||= begin
-      item = user.effective_duty_hour(site)
-      item.cur_user = user
-      item
+  def duty_calendar
+    @_duty_calendar ||= begin
+      user.effective_duty_calendar(site)
     rescue
       nil
     end

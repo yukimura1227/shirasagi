@@ -1,6 +1,9 @@
 <%
-  duty_hour = @item.effective_duty_hour(@cur_site)
-  return if duty_hour.blank?
+  duty_calendar = @item.effective_duty_calendar(@cur_site)
+  return if duty_calendar.blank?
+
+  duty_hour = duty_calendar.default_duty_hour
+  holiday_calendar = duty_calendar.effective_holiday_calendar
 %>
 <dl class="see">
   <dt><%= t("mongoid.models.gws/affair/duty_hour") %></dt>
@@ -12,5 +15,5 @@
   </dd>
 
   <dt><%= t("mongoid.models.gws/affair/holiday_calendar") %></dt>
-  <dd><%= duty_hour.holiday_type_system? ? t("gws/affair.options.holiday_type.system") : duty_hour.holiday_calendars.first.try(:name) %></dd>
+  <dd><%= holiday_calendar.name %></dd>
 </dl>
