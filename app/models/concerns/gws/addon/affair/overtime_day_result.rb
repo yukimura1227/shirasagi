@@ -59,7 +59,7 @@ module Gws::Addon::Affair::OvertimeDayResult
         night_time_minute = 0
       end
 
-      is_holiday = duty_hour.leave_day?(r_date)
+      is_holiday = duty_hour.holiday?(r_date)
       if is_holiday
         duty_day_time_minute = 0
         duty_night_time_minute = 0

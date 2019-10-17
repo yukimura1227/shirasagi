@@ -105,6 +105,19 @@ module Gws::Affair::DutyHourSetting
       search(start: date, end: date).present?
   end
 
+  def holiday?(date)
+    date = date.to_datetime
+    #return true if (date.wday == 0 || date.wday == 6)
+
+    # Gws::Attendance::TimeCardFilter
+    return true if HolidayJapan.check(date.localtime.to_date)
+
+    Gws::Schedule::Holiday.site(site).
+      and_public.
+      allow(:read, user, site: site).
+      search(start: date, end: date).present?
+  end
+
   private
 
   def set_attendance_time_changed_minute
