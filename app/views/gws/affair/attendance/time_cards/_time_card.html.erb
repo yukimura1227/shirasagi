@@ -159,13 +159,7 @@
             break_time_minute = 0
           end
         %>
-        <td>
-          <% if break_time_minute > 0 %>
-            <span class="break_time_minute"><%= format_minute(break_time_minute) %></span>
-          <% else %>
-            <%= format_minute(break_time_minute) %>
-          <% end %>
-        </td>
+        <td class="time"><%= format_minute(break_time_minute) %></td>
 
         <%
           day_results = overtime_day_results[date.to_datetime]
@@ -182,9 +176,7 @@
           end
           compensatory_minute_labels << format_minute(0) if compensatory_minute_labels.blank?
         %>
-        <td>
-          <%=br compensatory_minute_labels.join("\n") %>
-        </td>
+        <td class="time"><%=br compensatory_minute_labels.join("\n") %></td>
 
         <td>
           <% (leave_files[date.to_datetime] || []).each do |leave_file|%>
