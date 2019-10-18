@@ -4,24 +4,31 @@
 
   <h3><%= link_to t('modules.gws/affair/overtime_file'), gws_affair_overtime_files_path(state: "all") %></h3>
   <ul class="narrow-page">
-    <li><%= link_to t("modules.gws/affair/overtime_file/approve"), gws_affair_overtime_files_path(state: "approve") %></li>
+    <% if Gws::Affair::OvertimeFile.allowed?(:approve, @cur_user, site: @cur_site) %>
+      <li><%= link_to t("modules.gws/affair/overtime_file/approve"), gws_affair_overtime_files_path(state: "approve") %></li>
+    <% end %>
     <li><%= link_to t("modules.gws/affair/overtime_file/request"), gws_affair_overtime_files_path(state: "request") %></li>
   </ul>
 
   <h3><%= link_to t('modules.gws/affair/leave_file'), gws_affair_leave_files_path(state: "all") %></h3>
   <ul class="narrow-page">
-    <li><%= link_to t("modules.gws/affair/leave_file/approve"), gws_affair_leave_files_path(state: "approve") %></li>
+    <% if Gws::Affair::LeaveFile.allowed?(:approve, @cur_user, site: @cur_site) %>
+      <li><%= link_to t("modules.gws/affair/leave_file/approve"), gws_affair_leave_files_path(state: "approve") %></li>
+    <% end %>
     <li><%= link_to t("modules.gws/affair/leave_file/request"), gws_affair_leave_files_path(state: "request") %></li>
   </ul>
 
-  <h3><%= link_to t("modules.gws/affair/overtime_file/management/aggregate"), gws_affair_overtime_management_aggregate_path(threshold: "under"), class: "management" %></h3>
-  <% if %i[manage_private manage_all].find { |priv| Gws::Attendance::TimeCard.allowed?(priv, @cur_user, site: @cur_site) } %>
-    <h3><%= link_to t("modules.gws/affair/attendance/management/time_card"), gws_affair_attendance_management_main_path, class: "management" %></h3>
+  <% if Gws::Affair::DutyHour.allowed?(:read, @cur_user, site: @cur_site) %>
+    <h3><%= link_to t("modules.gws/affair/overtime_file/management/aggregate"), gws_affair_overtime_management_aggregate_path(threshold: "under"), class: "management" %></h3>
+
+    <% if %i[manage_private manage_all].find { |priv| Gws::Attendance::TimeCard.allowed?(priv, @cur_user, site: @cur_site) } %>
+      <h3><%= link_to t("modules.gws/affair/attendance/management/time_card"), gws_affair_attendance_management_main_path, class: "management" %></h3>
+    <% end %>
+    <h3><%= link_to t("modules.gws/affair/duty_calendar"), gws_affair_duty_calendars_path, class: "management" %></h3>
+    <h3><%= link_to t("modules.gws/affair/duty_hour"), gws_affair_duty_hours_path, class: "management" %></h3>
+    <h3><%= link_to t("modules.gws/affair/holiday_calendar"), gws_affair_holiday_calendars_path, class: "management" %></h3>
+    <h3><%= link_to t("modules.gws/affair/capital"), gws_affair_capitals_path, class: "management" %></h3>
   <% end %>
-  <h3><%= link_to t("modules.gws/affair/duty_calendar"), gws_affair_duty_calendars_path, class: "management" %></h3>
-  <h3><%= link_to t("modules.gws/affair/duty_hour"), gws_affair_duty_hours_path, class: "management" %></h3>
-  <h3><%= link_to t("modules.gws/affair/holiday_calendar"), gws_affair_holiday_calendars_path, class: "management" %></h3>
-  <h3><%= link_to t("modules.gws/affair/capital"), gws_affair_capitals_path, class: "management" %></h3>
 </nav>
 
 <%= render partial: 'gws/main/navi' %>
