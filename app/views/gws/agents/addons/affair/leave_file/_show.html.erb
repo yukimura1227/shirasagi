@@ -10,12 +10,12 @@
 
   <% if @item.week_in_compensatory_file %>
     <dt><%= @model.t :week_in_compensatory_file_id %></dt>
-    <dd><%= link_to @item.week_in_compensatory_file.overtime_name_label, gws_affair_overtime_file_path(site: @cur_site.id, id: @item.week_in_compensatory_file) %></dd>
+    <dd><%= link_to @item.week_in_compensatory_file.term_label, gws_affair_overtime_file_path(site: @cur_site.id, id: @item.week_in_compensatory_file) %></dd>
   <% end %>
 
   <% if @item.week_out_compensatory_file %>
     <dt><%= @model.t :week_out_compensatory_file_id %></dt>
-    <dd><%= link_to @item.week_out_compensatory_file.overtime_name_label, gws_affair_overtime_file_path(site: @cur_site.id, id: @item.week_out_compensatory_file) %></dd>
+    <dd><%= link_to @item.week_out_compensatory_file.term_label, gws_affair_overtime_file_path(site: @cur_site.id, id: @item.week_out_compensatory_file) %></dd>
   <% end %>
 
   <dt><%= @model.t :reason %></dt>

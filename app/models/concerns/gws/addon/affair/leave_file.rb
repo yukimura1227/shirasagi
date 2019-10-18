@@ -125,4 +125,11 @@ module Gws::Addon::Affair::LeaveFile
       errors.add :week_out_compensatory_file_id, "は他の休暇申請に設定されています。"
     end
   end
+
+  def term_label
+    hour = ((end_at - start_at) * 24).to_i
+    start_time = "#{start_at.hour}:#{format('%02d', start_at.minute)}"
+    end_time = "#{start_at.hour + hour}:#{format('%02d', end_at.minute)}"
+    "#{overtime_name}（#{start_at.strftime("%Y/%m/%d")} #{start_time}#{I18n.t("ss.wave_dash")}#{end_time}）"
+  end
 end

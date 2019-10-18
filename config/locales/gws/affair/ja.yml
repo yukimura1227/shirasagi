@@ -44,6 +44,7 @@ ja:
     confirm:
       download: ダウンロードしてよろしいですか？
     labels:
+      overtime_file: 時間外申請
       overtime:
         under_threshold:
           duty_day_time:
@@ -176,6 +177,12 @@ ja:
         saturday_type: 土曜日
         national_holiday_type: 勤務日が祝祭日の場合
         holidays: 他の所定休日
+    errors:
+      models:
+        gws/affair/overtime_file:
+          over_one_day: 開始時間〜終了時間が1日を超過しています。
+          over_change_hour: 開始時間〜終了時間が日替わり時刻を超えています。
+          in_duty_hour: 開始時間〜終了時間が勤務時間内です。
 
   gws_role:
     read_other_gws_affair_capitals: 原資区分の閲覧（所有）
@@ -219,6 +226,7 @@ ja:
     gws/affair/overtime_file:
       name:
         - タイトルを入力します。
+        - 空欄の場合、業務名（開始時間〜終了時間）が設定されます。
       capital_id:
         - 原資区分を入力します。
       overtime_name:

@@ -24,6 +24,7 @@ module Gws::Addon::Affair::OvertimeFile
     permit_params :remark
 
     before_validation :validate_date
+    before_validation :validate_name
 
     validates :overtime_name, presence: true
     validates :start_at, presence: true, datetime: true
@@ -37,10 +38,6 @@ module Gws::Addon::Affair::OvertimeFile
       self.end_at_hour = end_at.hour if end_at
       self.end_at_minute = end_at.minute if end_at
     end
-  end
-
-  def overtime_name_label
-    "#{overtime_name}（#{start_at.strftime("%Y/%m/%d %H:%M")}#{I18n.t("ss.wave_dash")}#{end_at.strftime("%Y/%m/%d %H:%M")}）"
   end
 
   def start_at_hour_options
@@ -88,8 +85,11 @@ module Gws::Addon::Affair::OvertimeFile
     changed_at = duty_calendar.affair_next_changed(start_at)
     self.date = changed_at.advance(days: -1).change(hour: 0, min: 0, sec: 0)
 
-    if end_at > changed_at
-      errors.add :end_at, "が日替わり時刻を超えています。"
+    #if end_at > changed_at
+    #  errors.add :base, :over_change_hour
+    #end
+    if end_at >= start_at.advance(days: 1)
+      errors.add :base, :over_one_day
     end
 
     return if duty_calendar.leave_day?(date)
@@ -103,7 +103,21 @@ module Gws::Addon::Affair::OvertimeFile
     in_affair_at_2 = end_at > affair_start && start_at < affair_end
 
     if in_affair_at_1 || in_affair_at_2
-      errors.add :base, "時間外が勤務時間内です。"
+      errors.add :base, :in_duty_hour
     end
+  end
+
+  def validate_name
+    return if overtime_name.blank?
+    return if date.blank? || start_at.blank? || end_at.blank?
+    return if name.present?
+    self.name = term_label
+  end
+
+  def term_label
+    hour = ((end_at - start_at) * 24).to_i
+    start_time = "#{start_at.hour}:#{format('%02d', start_at.minute)}"
+    end_time = "#{start_at.hour + hour}:#{format('%02d', end_at.minute)}"
+    "#{overtime_name}（#{start_at.strftime("%Y/%m/%d")} #{start_time}#{I18n.t("ss.wave_dash")}#{end_time}）"
   end
 end

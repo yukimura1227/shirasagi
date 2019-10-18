@@ -14,8 +14,8 @@
       <% if @multi %>
       <th class="checkbox"><input type="checkbox" /></th>
       <% end %>
-      <th class="name"><%= @model.t :overtime_name %></th>
-      <th><%= @model.t :week_in_compensatory_minute %></th>
+      <th class="name"><%= t("gws/affair.labels.overtime_file") %></th>
+      <th><%= t("gws/affair.options.leave_type.week_in_compensatory_leave") %></th>
     </tr>
   </thead>
   <tbody class="items">
@@ -26,7 +26,7 @@
             <input type="checkbox" name="ids[]" value="<%= item.id %>" />
           </td>
         <% end %>
-        <td><%= link_to item.overtime_name_label, "#", class: @multi ? "select-item" : "select-single-item" %></td>
+        <td><%= link_to item.term_label, "#", class: @multi ? "select-item" : "select-single-item" %></td>
         <td><%= item.label :week_in_compensatory_minute %></td>
       </tr>
     <% end %>
