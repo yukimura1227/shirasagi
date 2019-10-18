@@ -31,7 +31,7 @@ class Gws::Affair::DutyHoursController < ApplicationController
   def set_item
     @item ||= begin
       if params[:id] == "default"
-        Gws::Affair::DefaultDutyHour.wrap(@cur_site)
+        Gws::Affair::DefaultDutyHour.new(cur_site: @cur_site)
       else
         item = @model.find(params[:id])
         item.attributes = fix_params
