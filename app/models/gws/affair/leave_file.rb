@@ -33,4 +33,14 @@ class Gws::Affair::LeaveFile
     url_helper = Rails.application.routes.url_helpers
     url_helper.gws_affair_leave_file_path(id: id, site: site, state: 'all')
   end
+
+  def workflow_wizard_path
+    url_helper = Rails.application.routes.url_helpers
+    url_helper.gws_affair_leave_wizard_path(site: site.id, id: id)
+  end
+
+  def workflow_pages_path
+    url_helper = Rails.application.routes.url_helpers
+    url_helper.gws_affair_leave_file_path(site: site.id, id: id, state: "all")
+  end
 end

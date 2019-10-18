@@ -6,28 +6,33 @@ namespace :affair do
     @site = Gws::Group.find(ENV['site'])
     @user = Gws::User.find(ENV['user'])
 
-    current = Time.zone.now
+    current = Time.zone.now.to_datetime
     end_of_month = current.end_of_month.day
 
     @start_day = (ENV['start_day'] || 1).to_i
     @end_day = (ENV['end_day'] || end_of_month).to_i
 
     @capital_ids = Gws::Affair::Capital.site(@site).allow(:read, @user, site: @site).pluck(:id)
+    @compensatory_minutes =[[465, 0], [0, 465]]
 
-    duty_hour = @user.effective_duty_hour(@site)
-    duty_hour.cur_user = @user
+    @time_card = Gws::Attendance::TimeCard.site(@site).user(@user).find_by(date: current.change(day: 1, hour: 0, min: 0, sec: 0))
+    @time_card.records.destroy_all
+
+    duty_calendar = @user.effective_duty_calendar(@site)
+    duty_hour = duty_calendar.default_duty_hour
 
     duty_start_hour = duty_hour.affair_start(current).hour
     duty_end_hour = duty_hour.affair_end(current).hour
 
     overtime_total = 0
+    aggregated_minute = 0
 
     (@start_day..@end_day).each do |day|
       date = current.change(day: day, hour: 0, min: 0, sec: 0)
 
-      if duty_hour.leave_day?(date)
-        overtime_hour = (duty_end_hour - duty_start_hour) + rand(1..4)
-        overtime_total += overtime_hour
+      if duty_calendar.leave_day?(date)
+        overtime_hour = (duty_end_hour - duty_start_hour) + rand(2..8)
+        break_time_minute = 45
 
         item = Gws::Affair::OvertimeFile.new
         item.cur_site = @site
@@ -39,6 +44,7 @@ namespace :affair do
         item.end_at = item.start_at.advance(hours: overtime_hour)
         item.capital_id = @capital_ids.sample
         item.remark = "備考です。"
+        item.week_in_compensatory_minute, item.week_out_compensatory_minute = @compensatory_minutes.sample
 
         # workflow
         item.state = "approve"
@@ -66,15 +72,27 @@ namespace :affair do
             "end_at_date" => item.end_at.strftime("%Y/%m/%d"),
             "end_at_hour" => item.end_at.hour,
             "end_at_minute" => item.end_at.minute,
-            "break_time_minute" => 45
+            "break_time_minute" => break_time_minute
           }
         }
         item.save_results
 
-        puts "leave_day #{date.strftime("%Y/%m/%d")} 時間外：#{overtime_hour}"
+        # time_card
+        record = @time_card.records.where(date: date).first
+        record ||= @time_card.records.create(date: date)
+        record.set(enter: duty_hour.affair_start(date))
+        record.set(leave: item.end_at)
+
+        overtime_total += overtime_hour
+        aggregated_minute += overtime_hour * 60
+        aggregated_minute -= item.week_in_compensatory_minute
+        aggregated_minute -= break_time_minute
+
+        puts "[休祝日] #{date.strftime("%Y/%m/%d")} 時間外：#{overtime_hour}"
       else
         overtime_hour = rand(1..4)
         overtime_total += overtime_hour
+        break_time_minute = 0
 
         item = Gws::Affair::OvertimeFile.new
         item.cur_site = @site
@@ -117,16 +135,26 @@ namespace :affair do
             "end_at_date" => item.end_at.strftime("%Y/%m/%d"),
             "end_at_hour" => item.end_at.hour,
             "end_at_minute" => item.end_at.minute,
-            "break_time_minute" => 0
+            "break_time_minute" => break_time_minute
           }
         }
         item.save_results
 
-        puts "duty_day  #{date.strftime("%Y/%m/%d")} 時間外：#{overtime_hour}"
+        # time_card
+        record = @time_card.records.where(date: date).first
+        record ||= @time_card.records.create(date: date)
+        record.set(enter: duty_hour.affair_start(date))
+        record.set(leave: item.end_at)
 
+        overtime_total += overtime_hour
+        aggregated_minute += overtime_hour * 60
+        aggregated_minute -= item.week_in_compensatory_minute
+        aggregated_minute -= break_time_minute
+
+        puts "[勤務日] #{date.strftime("%Y/%m/%d")} 時間外：#{overtime_hour}"
       end
     end
 
-    puts "計 #{overtime_total}h"
+    puts "計 #{overtime_total}h (#{aggregated_minute.to_f / 60}h)"
   end
 end
