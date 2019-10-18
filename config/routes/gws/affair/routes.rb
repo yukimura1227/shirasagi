@@ -6,11 +6,6 @@ Rails.application.routes.draw do
     delete :destroy_all, on: :collection, path: ''
   end
 
-  concern :soft_deletion do
-    match :soft_delete, on: :member, via: [:get, :post]
-    post :soft_delete_all, on: :collection
-  end
-
   concern :workflow do
     post :request_update, on: :member
     post :approve_update, on: :member
@@ -35,7 +30,7 @@ Rails.application.routes.draw do
     end
 
     namespace "overtime" do
-      resources :files, path: 'files/:state', concerns: [:deletion, :soft_deletion, :workflow]
+      resources :files, path: 'files/:state', concerns: [:deletion, :workflow]
       get "/search_approvers" => "search_approvers#index", as: :search_approvers
       match "/wizard/:id/approver_setting" => "wizard#approver_setting", via: [:get, :post], as: :approver_setting
       get "/wizard/:id/reroute" => "wizard#reroute", as: :reroute
@@ -57,7 +52,7 @@ Rails.application.routes.draw do
     end
 
     namespace "leave" do
-      resources :files, path: 'files/:state', concerns: [:deletion, :soft_deletion, :workflow]
+      resources :files, path: 'files/:state', concerns: [:deletion, :workflow]
       get "/search_approvers" => "search_approvers#index", as: :search_approvers
       match "/wizard/:id/approver_setting" => "wizard#approver_setting", via: [:get, :post], as: :approver_setting
       get "/wizard/:id/reroute" => "wizard#reroute", as: :reroute

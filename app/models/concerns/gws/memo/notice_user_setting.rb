@@ -3,7 +3,7 @@ module Gws::Memo::NoticeUserSetting
   extend Gws::UserSetting
 
   included do
-    %w(schedule todo report workflow circular monitor board faq qna survey discussion announcement).each do |name|
+    %w(schedule todo report workflow circular monitor board faq qna survey discussion announcement affair).each do |name|
       field "notice_#{name}_user_setting", type: String, default: 'notify'
       field "notice_#{name}_email_user_setting", type: String, default: 'silence'
       permit_params "notice_#{name}_user_setting".to_sym
@@ -63,6 +63,7 @@ module Gws::Memo::NoticeUserSetting
     when :"gws/notice/post" then 'announcement'
     when :"gws/survey/form", :"gws/survey/file" then 'survey'
     when :"gws/monitor/topic", :"gws/monitor/post" then 'monitor'
+    when :"gws/affair/overtime_file", :"gws/affair/leave_file" then 'affair'
     end
   end
 end

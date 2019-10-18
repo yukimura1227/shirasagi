@@ -165,6 +165,10 @@
       text-align: center;
     }
 
+    th.leave, td.leave {
+      min-width: 6em;
+    }
+
     th.memo, td.memo {
       min-width: 6em;
     }

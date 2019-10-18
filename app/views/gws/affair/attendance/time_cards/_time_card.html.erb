@@ -88,7 +88,7 @@
             <th class="time <%= "break_enter#{i + 1}" %>"><%= @cur_site["attendance_break_enter#{i + 1}_label"].presence || t('gws/attendance.formats.break_enter', count: i + 1) %></th>
             <th class="time <%= "break_leave#{i + 1}" %>"><%= @cur_site["attendance_break_leave#{i + 1}_label"].presence || t('gws/attendance.formats.break_leave', count: i + 1) %></th>
           <% end %>
-          <th class="overtime time"><%= "時間外 (結果 | 差分)" %></th>
+          <th class="overtime time"><%= "執務時間 (結果 | 差分)" %></th>
           <th class="break-time"><%= "休憩" %></th>
           <th class="compensatory-time"><%= "振替" %></th>
           <th class="leave"><%= "休暇" %></th>
@@ -184,7 +184,7 @@
         %>
         <td class="time"><%=br compensatory_minute_labels.join("\n") %></td>
 
-        <td>
+        <td class="leave">
           <% (leave_files[date.to_datetime] || []).each do |leave_file|%>
             <div class="leave-file">
               <%= leave_file.label :leave_type %>

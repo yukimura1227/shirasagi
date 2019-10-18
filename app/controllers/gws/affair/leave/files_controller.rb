@@ -1,6 +1,8 @@
 class Gws::Affair::Leave::FilesController < ApplicationController
   include Gws::BaseFilter
   include Gws::CrudFilter
+  include Gws::Affair::FileFilter
+  include Gws::Affair::WorkflowFilter
 
   model Gws::Affair::LeaveFile
 
@@ -12,213 +14,14 @@ class Gws::Affair::Leave::FilesController < ApplicationController
     @crumbs << [@cur_site.menu_affair_label || t('modules.gws/affair'), gws_affair_main_path]
     @crumbs << [t('modules.gws/affair/leave_file'), gws_affair_leave_files_path(state: "all")]
     if %w(request approve).include?(params[:state])
-      @crumbs << [t("modules.gws/affair/leave_file/#{params[:state]}"), gws_affair_leave_files_path(state: params[:state])]
+      @crumbs << [
+        t("modules.gws/affair/overtime_file/#{params[:state]}"),
+        gws_affair_overtime_files_path(state: params[:state])
+      ]
     end
   end
 
   def fix_params
     { cur_user: @cur_user, cur_site: @cur_site }
   end
-
-  def request_approval
-    current_level = @item.workflow_current_level
-    current_workflow_approvers = @item.workflow_approvers_at(current_level).reject{|approver| approver[:user_id] == @cur_user.id}
-    current_workflow_approvers.each do |workflow_approver|
-      Gws::Memo::Notifier.deliver_workflow_request!(
-          cur_site: @cur_site, cur_group: @cur_group, cur_user: @cur_user,
-          to_users: Gws::User.where(id: workflow_approver[:user_id]), item: @item,
-          url: params[:url], comment: params[:workflow_comment]
-      ) rescue nil
-    end
-
-    @item.set_workflow_approver_state_to_request
-    @item.update
-  end
-
-  public
-
-  def request_update
-    set_item
-
-    raise "403" unless @item.allowed?(:edit, @cur_user)
-    if @item.workflow_requested?
-      raise "403" unless @item.allowed?(:reroute, @cur_user)
-    end
-
-    @item.approved = nil
-    if params[:workflow_agent_type].to_s == "agent"
-      @item.workflow_user_id = Gws::User.site(@cur_site).in(id: params[:workflow_users]).first.id
-      @item.workflow_agent_id = @cur_user.id
-    else
-      @item.workflow_user_id = @cur_user.id
-      @item.workflow_agent_id = nil
-    end
-    @item.workflow_state   = @model::WORKFLOW_STATE_REQUEST
-    @item.workflow_comment = params[:workflow_comment]
-    @item.workflow_pull_up = params[:workflow_pull_up]
-    @item.workflow_on_remand = params[:workflow_on_remand]
-    save_workflow_approvers = @item.workflow_approvers
-    @item.workflow_approvers = params[:workflow_approvers]
-    @item.workflow_required_counts = params[:workflow_required_counts]
-    @item.workflow_approver_attachment_uses = params[:workflow_approver_attachment_uses]
-    @item.workflow_current_circulation_level = 0
-    save_workflow_circulations = @item.workflow_circulations
-    @item.workflow_circulations = params[:workflow_circulations]
-    @item.workflow_circulation_attachment_uses = params[:workflow_circulation_attachment_uses]
-
-    if @item.valid?
-      request_approval
-      @item.class.destroy_workflow_files(save_workflow_approvers)
-      @item.class.destroy_workflow_files(save_workflow_circulations)
-      render json: { workflow_state: @item.workflow_state }
-    else
-      render json: @item.errors.full_messages, status: :unprocessable_entity
-    end
-  end
-
-  def restart_update
-    set_item
-
-    raise "403" unless @item.allowed?(:edit, @cur_user)
-
-    @item.approved = nil
-    if params[:workflow_agent_type].to_s == "agent"
-      @item.workflow_user_id = Gws::User.site(@cur_site).in(id: params[:workflow_users]).first.id
-      @item.workflow_agent_id = @cur_user.id
-    else
-      @item.workflow_user_id = @cur_user.id
-      @item.workflow_agent_id = nil
-    end
-    @item.workflow_state = @model::WORKFLOW_STATE_REQUEST
-    @item.workflow_comment = params[:workflow_comment]
-    save_workflow_approvers = @item.workflow_approvers
-    copy = @item.workflow_approvers.to_a
-    copy.each do |approver|
-      approver[:state] = @model::WORKFLOW_STATE_PENDING
-      approver[:comment] = ''
-      approver[:file_ids] = nil
-    end
-    @item.workflow_approvers = Workflow::Extensions::WorkflowApprovers.new(copy)
-    @item.workflow_current_circulation_level = 0
-    save_workflow_circulations = @item.workflow_circulations
-    copy = @item.workflow_circulations.to_a
-    copy.each do |circulation|
-      circulation[:state] = @model::WORKFLOW_STATE_PENDING
-      circulation[:comment] = ''
-      circulation[:file_ids] = nil
-    end
-    @item.workflow_circulations = Workflow::Extensions::WorkflowCirculations.new(copy)
-
-    if @item.save
-      request_approval
-      @item.class.destroy_workflow_files(save_workflow_approvers)
-      @item.class.destroy_workflow_files(save_workflow_circulations)
-      render json: { workflow_state: @item.workflow_state }
-    else
-      render json: @item.errors.full_messages, status: :unprocessable_entity
-    end
-  end
-
-  def approve_update
-    set_item
-
-    raise "403" unless @item.allowed?(:approve, @cur_user)
-
-    save_level = @item.workflow_current_level
-    comment = params[:remand_comment]
-    file_ids = params[:workflow_file_ids]
-    opts = { comment: comment, file_ids: file_ids }
-    if params[:action] == 'pull_up_update'
-      @item.pull_up_workflow_approver_state(@cur_user, opts)
-    else
-      @item.approve_workflow_approver_state(@cur_user, opts)
-    end
-
-    if @item.finish_workflow?
-      @item.approved = Time.zone.now
-      @item.workflow_state = @model::WORKFLOW_STATE_APPROVE
-      @item.state = "approve"
-    end
-
-    if !@item.save
-      render json: @item.errors.full_messages, status: :unprocessable_entity
-    end
-
-    current_level = @item.workflow_current_level
-    if save_level != current_level
-      # escalate workflow
-      request_approval
-    end
-
-    workflow_state = @item.workflow_state
-    if workflow_state == @model::WORKFLOW_STATE_APPROVE
-      # finished workflow
-      to_user_ids = ([ @item.workflow_user_id, @item.workflow_agent_id ].compact) - [@cur_user.id]
-      if to_user_ids.present?
-        notify_user_ids = to_user_ids.select{|user_id| Gws::User.find(user_id).use_notice?(@item)}.uniq
-        if notify_user_ids.present?
-          Gws::Memo::Notifier.deliver_workflow_approve!(
-              cur_site: @cur_site, cur_group: @cur_group, cur_user: @cur_user,
-              to_users: Gws::User.in(id: notify_user_ids),
-              item: @item, url: params[:url], comment: params[:remand_comment]
-          ) rescue nil
-        end
-      end
-
-      if @item.move_workflow_circulation_next_step
-        current_circulation_users = @item.workflow_current_circulation_users.nin(id: @cur_user.id).active
-        current_circulation_users = current_circulation_users.select{|user| user.use_notice?(@item)}
-        if current_circulation_users.present?
-          Gws::Memo::Notifier.deliver_workflow_circulations!(
-              cur_site: @cur_site, cur_group: @cur_group, cur_user: @cur_user,
-              to_users: current_circulation_users, item: @item,
-              url: params[:url], comment: params[:remand_comment]
-          ) rescue nil
-        end
-        @item.save
-      end
-
-      if @item.try(:branch?) && @item.state == "public"
-        @item.delete
-      end
-    end
-
-    render json: { workflow_state: workflow_state }
-  end
-
-  alias pull_up_update approve_update
-
-  def remand_update
-    set_item
-
-    raise "403" unless @item.allowed?(:approve, @cur_user)
-
-    @item.remand_workflow_approver_state(@cur_user, params[:remand_comment])
-    if !@item.save
-      render json: @item.errors.full_messages, status: :unprocessable_entity
-    end
-
-    begin
-      recipients = []
-      if @item.workflow_state == @model::WORKFLOW_STATE_REMAND
-        recipients << @item.workflow_user_id
-        recipients << @item.workflow_agent_id if @item.workflow_agent_id.present?
-      else
-        prev_level_approvers = @item.workflow_approvers_at(@item.workflow_current_level)
-        recipients += prev_level_approvers.map { |hash| hash[:user_id] }
-      end
-      recipients -= [@cur_user.id]
-
-      notify_user_ids = recipients.select{|user_id| Gws::User.find(user_id).use_notice?(@item)}.uniq
-      if notify_user_ids.present?
-        Gws::Memo::Notifier.deliver_workflow_remand!(
-            cur_site: @cur_site, cur_group: @cur_group, cur_user: @cur_user,
-            to_users: Gws::User.and_enabled.in(id: notify_user_ids), item: @item,
-            url: params[:url], comment: params[:remand_comment]
-        ) rescue nil
-      end
-    end
-    render json: { workflow_state: @item.workflow_state }
-  end
-
 end
