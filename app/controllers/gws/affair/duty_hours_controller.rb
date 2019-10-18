@@ -17,7 +17,7 @@ class Gws::Affair::DutyHoursController < ApplicationController
 
   def set_crumbs
     @crumbs << [ @cur_site.menu_affair_label || t('modules.gws/affair'), gws_affair_main_path ]
-    @crumbs << [ t("mongoid.models.gws/affair/duty_hour"), action: :index ]
+    @crumbs << [ t("modules.gws/affair/duty_hour"), action: :index ]
   end
 
   def permit_fields

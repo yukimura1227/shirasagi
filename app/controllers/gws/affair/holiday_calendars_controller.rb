@@ -15,6 +15,6 @@ class Gws::Affair::HolidayCalendarsController < ApplicationController
 
   def set_crumbs
     @crumbs << [ @cur_site.menu_affair_label || t('modules.gws/affair'), gws_affair_main_path ]
-    @crumbs << [ t("mongoid.models.gws/affair/holiday_calendar"), gws_affair_holiday_calendars_path ]
+    @crumbs << [ t("modules.gws/affair/holiday_calendar"), gws_affair_holiday_calendars_path ]
   end
 end

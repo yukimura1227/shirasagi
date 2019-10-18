@@ -8,10 +8,13 @@ class Gws::Affair::Overtime::FilesController < ApplicationController
 
   private
 
-  #def set_crumbs
-  #  @crumbs << [@cur_site.menu_workflow_label || t('modules.gws/workflow'), gws_workflow_setting_path]
-  #  @crumbs << [@model.model_name.human, action: :index]
-  #end
+  def set_crumbs
+    @crumbs << [@cur_site.menu_affair_label || t('modules.gws/affair'), gws_affair_main_path]
+    @crumbs << [t('modules.gws/affair/overtime_file'), gws_affair_overtime_files_path(state: "all")]
+    if %w(request approve).include?(params[:state])
+      @crumbs << [t("modules.gws/affair/overtime_file/#{params[:state]}"), gws_affair_overtime_files_path(state: params[:state])]
+    end
+  end
 
   def fix_params
     { cur_user: @cur_user, cur_site: @cur_site }

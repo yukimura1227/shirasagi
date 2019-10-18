@@ -1,7 +1,5 @@
 ja:
   gws/affair:
-    overtime_workflow: 時間外申請
-    leave_workflow: 休暇申請
     aggregate: 集計結果
     capital: 原資区分
     default_duty_hour: 標準の勤務体系
@@ -89,6 +87,19 @@ ja:
 
   modules:
     gws/affair: 庶務事務
+    gws/affair/attendance/time_card: タイムカード
+    gws/affair/overtime_file: 時間外申請
+    gws/affair/overtime_file/request: 依頼されたもの
+    gws/affair/overtime_file/approve: 申請したもの
+    gws/affair/leave_file: 休暇申請
+    gws/affair/leave_file/request: 依頼されたもの
+    gws/affair/leave_file/approve: 申請したもの
+    gws/affair/overtime_file/management/aggregate: 時間外集計
+    gws/affair/attendance/management/time_card: タイムカードの管理
+    gws/affair/duty_hour: 勤務体系の管理
+    gws/affair/duty_calendar: 勤務カレンダーの管理
+    gws/affair/holiday_calendar: 休日カレンダーの管理
+    gws/affair/capital: 原資区分の管理
     addons:
       gws/affair/overtime_file: 時間外申請書
       gws/affair/overtime_result: 結果
