@@ -17,8 +17,8 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
     # TODO manage_all or manage_private
     @groups = Gws::Group.in_group(@cur_site).active
 
-    @year = params.dig(:s, :year).presence || @current.year
-    @month = params.dig(:s, :month).presence || @current.month
+    @year = (params.dig(:s, :year).presence || @current.year).to_i
+    @month = (params.dig(:s, :month).presence || @current.month).to_i
     @group_id = params.dig(:s, :group_id)
     @capital_id = params.dig(:s, :capital_id)
   end
@@ -50,10 +50,25 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
     @items = @model.site(@cur_site).and(cond)
   end
 
+  def set_time_cards
+    @unlocked_time_cards = []
+    date = DateTime.new(@year, @month, 1, 0, 0, 0).to_date
+    @users.each do |user|
+      title = I18n.t('gws/attendance.formats.time_card_full_name',
+        user_name: user.name, month: I18n.l(date, format: :attendance_year_month)
+      )
+      time_card = Gws::Attendance::TimeCard.site(@cur_site).user(user).where(date: date).first
+      if !time_card || !time_card.locked?
+        @unlocked_time_cards << title
+      end
+    end
+  end
+
   public
 
   def index
     set_items
+    set_time_cards
     @items = @items.aggregate_by_user
   end
 

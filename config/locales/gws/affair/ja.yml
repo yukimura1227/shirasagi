@@ -41,6 +41,9 @@ ja:
         holiday: 休日
     notice:
       not_found_overtime_file: "設定可能な時間外申請がありませんでした。"
+      time_card_unlocked:
+        h2: "%{year}年%{month}月のタイムカードが締められていません。"
+        p: 以下のタイムカードが締められていません。
     confirm:
       download: ダウンロードしてよろしいですか？
     labels:
