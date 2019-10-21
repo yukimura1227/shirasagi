@@ -23,7 +23,8 @@
 
       group_options = @groups.map { |g| [g.name, g.id] }
 
-      capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:name, :id)
+      capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:no, :name, :id)
+      capital_options.map! { |no, name, id| [ [no.presence, name.presence].compact.join(" "), id ] }
 
       year_options = ((@current.year - 5)..(@current.year)).map { |y| ["#{y}#{t("datetime.prompts.year")}", y] }.reverse
       month_options = (1..12).map { |m| ["#{m}#{t("datetime.prompts.month")}", m] }
