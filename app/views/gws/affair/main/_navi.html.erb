@@ -13,7 +13,7 @@
       end
     %>
 
-    <h3><%= link_to(t('modules.gws/affair/overtime_file'), gws_affair_overtime_files_path(state: "request")) %></h3>
+    <h3><%= link_to(t('modules.gws/affair/overtime_file'), gws_affair_overtime_files_path(state: "mine")) %></h3>
     <% if narrow_down_menus.present? %>
       <ul class="narrow-page">
         <% narrow_down_menus.each do |narrow_down_menu| %>
@@ -34,7 +34,7 @@
       end
     %>
 
-    <h3><%= link_to t('modules.gws/affair/leave_file'), gws_affair_leave_files_path(state: "request") %></h3>
+    <h3><%= link_to t('modules.gws/affair/leave_file'), gws_affair_leave_files_path(state: "mine") %></h3>
     <% if narrow_down_menus.present? %>
       <ul class="narrow-page">
         <% narrow_down_menus.each do |narrow_down_menu| %>

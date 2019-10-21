@@ -1,5 +1,16 @@
+<% @index_title = proc do |item| %>
+  <%
+    if request[:state] != "mine"
+      title = "#{item.user_name}の休暇申請（#{item.start_end_term}）"
+    else
+      title = "休暇申請（#{item.start_end_term}）"
+    end
+  %>
+  <%= link_to title, { action: :show, id: item }, class: "title" %>
+<% end %>
+
 <% @tap_menu = proc do |item| %>
-  <%= link_to(t('ss.links.show'), action: :show, id: item) if item.readable?(@cur_user, site: @cur_site) %>
+  <%= link_to(t('ss.links.show'), action: :show, id: item) if item.allowed?(:read, @cur_user, site: @cur_site) %>
   <%= link_to(t('ss.links.edit'), action: :edit, id: item) if item.editable?(@cur_user, site: @cur_site) %>
   <%= link_to(t('ss.links.delete'), action: :delete, id: item) if item.destroyable?(@cur_user, site: @cur_site) %>
 <% end %>
@@ -8,7 +19,10 @@
   <span class="id">#<%= item.id %></span>
   <span class="datetime"><%= item.start_at.strftime("%Y/%m/%d") %></span>
   <span class="state"><%= t "ss.state.#{item.status}" %></span>
-  <span class="user"><%= t('gws/workflow.labels.user') %>: <%= item.user_name %></span>
+  <span class="state"><%= item.label :leave_type %></span>
+  <% if request[:state] != "mine" %>
+    <span class="user"><%= t('gws/workflow.labels.user') %>: <%= item.user_name %></span>
+  <% end %>
 <% end %>
 
 <div class="gws-workflow">

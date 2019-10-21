@@ -18,7 +18,7 @@
 %>
 <div class="list-head-search">
   <%= form_for :s, url: "", html: { class: "index-search", method: :get, autocomplete: :off } do |f| %>
-    <% if params[:state] != "request" %>
+    <% if params[:state] != "mine" %>
       <%= f.select :user_id, user_options %>
     <% end %>
     <%= f.select :year, year_options %>

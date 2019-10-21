@@ -7,7 +7,6 @@ class Gws::Affair::OvertimeFile
   include Gws::Addon::Affair::OvertimeDayResult
   include Gws::Addon::Affair::Approver
   include Gws::Addon::Affair::OvertimeFile
-  include Gws::Addon::ReadableSetting
   include Gws::Addon::GroupPermission
   include Gws::Addon::History
   include Gws::Affair::Searchable

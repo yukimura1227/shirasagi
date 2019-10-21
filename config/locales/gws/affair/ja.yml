@@ -90,12 +90,10 @@ ja:
     gws/affair/attendance/time_card: タイムカード
     gws/affair/overtime_file: 時間外申請
     gws/affair/overtime_file/approve: 依頼されたもの
-    gws/affair/overtime_file/request: 申請したもの
-    gws/affair/overtime_file/all: 全て管理
+    gws/affair/overtime_file/all: 全ての管理
     gws/affair/leave_file: 休暇申請
     gws/affair/leave_file/approve: 依頼されたもの
-    gws/affair/leave_file/request: 申請したもの
-    gws/affair/leave_file/all: 全て管理
+    gws/affair/leave_file/all: 全ての管理
     gws/affair/overtime_file/management/aggregate: 時間外集計
     gws/affair/attendance/management/time_card: タイムカードの管理
     gws/affair/duty_hour: 勤務体系

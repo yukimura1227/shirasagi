@@ -5,7 +5,6 @@ class Gws::Affair::LeaveFile
   include Gws::Reference::Site
   include Gws::Addon::Affair::Approver
   include Gws::Addon::Affair::LeaveFile
-  include Gws::Addon::ReadableSetting
   include Gws::Addon::GroupPermission
   include Gws::Addon::History
   include Gws::Affair::Searchable
