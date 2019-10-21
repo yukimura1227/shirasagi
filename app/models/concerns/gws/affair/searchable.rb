@@ -11,6 +11,7 @@ module Gws::Affair::Searchable
       criteria = criteria.search_user(params)
       criteria = criteria.search_date(params)
       criteria = criteria.search_state(params)
+      criteria = criteria.search_capital(params)
       criteria
     end
 
@@ -64,6 +65,15 @@ module Gws::Affair::Searchable
       else
         none
       end
+    end
+
+    def search_capital(params)
+      return all if params[:capital_id].blank?
+
+      capital = Gws::Affair::Capital.find(params[:capital_id]) rescue nil
+      return all if capital.blank?
+
+      all.where(capital_id: capital.id)
     end
   end
 end

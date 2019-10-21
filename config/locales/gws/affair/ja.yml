@@ -110,7 +110,7 @@ ja:
 
   mongoid:
     models:
-      gws/affair/capital: タイムカード
+      gws/affair/capital: 原資区分
       gws/affair/duty_calendar: 勤務カレンダー
       gws/affair/duty_hour: 勤務体系
       gws/affair/holiday_calendar: 休日カレンダー

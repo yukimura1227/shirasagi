@@ -1,11 +1,14 @@
 <%
-  @s = OpenStruct.new params[:s]
+  @s ||= OpenStruct.new params[:s]
+
+  capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:no, :name, :id)
+  capital_options.map! { |no, name, id| [ [ no.presence, name.presence ].compact.join(" "), id ] }
 
   main_group = @cur_user.gws_main_group(@cur_site)
   user_options = Gws::User.in(group_ids: main_group.id).and_enabled.map { |user| [user.long_name, user.id] }
   user_options.unshift([t("mongoid.models.ss/user"), ""])
 
-  @current = Time.zone.now
+  @current ||= Time.zone.now
   year_options = ((@current.year - 5)..(@current.year)).map { |y| ["#{y}#{t("datetime.prompts.year")}", y] }.reverse
   year_options.unshift([t("datetime.prompts.year"), ""])
 
@@ -18,9 +21,13 @@
 %>
 <div class="list-head-search">
   <%= form_for :s, url: "", html: { class: "index-search", method: :get, autocomplete: :off } do |f| %>
-    <%= f.select :user_id, user_options %>
+    <% if params[:state] != "request" %>
+      <%= f.select :capital_id, capital_options, include_blank: t("mongoid.models.gws/affair/capital") %>
+      <%= f.select :user_id, user_options %>
+    <% end %>
     <%= f.select :year, year_options %>
     <%= f.select :month, month_options %>
     <input type="submit" value="<%= t('ss.buttons.search') %>" class="btn" />
+    <%= link_to t('ss.buttons.reset'), { action: :index }, class: "btn", style: "font-weight: normal;" %>
   <% end %>
 </div>

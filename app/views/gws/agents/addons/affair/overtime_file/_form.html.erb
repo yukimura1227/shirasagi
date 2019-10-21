@@ -1,8 +1,10 @@
 <%
-  @item.start_at_hour ||= @cur_site.affair_end_at_hour
-  @item.start_at_minute ||= @cur_site.affair_end_at_minute
-  @item.end_at_hour ||= @cur_site.affair_end_at_hour
-  @item.end_at_minute ||= @cur_site.affair_end_at_minute
+  duty_calendar = @cur_user.effective_duty_calendar(@cur_site)
+  duty_hour = duty_calendar.default_duty_hour
+  @item.start_at_hour ||= duty_hour.affair_end_at_hour
+  @item.start_at_minute ||= duty_hour.affair_end_at_minute
+  @item.end_at_hour ||= duty_hour.affair_end_at_hour + 1
+  @item.end_at_minute ||= duty_hour.affair_end_at_minute
 %>
 
 <dl class="see addon-gws-affair-overtime_file">
@@ -14,11 +16,7 @@
     <%= f.text_field :start_at_date, class: "date js-date" %>
     <%= f.select :start_at_hour, @item.start_at_hour_options %>
     <%= f.select :start_at_minute, @item.start_at_minute_options %>
-  </dd>
-
-  <dt><%= @model.t :end_at %><%= @model.tt :end_at %></dt>
-  <dd>
-    <%= f.text_field :end_at_date, class: "date js-date" %>
+    〜
     <%= f.select :end_at_hour, @item.end_at_hour_options %>
     <%= f.select :end_at_minute, @item.end_at_minute_options %>
   </dd>

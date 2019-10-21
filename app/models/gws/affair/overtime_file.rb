@@ -12,7 +12,9 @@ class Gws::Affair::OvertimeFile
   include Gws::Addon::History
   include Gws::Affair::Searchable
 
-  cattr_reader(:approver_user_class) { Gws::User }
+  # rubocop:disable Style/ClassVars
+  @@approver_user_class = Gws::User
+  # rubocop:enable Style/ClassVars
 
   seqid :id
   field :state, type: String, default: 'closed'

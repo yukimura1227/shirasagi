@@ -1,9 +1,6 @@
 <dl class="see">
-  <dt><%= @model.t :name %></dt>
-  <dd><%= @item.send :name %></dd>
-
   <dt><%= @model.t :capital_id %></dt>
-  <dd><%= tryb { @item.capital.name } %></dd>
+  <dd><%= tryb { [ @item.capital.no.presence, @item.capital.name.presence ].compact.join(" ") } %></dd>
 </dl>
 
 <%= jquery do %>

@@ -1,3 +1,8 @@
+<% @index_title = proc do |item| %>
+  <% title = "#{item.overtime_name}（#{item.start_end_term}）" %>
+  <%= link_to title, { action: :show, id: item }, class: "title" %>
+<% end %>
+
 <% @tap_menu = proc do |item| %>
   <%= link_to(t('ss.links.show'), action: :show, id: item) if item.readable?(@cur_user, site: @cur_site) %>
   <%= link_to(t('ss.links.edit'), action: :edit, id: item) if item.editable?(@cur_user, site: @cur_site) %>
@@ -9,6 +14,7 @@
   <span class="datetime"><%= item.start_at.strftime("%Y/%m/%d") %></span>
   <span class="state"><%= t "ss.state.#{item.status}" %></span>
   <span class="user"><%= t('gws/workflow.labels.user') %>: <%= item.user_name %></span>
+  <span class="capital"><%= item.capital.try { |capital| [ capital.no.presence, capital.name.presence ].compact.join(" ") } %></span>
 <% end %>
 
 <div class="gws-workflow">
