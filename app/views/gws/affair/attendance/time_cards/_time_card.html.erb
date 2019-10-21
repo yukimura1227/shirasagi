@@ -30,7 +30,7 @@
 
 <%
   overtime_day_results = {}
-  Gws::Affair::OvertimeDayResult.site(@cur_site).user(@cur_user).and(
+  Gws::Affair::OvertimeDayResult.site(@cur_site).user(@item.user).and(
     { "date" => { "$gte" => @cur_month } },
     { "date" => { "$lte" => @cur_month.end_of_month } },
   ).each do |item|
@@ -39,7 +39,7 @@
   end
 
   leave_files = {}
-  Gws::Affair::LeaveFile.site(@cur_site).user(@cur_user).and(
+  Gws::Affair::LeaveFile.site(@cur_site).user(@item.user).and(
     { "start_at" => { "$gte" => @cur_month } },
     { "start_at" => { "$lte" => @cur_month.end_of_month } },
     { "workflow_state" => "approve" }
