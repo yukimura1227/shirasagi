@@ -1,5 +1,6 @@
 <%
-  capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:name, :id)
+  capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:no, :name, :id)
+  capital_options.map! { |no, name, id| [ [ no.presence, name.presence ].compact.join(" "), id ] }
 %>
 
 <dl class="see">

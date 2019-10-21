@@ -9,22 +9,17 @@ class Gws::Affair::Capital
   set_permission_name 'gws_affair_duty_hours'
 
   seqid :id
+  field :no, type: String
   field :name, type: String
   field :order, type: Integer, default: 0
   field :remark, type: String
 
-  permit_params :name
-  permit_params :order
-  permit_params :remark
+  permit_params :no, :name, :order, :remark
 
-  validates :name, presence: true
+  validates :no, presence: true, length: { maximum: 20 }
+  validates :name, presence: true, length: { maximum: 80 }
 
   scope :site, ->(site) { self.in(group_ids: Gws::Group.site(site).pluck(:id)) }
-
-  def order
-    value = self[:order].to_i
-    value < 0 ? 0 : value
-  end
 
   class << self
     def search(params)
@@ -35,7 +30,7 @@ class Gws::Affair::Capital
         criteria = criteria.search_text params[:name]
       end
       if params[:keyword].present?
-        criteria = criteria.keyword_in params[:keyword], :name
+        criteria = criteria.keyword_in params[:keyword], :no, :name, :remark
       end
       criteria
     end

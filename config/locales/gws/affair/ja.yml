@@ -96,10 +96,10 @@ ja:
     gws/affair/leave_file/request: 申請したもの
     gws/affair/overtime_file/management/aggregate: 時間外集計
     gws/affair/attendance/management/time_card: タイムカードの管理
-    gws/affair/duty_hour: 勤務体系の管理
-    gws/affair/duty_calendar: 勤務カレンダーの管理
-    gws/affair/holiday_calendar: 休日カレンダーの管理
-    gws/affair/capital: 原資区分の管理
+    gws/affair/duty_hour: 勤務体系
+    gws/affair/duty_calendar: 勤務カレンダー
+    gws/affair/holiday_calendar: 休日カレンダー
+    gws/affair/capital: 原資区分
     addons:
       gws/affair/overtime_file: 時間外申請書
       gws/affair/overtime_result: 結果
@@ -116,6 +116,7 @@ ja:
       gws/affair/holiday_calendar: 休日カレンダー
     attributes:
       gws/affair/capital:
+        no: 原資区分番号
         name: 原資区分名
         order: 並び順
         remark: 説明
@@ -239,6 +240,8 @@ ja:
 
   tooltip:
     gws/affair/capital:
+      no:
+        - 原資区分番号を入力します。
       name:
         - 原資区分名を入力します。
       order:
