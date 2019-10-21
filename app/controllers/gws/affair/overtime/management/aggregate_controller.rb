@@ -24,7 +24,7 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
   def set_query
     @current = Time.zone.now
 
-    # TODO manage_all or manage_private
+    # TODO: manage_all or manage_private
     @groups = Gws::Group.in_group(@cur_site).active
 
     @year = (params.dig(:s, :year).presence || @current.year).to_i
@@ -40,10 +40,14 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
     end_at = start_at.end_of_month
 
     if @group_id.present?
-      group_ids = @groups.where(id: @group_id).pluck(:id)
+      group = @groups.where(id: @group_id).first
+    end
+    if group.present?
+      group_ids = @groups.in_group(group).pluck(:id)
     else
       group_ids = @groups.pluck(:id)
     end
+
     @users = Gws::User.active.in(group_ids: group_ids).order_by_title(@cur_site)
     user_ids = @users.pluck(:id)
 
@@ -62,10 +66,11 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
 
   def set_time_cards
     @unlocked_time_cards = []
-    date = DateTime.new(@year, @month, 1, 0, 0, 0).to_date
+    date = Time.new(@year, @month, 1, 0, 0, 0).in_time_zone
     @users.each do |user|
-      title = I18n.t('gws/attendance.formats.time_card_full_name',
-        user_name: user.name, month: I18n.l(date, format: :attendance_year_month)
+      title = I18n.t(
+        'gws/attendance.formats.time_card_full_name',
+        user_name: user.name, month: I18n.l(date.to_date, format: :attendance_year_month)
       )
       time_card = Gws::Attendance::TimeCard.site(@cur_site).user(user).where(date: date).first
       if !time_card || !time_card.locked?

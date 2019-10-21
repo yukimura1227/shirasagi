@@ -14,34 +14,23 @@
   </div>
 <% end %>
 
-<div class="gws-schedule-tabs">
-  <%= link_to gws_affair_overtime_management_aggregate_path(threshold: "under") do %>
-    <span class="tab-name">通常分</span>
-  <% end %>
-  <%= link_to gws_affair_overtime_management_aggregate_path(threshold: "over") do %>
-    <span class="tab-name">割合引上対象分（<%= "#{threshold_hour}時間超過" %>）</span>
-  <% end %>
-</div>
-
 <div class="attendance-box">
   <div class="attendance-box-main">
     <%
-      @s = OpenStruct.new params[:s]
+      @s ||= OpenStruct.new params[:s]
       @s[:year] ||= @year
       @s[:month] ||= @month
 
       group_options = @groups.map { |g| [g.name, g.id] }
-      group_options.unshift(["グループ", ""])
 
       capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:name, :id)
-      capital_options.unshift(["原資区分", ""])
 
       year_options = ((@current.year - 5)..(@current.year)).map { |y| ["#{y}#{t("datetime.prompts.year")}", y] }.reverse
       month_options = (1..12).map { |m| ["#{m}#{t("datetime.prompts.month")}", m] }
     %>
     <%= form_for :s, url: "", html: { method: :get } do |f| %>
-      <%= f.select :group_id, group_options %>
-      <%= f.select :capital_id, capital_options %>
+      <%= f.select :group_id, group_options, include_blank: "グループ" %>
+      <%= f.select :capital_id, capital_options, include_blank: "原資区分" %>
       <%= f.select :year, year_options %>
       <%= f.select :month, month_options %>
 
@@ -50,4 +39,13 @@
       <%= link_to t("ss.links.download"), gws_affair_overtime_management_download_aggregate_path, class: "btn", style: "float: right;" %>
     <% end %>
   </div>
+</div>
+
+<div class="gws-schedule-tabs">
+  <%= link_to gws_affair_overtime_management_aggregate_path(threshold: "under", s: params.permit(s: [:group_id, :capital_id, :year, :month]).dig(:s)), class: params[:threshold] == "under" ? "current" : nil do %>
+    <span class="tab-name">通常分</span>
+  <% end %>
+  <%= link_to gws_affair_overtime_management_aggregate_path(threshold: "over", s: params.permit(s: [:group_id, :capital_id, :year, :month]).dig(:s)), class: params[:threshold] == "over" ? "current" : nil do %>
+    <span class="tab-name">割合引上対象分（<%= "#{threshold_hour}時間超過" %>）</span>
+  <% end %>
 </div>
