@@ -199,12 +199,6 @@ ja:
           in_duty_hour: 開始時間〜終了時間が勤務時間内です。
 
   gws_role:
-    read_other_gws_affair_capitals: 原資区分の閲覧（所有）
-    read_private_gws_affair_capitals: 原資区分の閲覧（全て）
-    edit_other_gws_affair_capitals: 原資区分の編集（所有）
-    edit_private_gws_affair_capitals: 原資区分の編集（全て）
-    delete_other_gws_affair_capitals: 原資区分の削除（所有）
-    delete_private_gws_affair_capitals: 原資区分の削除（全て）
     read_gws_affair_duty_hours: 勤務体系の閲覧
     edit_gws_affair_duty_hours: 勤務体系の編集
     delete_gws_affair_duty_hours: 勤務体系の削除

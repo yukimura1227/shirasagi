@@ -1,6 +1,5 @@
 <%
-  capital_options = Gws::Affair::Capital.site(@cur_site).
-    readable(@cur_user, site: @cur_site).pluck(:name, :id)
+  capital_options = Gws::Affair::Capital.site(@cur_site).pluck(:name, :id)
 %>
 
 <dl class="see">

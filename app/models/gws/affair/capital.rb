@@ -3,9 +3,10 @@ class Gws::Affair::Capital
   include Gws::Referenceable
   include Gws::Reference::User
   include Gws::Reference::Site
-  include Gws::Addon::ReadableSetting
-  include Gws::Addon::GroupPermission
   include Gws::Addon::History
+  include Gws::SitePermission
+
+  set_permission_name 'gws_affair_duty_hours'
 
   seqid :id
   field :name, type: String
