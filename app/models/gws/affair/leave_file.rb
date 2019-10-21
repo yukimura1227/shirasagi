@@ -10,7 +10,9 @@ class Gws::Affair::LeaveFile
   include Gws::Addon::History
   include Gws::Affair::Searchable
 
-  cattr_reader(:approver_user_class) { Gws::User }
+  # rubocop:disable Style/ClassVars
+  @@approver_user_class = Gws::User
+  # rubocop:enable Style/ClassVars
 
   seqid :id
   field :state, type: String, default: 'closed'
@@ -18,8 +20,10 @@ class Gws::Affair::LeaveFile
 
   permit_params :state, :name
 
+  before_validation :set_name_by_start_end
+
   validates :state, presence: true
-  validates :name, presence: true, length: { maximum: 80 }
+  validates :name, length: { maximum: 80 }
 
   # indexing to elasticsearch via companion object
   #around_save ::Gws::Elasticsearch::Indexer::LeaveFileJob.callback
@@ -42,5 +46,11 @@ class Gws::Affair::LeaveFile
   def workflow_pages_path
     url_helper = Rails.application.routes.url_helpers
     url_helper.gws_affair_leave_file_path(site: site.id, id: id, state: "all")
+  end
+
+  private
+
+  def set_name_by_start_end
+    self.name ||= term_label
   end
 end

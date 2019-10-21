@@ -18,9 +18,12 @@
 %>
 <div class="list-head-search">
   <%= form_for :s, url: "", html: { class: "index-search", method: :get, autocomplete: :off } do |f| %>
-    <%= f.select :user_id, user_options %>
+    <% if params[:state] != "request" %>
+      <%= f.select :user_id, user_options %>
+    <% end %>
     <%= f.select :year, year_options %>
     <%= f.select :month, month_options %>
     <input type="submit" value="<%= t('ss.buttons.search') %>" class="btn" />
+    <%= link_to t('ss.buttons.reset'), { action: :index }, class: "btn", style: "font-weight: normal;" %>
   <% end %>
 </div>

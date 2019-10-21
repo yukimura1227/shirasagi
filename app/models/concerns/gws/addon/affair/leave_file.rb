@@ -4,7 +4,7 @@ module Gws::Addon::Affair::LeaveFile
 
   included do
     attr_accessor :start_at_date, :start_at_hour, :start_at_minute
-    attr_accessor :end_at_date, :end_at_hour, :end_at_minute
+    attr_accessor :end_at_hour, :end_at_minute
 
     field :date, type: DateTime
     field :start_at, type: DateTime
@@ -16,7 +16,7 @@ module Gws::Addon::Affair::LeaveFile
     belongs_to :week_out_compensatory_file, class_name: "Gws::Affair::OvertimeFile"
 
     permit_params :start_at_date, :start_at_hour, :start_at_minute
-    permit_params :end_at_date, :end_at_hour, :end_at_minute
+    permit_params :end_at_hour, :end_at_minute
 
     permit_params :leave_type
     permit_params :reason
@@ -28,7 +28,7 @@ module Gws::Addon::Affair::LeaveFile
 
     validates :leave_type, presence: true
     validates :start_at, presence: true, datetime: true
-    validates :end_at, presence: true, datetime: true
+    validates :end_at, datetime: true
 
     validates :week_in_compensatory_file_id, presence: true, if: ->{ leave_type == "week_in_compensatory_leave" }
     validates :week_out_compensatory_file_id, presence: true, if: ->{ leave_type == "week_out_compensatory_leave" }
@@ -40,7 +40,6 @@ module Gws::Addon::Affair::LeaveFile
       self.start_at_date = start_at.strftime("%Y/%m/%d") if start_at
       self.start_at_hour = start_at.hour if start_at
       self.start_at_minute = start_at.minute if start_at
-      self.end_at_date = end_at.strftime("%Y/%m/%d") if end_at
       self.end_at_hour = end_at.hour if end_at
       self.end_at_minute = end_at.minute if end_at
     end
@@ -68,15 +67,16 @@ module Gws::Addon::Affair::LeaveFile
 
   def validate_date
     return if start_at_date.blank? || start_at_hour.blank? || start_at_minute.blank?
-    return if end_at_date.blank? || end_at_hour.blank? || end_at_minute.blank?
+    return if end_at_hour.blank? || end_at_minute.blank?
 
-    site = cur_site || site
-    user = cur_user || user
+    site = cur_site || self.site
+    user = cur_user || self.user
     return if site.blank?
     return if user.blank?
 
     self.start_at = Time.zone.parse("#{start_at_date} #{start_at_hour}:#{start_at_minute}")
-    self.end_at = Time.zone.parse("#{end_at_date} #{end_at_hour}:#{end_at_minute}")
+    self.end_at = Time.zone.parse("#{start_at_date} #{end_at_hour}:#{end_at_minute}")
+    self.end_at += 1.day if self.end_at < self.start_at
 
     if start_at >= end_at
       errors.add :end_at, :greater_than, count: t(:start_at)
@@ -126,10 +126,20 @@ module Gws::Addon::Affair::LeaveFile
     end
   end
 
-  def term_label
+  def start_end_term
+    return if start_at.blank? || end_at.blank?
+
     hour = ((end_at - start_at) * 24).to_i
     start_time = "#{start_at.hour}:#{format('%02d', start_at.minute)}"
     end_time = "#{start_at.hour + hour}:#{format('%02d', end_at.minute)}"
-    "#{overtime_name}（#{start_at.strftime("%Y/%m/%d")} #{start_time}#{I18n.t("ss.wave_dash")}#{end_time}）"
+    "#{start_at.strftime("%Y/%m/%d")} #{start_time}#{I18n.t("ss.wave_dash")}#{end_time}"
+  end
+
+  def term_label
+    name_label = user_name
+    term_label = start_end_term
+    return if name_label.blank? || term_label.blank?
+
+    "#{name_label}の休暇申請（#{term_label}）"
   end
 end

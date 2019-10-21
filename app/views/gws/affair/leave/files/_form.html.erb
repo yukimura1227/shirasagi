@@ -1,4 +1,101 @@
+<%= jquery do %>
+var toggleSelectCompensatoryFile = function() {
+  var val = $(".select-leave-type").val();
+  $(".select-week-out").hide();
+  $(".select-week-in").hide();
+  if (val == "week_in_compensatory_leave") {
+    $(".select-week-in").show();
+  } else if (val == "week_out_compensatory_leave") {
+    $(".select-week-out").show();
+  }
+};
+$(".select-leave-type").on("change", toggleSelectCompensatoryFile);
+toggleSelectCompensatoryFile();
+<% end %>
+
+<%
+  duty_calendar = @cur_user.effective_duty_calendar(@cur_site)
+  duty_hour = duty_calendar.default_duty_hour
+  @item.start_at_hour ||= duty_hour.affair_start_at_hour
+  @item.start_at_minute ||= duty_hour.affair_start_at_minute
+  @item.end_at_hour ||= duty_hour.affair_end_at_hour
+  @item.end_at_minute ||= duty_hour.affair_end_at_minute
+%>
+
 <dl class="see">
-  <dt><%= @model.t :name %><%= @model.tt :name %></dt>
-  <dd><%= f.text_field :name, autofocus: pc_browser? %></dd>
+  <dt><%= @model.t :start_at %><%= @model.tt :start_at %></dt>
+  <dd>
+    <%= f.text_field :start_at_date, class: "date js-date" %>
+    <%= f.select :start_at_hour, @item.start_at_hour_options, include_blank: true %>
+    <%= f.select :start_at_minute, @item.start_at_minute_options, include_blank: true %>
+    〜
+    <%= f.select :end_at_hour, @item.end_at_hour_options, include_blank: true %>
+    <%= f.select :end_at_minute, @item.end_at_minute_options, include_blank: true %>
+  </dd>
+
+  <dt><%= @model.t :leave_type %><%= @model.tt :leave_type %></dt>
+  <dd><%= f.select :leave_type, @item.leave_type_options, { include_blank: true }, { class: "select-leave-type" } %></dd>
+</dl>
+
+<dl class="see select-week-in" style="display: none; margin-top: 10px;">
+  <dt><%= @model.t :week_in_compensatory_file_id %></dt>
+  <dd>
+    <%= f.hidden_field "week_in_compensatory_file_id", value: "", class: "hidden-ids" %>
+    <%= link_to t("ss.links.select"), gws_affair_overtime_apis_files_week_in_path(uid: @cur_user.id, id: @item.id), class: "ajax-box" %>
+  </dd>
+  <dd>
+    <table class="index ajax-selected">
+      <thead>
+        <tr>
+          <th class="name"><%= Gws::Affair::OvertimeFile.t :overtime_name %></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @item.week_in_compensatory_file %>
+          <tr data-id="<%= @item.id %>">
+            <td>
+              <%= f.hidden_field "week_in_compensatory_file_id", value: @item.week_in_compensatory_file_id, class: "hidden-ids" %>
+              <%= @item.week_in_compensatory_file.term_label %>
+            </td>
+            <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </dd>
+</dl>
+
+<dl class="see select-week-out" style="display: none; margin-top: 10px;">
+  <dt><%= @model.t :week_out_compensatory_file_id %></dt>
+  <dd>
+    <%= f.hidden_field "week_out_compensatory_file_id", value: "", class: "hidden-ids" %>
+    <%= link_to t("ss.links.select"), gws_affair_overtime_apis_files_week_out_path(uid: @cur_user.id, id: @item.id), class: "ajax-box" %>
+  </dd>
+  <dd>
+    <table class="index ajax-selected">
+      <thead>
+      <tr>
+        <th class="name"><%= Gws::Affair::OvertimeFile.t :overtime_name %></th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        <% if @item.week_out_compensatory_file %>
+          <tr data-id="<%= @item.id %>">
+            <td>
+              <%= f.hidden_field "week_out_compensatory_file_id", value: @item.week_out_compensatory_file_id, class: "hidden-ids" %>
+              <%= @item.week_out_compensatory_file.term_label %>
+            </td>
+            <td><%= link_to t("ss.buttons.delete"), "#", class: "deselect btn" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </dd>
+</dl>
+
+<dl class="see">
+  <dt><%= @model.t :reason %><%= @model.tt :reason %></dt>
+  <dd><%= f.text_area :reason %></dd>
 </dl>
