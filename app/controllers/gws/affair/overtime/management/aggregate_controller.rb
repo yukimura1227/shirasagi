@@ -11,6 +11,16 @@ class Gws::Affair::Overtime::Management::AggregateController < ApplicationContro
 
   private
 
+  def set_crumbs
+    @crumbs << [@cur_site.menu_affair_label || t('modules.gws/affair'), gws_affair_main_path]
+    @crumbs << [t("modules.gws/affair/overtime_file/management/aggregate"), gws_affair_overtime_management_aggregate_main_path]
+    if params[:threshold] == "under"
+      @crumbs << ["通常分", gws_affair_overtime_management_aggregate_path(threshold: "under")]
+    else
+      @crumbs << ["割合引上対象分", gws_affair_overtime_management_aggregate_path(threshold: "over")]
+    end
+  end
+
   def set_query
     @current = Time.zone.now
 

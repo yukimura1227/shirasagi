@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       resources :results, only: [:edit, :update]
 
       namespace 'management' do
+        get "aggregate" => redirect { |p, req| "#{req.path}/under" }, as: :aggregate_main
         get "aggregate/:threshold" => "aggregate#index", as: :aggregate
         get "aggregate/:threshold/download" => "aggregate#download", as: :download_aggregate
         post "aggregate/:threshold/download" => "aggregate#download"
