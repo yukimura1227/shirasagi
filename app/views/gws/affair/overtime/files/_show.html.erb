@@ -1,6 +1,21 @@
 <dl class="see">
   <dt><%= @model.t :capital_id %></dt>
   <dd><%= tryb { [ @item.capital.no.presence, @item.capital.name.presence ].compact.join(" ") } %></dd>
+
+  <dt><%= @model.t :overtime_name %></dt>
+  <dd><%= @item.overtime_name %></dd>
+
+  <dt><%= @model.t :start_at %></dt>
+  <dd><%= @item.start_end_term %>
+
+  <dt><%= @model.t :week_in_compensatory_minute %></dt>
+  <dd><%= @item.label :week_in_compensatory_minute %></dd>
+
+  <dt><%= @model.t :week_out_compensatory_minute %></dt>
+  <dd><%= @item.label :week_out_compensatory_minute %></dd>
+
+  <dt><%= @model.t :remark %></dt>
+  <dd><%= br @item.remark %></dd>
 </dl>
 
 <%= jquery do %>
