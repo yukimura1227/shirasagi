@@ -62,7 +62,7 @@
       <% if date.day == 1 %>
         <tr class="header">
           <th colspan="<%= 3 + @break_times.size * 2 %>"><%= "勤務" %></th>
-          <th class="overtime time" colspan="3"><%= "時間外" %></th>
+          <th class="overtime time" colspan="2"><%= "時間外" %></th>
           <th class="leave" rowspan="2"><%= "休暇" %></th>
           <th class="memo" rowspan="2"><%= Gws::Attendance::Record.t(:memo) %></th>
         </tr>
@@ -74,8 +74,7 @@
             <th class="time <%= "break_enter#{i + 1}" %>"><%= @cur_site["attendance_break_enter#{i + 1}_label"].presence || t('gws/attendance.formats.break_enter', count: i + 1) %></th>
             <th class="time <%= "break_leave#{i + 1}" %>"><%= @cur_site["attendance_break_leave#{i + 1}_label"].presence || t('gws/attendance.formats.break_leave', count: i + 1) %></th>
           <% end %>
-          <th class="overtime time"><%= "執務時間 (結果 | 差分)" %></th>
-          <th class="break-time"><%= "休憩" %></th>
+          <th class="overtime time"><%= "執務時間 (時間外 - 休憩 | 差分)" %></th>
           <th class="compensatory-time"><%= "振替" %></th>
         <tr>
     　<% end %>
@@ -88,8 +87,7 @@
             <th class="time <%= "break_enter#{i + 1}" %>"><%= @cur_site["attendance_break_enter#{i + 1}_label"].presence || t('gws/attendance.formats.break_enter', count: i + 1) %></th>
             <th class="time <%= "break_leave#{i + 1}" %>"><%= @cur_site["attendance_break_leave#{i + 1}_label"].presence || t('gws/attendance.formats.break_leave', count: i + 1) %></th>
           <% end %>
-          <th class="overtime time"><%= "執務時間 (結果 | 差分)" %></th>
-          <th class="break-time"><%= "休憩" %></th>
+          <th class="overtime time"><%= "執務時間 (時間外 - 休憩 | 差分)" %></th>
           <th class="compensatory-time"><%= "振替" %></th>
           <th class="leave"><%= "休暇" %></th>
           <th class="memo"><%= Gws::Attendance::Record.t(:memo) %></th>
@@ -116,56 +114,36 @@
 
           day_results = overtime_day_results[date.to_datetime]
 
-          compensatory_minute = 0
-          if day_results.present?
-            compensatory_minute = day_results.map(&:week_in_compensatory_minute).sum
-            compensatory_minute += day_results.map(&:week_out_compensatory_minute).sum
-          end
-
           break_time_minute = 0
           if day_results.present?
             break_time_minute = day_results.map(&:break_time_minute).sum
+            result_minute = break_time_minute + day_results.map(&:duty_day_time_minute).sum + day_results.map(&:week_in_compensatory_minute).sum
           end
-
-          overtime_minute = (overtime_minute - compensatory_minute) > 0 ? (overtime_minute - compensatory_minute) : 0
-          overtime_minute = (overtime_minute - break_time_minute) > 0 ? (overtime_minute - break_time_minute) : 0
         %>
         <td class="overtime time">
           <%= format_minute(overtime_minute.to_i) %>
 
           <% if day_results.present? %>
             <%= " (" %>
-            <% result_minute = day_results.pluck(:overtime_minute).sum %>
-            <%= format_minute(result_minute) %>
-
-            <% if day_results.present? && result_minute %>
-              <%= " | " %>
-              <% overtime_diff = result_minute - overtime_minute %>
-              <% if overtime_diff == 0 %>
-                <% label = format_minute(overtime_diff) %>
-                <%= link_to label, edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box overtime-diff equal" %>
-              <% elsif overtime_diff > 0 %>
-                <% label = "-" + format_minute(overtime_diff) %>
-                <%= link_to label, edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box overtime-diff minus" %>
-              <% else %>
-                <% overtime_diff = overtime_diff * -1 %>
-                <% label = "+" + format_minute(overtime_diff) %>
-                <%= link_to label, edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box overtime-diff plus" %>
+            <%= link_to edit_gws_affair_overtime_result_path(id: day_results.first.file.id, ref: request.path), class: "ajax-box" do %>
+              <%= format_minute(result_minute) %>
+              <% if break_time_minute > 0 %>
+                - <%= format_minute(break_time_minute) %>
               <% end %>
+            <% end %>
+
+            <%= " | " %>
+            <% overtime_diff = result_minute - overtime_minute %>
+            <% if overtime_diff == 0 %>
+              <span class="overtime-diff equal"><%= format_minute(overtime_diff) %></span>
+            <% elsif overtime_diff > 0 %>
+              <span class="overtime-diff minus">- <%= format_minute(overtime_diff) %></span>
+            <% else %>
+              <span class="overtime-diff plus">+ <%= format_minute(- overtime_diff) %></span>
             <% end %>
             <%= ")" %>
           <% end %>
         </td>
-
-        <%
-          day_results = overtime_day_results[date.to_datetime]
-          if day_results.present?
-            break_time_minute = day_results.map(&:break_time_minute).sum
-          else
-            break_time_minute = 0
-          end
-        %>
-        <td class="time"><%= format_minute(break_time_minute) %></td>
 
         <%
           day_results = overtime_day_results[date.to_datetime]
