@@ -54,4 +54,6 @@ class Gws::Affair::HolidayCalendar
       and_holiday_calendar(self).
       search(start: date, end: date).present?
   end
+
+  alias leave_day? holiday?
 end
