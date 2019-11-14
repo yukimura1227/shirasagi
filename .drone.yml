@@ -15,6 +15,13 @@ steps:
       - ruby --version
       - google-chrome --version
       - df -h | fgrep -i shm
+    volumes:
+      - name: cache
+        path: /var/cache/shirasagi
+      - name: droneshm
+        path: /dev/shm
+      - name: docker.sock
+        path: /var/run/docker.sock
 
   - name: config/mongoid.yml
     image: shirasagi/cibase:ruby-265-chrome-77
@@ -52,17 +59,17 @@ steps:
     image: shirasagi/cibase:ruby-265-chrome-77
     volumes:
       - name: cache
-        path: /var/lib/cache
+        path: /var/cache/shirasagi
       - name: docker.sock
         path: /var/run/docker.sock
     commands:
-      - bundle install --path=/var/lib/cache/shirasagi/bundle
+      - bundle install --path=/var/cache/shirasagi/bundle
 
   - name: rspec
     image: shirasagi/cibase:ruby-265-chrome-77
     volumes:
       - name: cache
-        path: /var/lib/cache
+        path: /var/cache/shirasagi
       - name: droneshm
         path: /dev/shm
       - name: docker.sock
@@ -74,7 +81,7 @@ steps:
       CI: true
       DRONE: true
     commands:
-      - bundle check --path=/var/lib/cache/shirasagi/bundle
+      - bundle check --path=/var/cache/shirasagi/bundle
       - bundle exec rspec spec/features/gws
       # - bundle exec rspec spec/features/gws/report
       # - bundle exec rspec spec/features/gws/roles_spec.rb
