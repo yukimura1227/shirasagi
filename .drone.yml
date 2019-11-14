@@ -14,6 +14,7 @@ steps:
       - mongo --host mongo --eval "db.version()"
       - ruby --version
       - google-chrome --version
+      - df -h | fgrep -i shm
 
   - name: config/mongoid.yml
     image: shirasagi/cibase:ruby-265-chrome-77
@@ -62,6 +63,8 @@ steps:
     volumes:
       - name: cache
         path: /var/lib/cache
+      - name: droneshm
+        path: /dev/shm
       - name: docker.sock
         path: /var/run/docker.sock
     environment:
@@ -101,6 +104,8 @@ volumes:
   - name: cache
     host:
       path: /tmp/cache/drone-shirasagi
+  - name: droneshm
+    temp: {}
   - name: docker.sock
     host:
       path: /var/run/docker.sock
