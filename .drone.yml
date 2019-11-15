@@ -15,6 +15,8 @@ steps:
       - ruby --version
       - google-chrome --version
       - df -h | fgrep -i shm
+      - printenv
+      - printenv | fgrep -i test_mail
     volumes:
       - name: cache
         path: /var/cache/shirasagi
@@ -26,31 +28,34 @@ steps:
   - name: config/mongoid.yml
     image: shirasagi/cibase:ruby-265-chrome-77
     commands:
-      - cp -n config/samples/mongoid.yml config/
+      - cp config/samples/mongoid.yml config/
       - sed -i 's/localhost:27017/mongo:27017/g' config/mongoid.yml
       - cat config/mongoid.yml
 
   - name: config/secrets.yml
     image: shirasagi/cibase:ruby-265-chrome-77
     commands:
-      - cp -n config/samples/secrets.yml config/
+      - cp config/samples/secrets.yml config/
       - cat config/secrets.yml
 
   - name: config/webmail
     image: shirasagi/cibase:ruby-265-chrome-77
     commands:
-      - cp -n config/defaults/webmail.yml config/
-      - sed -i 's/#\ test_by:\ user/test_by:\ user/g' config/webmail.yml
-      - sed -i 's/#\ test_user:/test_user:/g' config/webmail.yml
-      - sed -i 's/#\ \ \ host:\ localhost/\ \ host:\ mail/g' config/webmail.yml
-      - sed -i 's/#\ \ \ account:\ email/\ \ account:\ email/g' config/webmail.yml
-      - sed -i 's/#\ \ \ password:\ pass/\ \ password:\ pass/g' config/webmail.yml
+      - cp config/defaults/webmail.yml config/
+      - sed -i 's/# test_by:\ user/test_by:\ docker/g' config/webmail.yml
+      - sed -i 's/# test_user:/test_user:/g' config/webmail.yml
+      - sed -i 's/# test_docker:/test_docker:/g' config/webmail.yml
+      - sed -i 's/#   api_url:/  api_url:/g' config/webmail.yml
+      - sed -i 's/#   container_id:/  container_id:/g' config/webmail.yml
+      - sed -i 's/#   host:\ localhost/  host:\ test_mail/g' config/webmail.yml
+      - sed -i 's/#   auth_type:/  auth_type:/g' config/webmail.yml
+      - sed -i 's/#   account:/  account:/g' config/webmail.yml
       - cat config/webmail.yml
 
   - name: config/voice.yml
     image: shirasagi/cibase:ruby-265-chrome-77
     commands:
-      - cp -n config/defaults/voice.yml config/
+      - cp config/defaults/voice.yml config/
       - sed -i 's#/usr/local/bin/sox#/usr/bin/sox#g' config/voice.yml
       - sed -i 's#/usr/local/bin/lame#/usr/bin/lame#g' config/voice.yml
       - cat config/voice.yml
@@ -82,7 +87,7 @@ steps:
       DRONE: true
     commands:
       - bundle check --path=/var/cache/shirasagi/bundle
-      - bundle exec rspec
+      - bundle exec rspec spec/features/webmail/
 
 services:
   - name: mongo
