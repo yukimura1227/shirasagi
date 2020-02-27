@@ -73,7 +73,7 @@ class Gws::Affair::Attendance::Management::TimeCardsController < ApplicationCont
 
   def crud_redirect_url
     if params[:action] == 'time' || params[:action] == 'memo'
-      { action: :show }
+      gws_affair_attendance_management_time_card_path(id: @item)
     else
       super
     end
