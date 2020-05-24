@@ -135,3 +135,6 @@ group :test do
   gem 'docker-api'
   gem 'webmock'
 end
+
+  gem 'view_source_map'
+
