@@ -12,7 +12,6 @@ module MailPage::Node
     include Cms::Addon::EditorSetting
     include Event::Addon::PageList
     include MailPage::Addon::MailSetting
-    include Urgency::Addon::MailPage
     include Cms::Addon::Release
     include Cms::Addon::GroupPermission
     include History::Addon::Backup
